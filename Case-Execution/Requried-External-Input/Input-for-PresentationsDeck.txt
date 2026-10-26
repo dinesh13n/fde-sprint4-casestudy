@@ -1,0 +1,39 @@
+
+Capstone Project Presentation Expectations from 
+ emphasized that participants should not treat the work merely as a capstone presentation for the 26th and 27th. Instead, the outcome should help drive a broader organizational transformation mindset and encourage leaders to think about future implementation opportunities.
+
+He stated that participants are acting as ambassadors of the program and that their presentations should spark interest across the organization, demonstrating how the ideas can be extended beyond the training program.
+Presentation Approach
+The presentation should be structured as a professional pitch, similar to presenting to potential investors or decision-makers. It should be focused, compelling, data-driven, and limited to approximately 40 minutes followed by Q&A.
+
+- Include Promplem Statement, Solution Approach, Functional Flow, and Techinical Implimentation.
+ - Presentation must be follow 3W (What, Why and Who) and inculde How as well.
+
+The story should begin with a clear business problem or KPI and demonstrate measurable improvements achieved through the solution. The audience should clearly understand:
+The original business problem.
+What was solved.
+How the solution works.
+The resulting business value.
+What Leaders Will Look For
+Equal importance should be given to:
+Business value
+Technical architecture
+Engineering decisions
+Actual implementation results
+Presenters should clearly explain:
+Why Generative AI or Agentic AI was required.
+Which improvements came from AI versus traditional engineering improvements.
+Why conventional approaches alone were insufficient.
+Evidence-Based Presentation
+<Person>Rammohan</Person> repeatedly stressed “show, don’t tell.” Major claims should be supported with evidence such as code changes, test results, execution traces, evaluation reports, benchmarks, and KPI improvements.
+He advised participants to quantify improvements instead of making general statements and to provide traceability throughout the transformation journey.
+Closing the Presentation
+Near the end, teams should present:
+Lessons learned
+Business implications
+What AI can and cannot do in the solution
+Unexpected challenges encountered
+Future “moonshot” ideas and enhancements
+He recommended ending on a strong note by connecting all business and technical aspects into a coherent story and showing measurable impact.
+Key Message
+The presentation should demonstrate not only a working solution but also a credible, evidence-backed transformation story that leaders can envision extending into real-world organizational initiatives.

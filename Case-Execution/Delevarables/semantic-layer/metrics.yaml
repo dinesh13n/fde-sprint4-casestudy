@@ -1,0 +1,510 @@
+# Semantic Layer — metrics, KPIs, SLO candidates and zero-tolerance invariants
+#
+# ALL VALUES ARE SYNTHETIC. Baseline values come from the shipped 125-case database (seed 4100, sha256 c254649f...d70aa), AS_OF 2025-12-19T07:11:00Z,
+# measured in a sandbox copy. They are "method validation only": not production, not validated against any organisation.
+# Every metric that involves closed / resolved / approved / cost / handling time is split by definition tag (-OPS, -EVID, -FIN) and NEVER chooses a winner.
+# Owner is "Engagement lead (Dinesh Naik)" for every KPI because no other human exists (OD-04); that is a placeholder, not an acceptance.
+#
+# kind: kpi | built_in_metric | slo_candidate | invariant_metric
+# computable_today: whether a value can be computed from the shipped data (false = definition only; the data to compute it does not exist)
+
+semantic_layer_version: "0.1.0"
+kind: metrics
+global_conventions:
+  as_of: "2025-12-19T07:11:00+00:00"
+  timestamps: "UTC ISO-8601"
+  label: "synthetic, unvalidated"
+  owner_placeholder: "Engagement lead (Dinesh Naik)"
+  percentiles: "Stage 4 KPI sheet: linear interpolation. Hub metrics: median = mean of middle two; p90 = nearest rank (VAL-07)."
+  rule: "Figures with different definition tags or tag-policy versions are never summed, averaged or compared (SBR-MET-02)."
+  evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/12-specs/business-rules.md]
+items:
+
+  # ============================================================ KPIs (baseline = Stage 4; hub parity = Stage 34)
+  - id: K-01
+    kind: kpi
+    name: "Unsafe action count"
+    meaning: "Automated or simulated disposition, or closure without evidence and without an authorised exception."
+    formula: "count(unsafe events in window)"
+    unit: count
+    definition_class: invariant_zero_required
+    source: "none exists in the legacy estate (no action/audit log with actor + disposition)"
+    computable_today: false
+    baseline: {value: unknown}
+    target_semantics: "Must be 0."
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: K-02
+    kind: kpi
+    name: "Source attribution rate"
+    meaning: "Share of sampled decisions carrying an evidence reference and a source."
+    formula: "decisions with evidence_ref AND source / decisions sampled"
+    unit: percent
+    definition_class: structural_proxy
+    source: "events.payload of STATUS_REVIEWED (keys: reviewer, severity)"
+    computable_today: true
+    baseline: {value: 0.0, unit: percent, numerator: 0, denominator: 20}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-03
+    kind: kpi
+    name: "Definition transparency"
+    meaning: "Share of reported figures that declare which closed/resolved definition they use."
+    formula: "figures with definition tag / figures reported"
+    unit: percent
+    definition_class: verified_by_inspection
+    source: "outputs of the legacy baseline report (6 keys)"
+    computable_today: true
+    baseline: {value: 0.0, unit: percent, numerator: 0, denominator: 6}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-04-OPS
+    kind: kpi
+    name: "Time to close (D-OPS)"
+    meaning: "Elapsed time receipt -> operations-closed."
+    formula: "median and p90 of (closed_at - created_at) over cases with status CLOSED"
+    unit: hours
+    definition_tag: D-OPS
+    source: "needs a closure timestamp, which does not exist"
+    computable_today: false
+    baseline: {value: unknown}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-04-EVID
+    kind: kpi
+    name: "Time to close (D-EVID)"
+    meaning: "Elapsed time receipt -> closed AND evidence + authorised approver recorded."
+    formula: "median/p90 of (max(closed_at, evidence_at, approver_at) - created_at)"
+    unit: hours
+    definition_tag: D-EVID
+    source: "needs evidence/approver timestamps, which do not exist"
+    computable_today: false
+    baseline: {value: unknown}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-04-FIN
+    kind: kpi
+    name: "Time to resolved (D-FIN)"
+    meaning: "Elapsed time receipt -> 'successfully resolved for cost'."
+    formula: "UNDEFINED (D-FIN is an unknown)"
+    unit: hours
+    definition_tag: D-FIN
+    computable_today: false
+    baseline: {value: unknown}
+    open_decision: OPD-01
+    epistemic_status: unknown
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-05
+    kind: kpi
+    name: "Time to evidence"
+    meaning: "Receipt -> evidence-complete."
+    formula: "median hours (evidence_complete_at - created_at)"
+    unit: hours
+    definition_tag: D-EVID
+    computable_today: false
+    baseline: {value: unknown, proxies: "P-01 median 12.06 h / p90 25.62 h (n=20); P-02 median 2.90 h / p90 4.14 h (n=15). Generator-bounded proxies only."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: K-06
+    kind: kpi
+    name: "Unmatched reference rate"
+    meaning: "External items whose reference matches no core case."
+    formula: "count(ref_id NOT IN cases.id) / count(rows)"
+    unit: percent
+    definition_class: definition_independent
+    source: "partner_feeds.ref_id, policy_exceptions.ref_id vs cases.id"
+    computable_today: true
+    baseline: {value: 97.98, unit: percent, numerator: 8394, denominator: 8567, second_population: "policy_exceptions 99.11 % (222 of 224)", note: "Generator-shaped residue: treat as method validation only."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/42-executive-defence/lessons-learned.md]
+  - id: K-07
+    kind: kpi
+    name: "Replay safety"
+    meaning: "Change in queue size and totals when an already-processed item is re-delivered."
+    formula: "queue_after - queue_before; totals_after - totals_before, after replay of n processed items"
+    unit: count
+    definition_class: invariant_zero_required
+    source: "behavioural test, not a column"
+    computable_today: true
+    baseline: {value: unknown, note: "Legacy replay safety untested; 67 REPLAY rows exist."}
+    hub_parity: {value: 0, note: "Hub verify-replay: re-delivered 8,567 rows, all NOOP_DUPLICATE, queue sizes and totals unchanged (8,516 before and after)."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: K-08
+    kind: kpi
+    name: "Reconciliation delay"
+    meaning: "Hours from source event to record available."
+    formula: "ingest_ts - source_ts; median, p90, share <= 4 h"
+    unit: hours
+    definition_class: definition_independent
+    source: "partner_feeds.source_ts, ingest_ts"
+    computable_today: true
+    baseline: {median_hours: 0.02, p90_hours: 168, within_4h_percent: 75.24, negative_delay_percent: 26.1}
+    note: "The 4 h threshold is the archived target from operations-service-levels.md, used as a reporting cut only, not a target."
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/operations-service-levels.md]
+  - id: K-09-OPS
+    kind: kpi
+    name: "Backlog ageing and count (D-OPS)"
+    meaning: "Not-closed cases and their age at AS_OF, per site (BR-12)."
+    formula: "count(status <> 'CLOSED'); median/p90 of (AS_OF - created_at)"
+    unit: "count; days"
+    definition_tag: D-OPS
+    source: "cases.status, created_at"
+    computable_today: true
+    baseline:
+      value: 89
+      denominator: 125
+      age_median_days: 565.1
+      age_p90_days: 974.2
+      by_site: {BR-SP: 22, DE-BY: 18, GB-ENG: 14, IN-BLR: 10, JP-KN: 11, US-TX: 14}
+    hub_parity: {value: 89, by_site: {BR-SP: 22, DE-BY: 18, GB-ENG: 14, IN-BLR: 10, JP-KN: 11, US-TX: 14}, note: "Parity of a snapshot, not an improvement."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: K-09-EVID
+    kind: kpi
+    name: "Backlog (D-EVID)"
+    meaning: "Cases not both closed and evidence-complete."
+    formula: "count(cases) - count(closed AND evidence AND approver)"
+    unit: count
+    definition_tag: D-EVID
+    computable_today: false
+    baseline: {value: unknown, upper_bound: "125 of 125"}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-09-FIN
+    kind: kpi
+    name: "Backlog (D-FIN)"
+    meaning: "Undefined."
+    formula: "UNDEFINED"
+    unit: count
+    definition_tag: D-FIN
+    computable_today: false
+    baseline: {value: unknown}
+    open_decision: OPD-01
+    epistemic_status: unknown
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-09U
+    kind: kpi
+    name: "Unresolved exception rate"
+    meaning: "Share of policy exceptions not resolved. UE-1: outcome <> 'WAIVED'. UE-2: outcome IN ('OPEN','REVIEW')."
+    formula: "count / count(policy_exceptions)"
+    unit: percent
+    definition_class: provisional_meaning_of_WAIVED_BLOCKED_unowned
+    source: "policy_exceptions.outcome"
+    computable_today: true
+    baseline: {UE-1: {value: 75.0, numerator: 168, denominator: 224}, UE-2: {value: 52.2, numerator: 117, denominator: 224}}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-10
+    kind: kpi
+    name: "Month-end comparability"
+    meaning: "Operations month counts vs finance/cost month counts on one cut-off."
+    formula: "months where cases created in month = operating_costs.total_cases / months compared"
+    unit: "months; cases"
+    definition_class: definition_dependent_cutoff_unowned
+    source: "cases.created_at vs operating_costs.total_cases"
+    computable_today: true
+    baseline: {value: "8 of 36 months equal", cases_vs_cost_cases: "125 vs 108", sum_abs_diff: 51}
+    note: "INVALIDATED as a comparison: OD-07 refuted that total_cases means 'cases created'. K-10 compares unrelated populations."
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, .fde/orchestrator-decisions.md]
+  - id: K-11
+    kind: kpi
+    name: "Decision recorded"
+    meaning: "The definition decision and closure-time decision each have an owner+date or an 'accepted open' record."
+    formula: "count(DR-20, DR-21 with decision record) / 2"
+    unit: "count of 2"
+    definition_class: governance
+    computable_today: true
+    baseline: {value: 0, denominator: 2}
+    hub_parity: {value: 2, denominator: 2, note: "Both recorded as 'accepted open' (OD-22). It records that nobody decided; it is not a resolution."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: K-12
+    kind: kpi
+    name: "Handling effort per case"
+    meaning: "Labour hours per case."
+    formula: "sum(labor_hours) / sum(total_cases) from operating_costs"
+    unit: "hours per case"
+    definition_class: denominator_is_operating_costs_not_cases
+    source: operating_costs
+    computable_today: true
+    baseline: {value: 0.603}
+    basis: modelled
+    note: "Denominator 108 differs from the case count 125."
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-13
+    kind: kpi
+    name: "Infrastructure cost per case"
+    meaning: "Infrastructure spend per case."
+    formula: "sum(infrastructure_usd) / sum(total_cases)"
+    unit: "USD per case"
+    definition_class: cost_proxy_D-FIN_dependent
+    source: operating_costs
+    computable_today: true
+    baseline: {value: 23.40}
+    basis: modelled
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-14
+    kind: kpi
+    name: "Throughput"
+    meaning: "Cases created per month."
+    formula: "count(cases) / months with data"
+    unit: "cases per month"
+    definition_class: definition_independent
+    source: "cases.created_at"
+    computable_today: true
+    baseline: {value: 3.47, window: "2023-01..2025-12"}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-15
+    kind: kpi
+    name: "Rework (reopen) rate"
+    meaning: "Share of cases in REOPENED."
+    formula: "count(status = 'REOPENED') / count(cases)"
+    unit: percent
+    definition_class: snapshot_proxy
+    source: "cases.status"
+    computable_today: true
+    baseline: {value: 6.4, numerator: 8, denominator: 125}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-16
+    kind: kpi
+    name: "Manual-review share (by code rule)"
+    meaning: "Share of cases the legacy rule flags for manual review."
+    formula: "count(manual_review_required) / count(cases)"
+    unit: percent
+    definition_class: rule_derived
+    source: "legacy manual_review_required over cases (LEG-02)"
+    computable_today: true
+    baseline: {value: 23.2, numerator: 29, denominator: 125}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, app/legacy_logic.py]
+  - id: K-17
+    kind: kpi
+    name: "Deviations closed without root cause"
+    meaning: "Integrity of closure."
+    formula: "count(CLOSED AND root_cause IS NULL) / count(CLOSED) in deviations"
+    unit: percent
+    definition_class: quality
+    source: deviations
+    computable_today: true
+    baseline: {value: 66.7, numerator: 8, denominator: 12}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-18
+    kind: kpi
+    name: "CAPA overdue share"
+    meaning: "OVERDUE share of not-yet-verified CAPA."
+    formula: "OVERDUE / (OVERDUE + OPEN)"
+    unit: percent
+    definition_class: quality
+    source: capa_actions.state
+    computable_today: true
+    baseline: {value: 46.2, numerator: 6, denominator: 13}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: K-19
+    kind: kpi
+    name: "Batch-run rejection / failure"
+    meaning: "Rejected records over input; FAILED runs over runs."
+    formula: "sum(rejected) / sum(input); count(FAILED) / count(runs)"
+    unit: percent
+    definition_class: error
+    source: batch_runs
+    computable_today: true
+    baseline: {value: "see Stage 4 baseline sheet", population: "60 runs, 2021-01..2024"}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/04-baseline-kpis/baseline-kpi-sheet.md]
+  - id: K-20
+    kind: kpi
+    name: "Upstream outage MTTR and open outages"
+    meaning: "Median resolve time; outages with no resolve time."
+    formula: "median(resolved - began); count(resolved IS NULL)"
+    unit: "hours; count"
+    definition_class: reliability
+    source: upstream_outages
+    computable_today: true
+    baseline: {value: "see Stage 4 baseline sheet", population: "72 incidents, 2021-01-01..2024-04-22"}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/04-baseline-kpis/baseline-kpi-sheet.md]
+  - id: K-21
+    kind: kpi
+    name: "Adoption"
+    meaning: "Share of cases handled via the new capability."
+    formula: "cases via new path / cases"
+    unit: percent
+    definition_class: not_measurable_pre_intervention
+    computable_today: false
+    baseline: {value: 0, numerator: 0, denominator: 125, note: "No production use exists."}
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/final-prd/final-as-built-prd.md]
+  - id: K-22
+    kind: kpi
+    name: "Rework effort"
+    meaning: "Hours spent on avoidable rework."
+    formula: "sum of rework hours (needs a time record)"
+    unit: hours
+    computable_today: false
+    baseline: {value: unknown, note: "No rework time capture exists (LL-14)."}
+    epistemic_status: unknown
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/42-executive-defence/lessons-learned.md]
+
+  # ============================================================ built-in metric definitions (registered by the product)
+  - id: MET-TTC-C-OPS
+    kind: built_in_metric
+    name: "Time to ops-closed (clock C-OPS)"
+    category: time
+    definition_tag: C-OPS
+    window: "all completed cycles recorded"
+    denominator: "completed cycles (a start and a stop event of the clock exist in the cycle)"
+    exclusions: "incomplete cycles (counted as open_count); never pooled with another clock"
+    basis: event_derived
+    formula: "Median and p90 of elapsed hours between the clock's start and stop events per completed cycle"
+    computable_today: false
+    baseline: {value: null, n: 0, open_count: 125, verdict: not_available_no_adopted_policy}
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: MET-TTC-C-EVID
+    kind: built_in_metric
+    name: "Time to evidence-complete (clock C-EVID)"
+    category: time
+    definition_tag: C-EVID
+    window: "all completed cycles recorded"
+    denominator: "completed cycles"
+    exclusions: "incomplete cycles; never pooled with another clock"
+    basis: event_derived
+    formula: "Same method as MET-TTC-C-OPS under the evidence-complete clock; a different definition, never combined with it."
+    computable_today: false
+    baseline: {value: null, n: 0, open_count: 125}
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: MET-MONTH-END-TOTAL
+    kind: built_in_metric
+    name: "Month-end total of case amounts"
+    category: money
+    definition_tag: null
+    window: "cases created up to the explicit cut-off (required parameter; no default)"
+    denominator: "all rows of cases.amount at the cut-off (one row per case)"
+    exclusions: "none; unparsable amounts raise unless allow_partial"
+    basis: event_derived
+    formula: "Exact decimal sum of cases.amount, one query on one table (no join, no fan-out), quantised to 2 decimals ROUND_HALF_EVEN at presentation"
+    computable_today: true
+    baseline: {value: "622826.44", n: 125, legacy_report_value: "742956.61", note: "Legacy join fan-out inflates the total by 19.3 % (LEG-06)."}
+    open_decision: OPD-08
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py, docs/06-root-cause/confirmed-root-causes.md]
+  - id: MET-BACKLOG-D-OPS
+    kind: built_in_metric
+    name: "Backlog and ageing per site (D-OPS)"
+    category: count
+    definition_tag: D-OPS
+    window: "state at the as_of instant"
+    denominator: "cases existing at as_of"
+    exclusions: "cases whose state is in the closing-state set; cases created after as_of"
+    basis: event_derived
+    formula: "Cases not in the closing-state set at as_of, per site, with ageing buckets <=90, 91-365, 366-730, >730 days from creation"
+    computable_today: true
+    baseline: {value: 89, denominator: 125}
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: MET-UNRESOLVED-EXC-RATE-D-OPS
+    kind: built_in_metric
+    name: "Unresolved-exception rate per site (D-OPS)"
+    category: rate
+    definition_tag: D-OPS
+    window: "exception-queue history up to the computation instant"
+    denominator: "all items that ever sat in an exception queue"
+    exclusions: "items that never entered an exception queue; unmatched items reported under site 'unknown'"
+    basis: event_derived
+    formula: "Open exception-queue items / all exception-queue items, per site of the matched case (formula is a spec choice, A-12-F07-2)"
+    computable_today: true
+    baseline: {value: null, note: "null before intake; 1.0000 (8,335 of 8,335 open) after shadow intake because no reviewer has acted."}
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py, docs/34-measure-after/after-intervention-kpi-sheet.md]
+
+  # ============================================================ SLO candidates (NOT SLAs; none approved)
+  - id: SLO-01
+    kind: slo_candidate
+    name: "Availability in scheduled hours"
+    sli: "minutes with a successful /healthz self-probe / window minutes"
+    target: "99.5 %"
+    window: "30 d"
+    basis: "PNFR-01 / archived working target, not a measured guarantee"
+    status: CANDIDATE
+    epistemic_status: assumption
+    evidence: [docs/31-observability/slo-sla-definitions.md, docs/operations-service-levels.md]
+  - id: SLO-02
+    kind: slo_candidate
+    name: "Overnight run finished before 06:00 local"
+    sli: "scheduled nights finished before the deadline / scheduled nights"
+    target: "95 %"
+    window: "28 d"
+    basis: "PNFR-02 asks 100 % (a zero budget); 95 % is the agent's budgetable candidate"
+    status: CANDIDATE
+    epistemic_status: assumption
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+  - id: SLO-03
+    kind: slo_candidate
+    name: "Requests answered without a server error"
+    sli: "HTTP responses with status < 500 / HTTP responses (4xx count as good)"
+    target: "99 %"
+    window: "30 d"
+    status: CANDIDATE
+    epistemic_status: assumption
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+  - id: SLO-04
+    kind: slo_candidate
+    name: "Audit chain verifies"
+    sli: "audit_chain_verify_ok readings equal to 1 / readings"
+    target: "100 %"
+    window: "30 d"
+    status: CANDIDATE
+    note: "Integrity: no error budget. SLI is not exported today (gap)."
+    epistemic_status: assumption
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+  - id: SLO-05
+    kind: slo_candidate
+    name: "Partner source freshness"
+    sli: "pulls newer than the staleness limit / pulls (max tolerated stale signal 24 h)"
+    target: "95 %"
+    window: "30 d"
+    status: CANDIDATE
+    note: "No freshness timestamp is exported (gap)."
+    epistemic_status: assumption
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+
+  # ============================================================ zero-tolerance invariant metrics
+  - id: MET-INV-01
+    kind: invariant_metric
+    name: "model_calls_total"
+    required_value: 0
+    basis: "PNFR-18, OD-08 (No-AI)"
+    epistemic_status: verified_fact
+    evidence: [docs/31-observability/slo-sla-definitions.md, .fde/orchestrator-decisions.md]
+  - id: MET-INV-02
+    kind: invariant_metric
+    name: "egress_attempts_total"
+    required_value: 0
+    basis: "FR-CO-04"
+    epistemic_status: verified_fact
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+  - id: MET-INV-03
+    kind: invariant_metric
+    name: "zone_h_service_actor_accepted"
+    required_value: 0
+    basis: "FR-GATE-03"
+    epistemic_status: verified_fact
+    evidence: [docs/31-observability/slo-sla-definitions.md]
+
+# What is deliberately NOT a metric target (so a regenerated app does not invent one)
+no_target_by_design:
+  - {item: latency, reason: "PNFR-06 has no target (unknown, OPD-14): measure-only. An invented p95 would be a fabricated number."}
+  - {item: "RTO / RPO", reason: "Agent targets (RTO 4 working hours, RPO 1 working day), verified by restore rehearsal only; not approved."}
+  - {item: throughput_capacity, reason: "No target exists (D-28-06)."}
+  - {item: roi_npv_payback, reason: "NOT COMPUTABLE: no after-window, no volumes, no finance-approved rate."}
+no_target_evidence: [docs/31-observability/slo-sla-definitions.md, docs/final-prd/final-economics-baseline.md]

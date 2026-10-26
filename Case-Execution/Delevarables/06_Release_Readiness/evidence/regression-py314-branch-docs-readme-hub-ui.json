@@ -1,0 +1,799 @@
+{
+ "label": "synthetic, unvalidated",
+ "results": [
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 45,
+    "skipped": 0
+   },
+   "executed_methods": 45,
+   "expected_methods": 45,
+   "group": "A",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 15.7,
+   "selectors": [
+    "TST_SEC",
+    "TST_CO_10",
+    "TST_CO_15",
+    "INC03"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 45, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-10,TST-CO-15,TST-SEC-01,TST-SEC-04,TST-SEC-05,TST-SEC-06,TST-SEC-09,TST-SEC-10,TST-SEC-11,TST-SEC-12,TST-SEC-13,TST-SEC-14,TST-SEC-15,TST-SEC-16,TST-SEC-18,TST-SEC-21 seconds=15.7 report=<sandbox>/A/A/report.json"
+   ],
+   "wall_seconds": 15.8
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 3,
+    "ok": 38,
+    "skipped": 1
+   },
+   "executed_methods": 42,
+   "expected_methods": 42,
+   "failed": [
+    "test_TST_CO_05_a_no_diff_vs_baseline_as_found",
+    "test_TST_CO_05_b_no_untracked_files_in_legacy_paths",
+    "test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs"
+   ],
+   "group": "B",
+   "python": "3.14.6",
+   "rc": 1,
+   "runner_seconds": 13.8,
+   "selectors": [
+    "TST_CO_01",
+    "TST_CO_02",
+    "TST_CO_04",
+    "TST_CO_05",
+    "TST_CO_06",
+    "TST_CO_07",
+    "TST_CO_11",
+    "TST_CO_13",
+    "TST_CO_14",
+    "INC02"
+   ],
+   "summary": [
+    "summary: unittest_rc=1 counts={'ok': 38, 'FAIL': 3, 'ERROR': 0, 'skipped': 1} ids=TST-CO-01,TST-CO-02,TST-CO-04,TST-CO-05,TST-CO-06,TST-CO-07,TST-CO-11,TST-CO-13,TST-CO-14,TST-HUB-INC02-S01,TST-HUB-INC02-S02,TST-HUB-INC02-S03 seconds=13.8 report=<sandbox>/B/B/report.json"
+   ],
+   "tail": "-------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/B/B/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 35, in test_TST_CO_05_a_no_diff_vs_baseline_as_found\n    self.assertEqual(p.stdout.strip(), \"\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'M\\tREADME.md' != ''\n- M\tREADME.md\n\n\n======================================================================\nFAIL: test_TST_CO_05_b_no_untracked_files_in_legacy_paths (test_tst_co_05_legacy_paths_unchanged.TST_CO_05_LegacyPathsUnchanged.test_TST_CO_05_b_no_untracked_files_in_legacy_paths)\nTST-CO-05: no new untracked (non-ignored) files appear under the legacy paths.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/B/B/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 41, in test_TST_CO_05_b_no_untracked_files_in_legacy_paths\n    self.assertEqual(p.stdout.strip(), \"\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'scripts/hub_ui_demo.sh' != ''\n- scripts/hub_ui_demo.sh\n\n\n======================================================================\nFAIL: test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs (test_tst_co_05_legacy_paths_unchanged.TST_CO_05_LegacyPathsUnchanged.test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs)\nTST-CO-05: on this branch every change vs main is an added file, except Stage 15's own docs and (Stage 20, OD-26) a\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/B/B/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 59, in test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs\n    self.assertEqual(offending, [])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['M\\tREADME.md'] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n'M\\tREADME.md'\n\n- ['M\\tREADME.md']\n+ []\n\n----------------------------------------------------------------------\nRan 42 tests in 11.594s\n\nFAILED (failures=3, skipped=1)\n\npost-run checksum rc=0\nsummary: unittest_rc=1 counts={'ok': 38, 'FAIL': 3, 'ERROR': 0, 'skipped': 1} ids=TST-CO-01,TST-CO-02,TST-CO-04,TST-CO-05,TST-CO-06,TST-CO-07,TST-CO-11,TST-CO-13,TST-CO-14,TST-HUB-INC02-S01,TST-HUB-INC02-S02,TST-HUB-INC02-S03 seconds=13.8 report=<sandbox>/B/B/report.json\n",
+   "wall_seconds": 13.8
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 5,
+    "skipped": 0
+   },
+   "executed_methods": 5,
+   "expected_methods": 5,
+   "group": "C1",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 16.5,
+   "selectors": [
+    "TST_CO_12_a",
+    "TST_CO_12_b",
+    "TST_CO_12_c",
+    "TST_CO_12_d",
+    "TST_CO_12_e1"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 5, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-12 seconds=16.5 report=<sandbox>/C1/C1/report.json"
+   ],
+   "wall_seconds": 16.6
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "C2",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 16.4,
+   "selectors": [
+    "TST_CO_12_e2"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-12 seconds=16.4 report=<sandbox>/C2/C2/report.json"
+   ],
+   "wall_seconds": 16.4
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 1,
+    "ok": 0,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "failed": [
+    "test_TST_CO_05_a_no_diff_vs_baseline_as_found",
+    "test_TST_CO_05_b_no_untracked_files_in_legacy_paths",
+    "test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs",
+    "test_TST_CO_12_e3_full_suite_under_egress_guard_shard3"
+   ],
+   "group": "C3",
+   "python": "3.14.6",
+   "rc": 1,
+   "runner_seconds": 13.0,
+   "selectors": [
+    "TST_CO_12_e3"
+   ],
+   "summary": [
+    "summary: unittest_rc=1 counts={'ok': 0, 'FAIL': 1, 'ERROR': 0, 'skipped': 0} ids=TST-CO-12 seconds=13.0 report=<sandbox>/C3/C3/report.json"
+   ],
+   "tail": " empty.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/C3/C3/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 35, in test_TST_CO_05_a_no_diff_vs_baseline_as_found\n    self.assertEqual(p.stdout.strip(), \"\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'M\\tREADME.md' != ''\n- M\tREADME.md\n\n\n======================================================================\nFAIL: test_TST_CO_05_b_no_untracked_files_in_legacy_paths (test_tst_co_05_legacy_paths_unchanged.TST_CO_05_LegacyPathsUnchanged.test_TST_CO_05_b_no_untracked_files_in_legacy_paths)\nTST-CO-05: no new untracked (non-ignored) files appear under the legacy paths.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/C3/C3/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 41, in test_TST_CO_05_b_no_untracked_files_in_legacy_paths\n    self.assertEqual(p.stdout.strip(), \"\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'scripts/hub_ui_demo.sh' != ''\n- scripts/hub_ui_demo.sh\n\n\n======================================================================\nFAIL: test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs (test_tst_co_05_legacy_paths_unchanged.TST_CO_05_LegacyPathsUnchanged.test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs)\nTST-CO-05: on this branch every change vs main is an added file, except Stage 15's own docs and (Stage 20, OD-26) a\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<sandbox>/C3/C3/c_pristine/tests/hub/test_tst_co_05_legacy_paths_unchanged.py\", line 59, in test_TST_CO_05_c_branch_only_adds_files_outside_stage15_docs\n    self.assertEqual(offending, [])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['M\\tREADME.md'] != []\n\nFirst list contains 1 additional elements.\nFirst extra element 0:\n'M\\tREADME.md'\n\n- ['M\\tREADME.md']\n+ []\n\n----------------------------------------------------------------------\nRan 44 tests in 9.775s\n\nFAILED (failures=3, skipped=24)\n\n\n----------------------------------------------------------------------\nRan 1 test in 10.497s\n\nFAILED (failures=1)\n\npost-run checksum rc=0\nsummary: unittest_rc=1 counts={'ok': 0, 'FAIL': 1, 'ERROR': 0, 'skipped': 0} ids=TST-CO-12 seconds=13.0 report=<sandbox>/C3/C3/report.json\n",
+   "wall_seconds": 13.0
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 91,
+    "skipped": 0
+   },
+   "executed_methods": 91,
+   "expected_methods": 91,
+   "group": "I45",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 20.5,
+   "selectors": [
+    "INC04",
+    "TST_POL",
+    "TST_DEC",
+    "TST_ID",
+    "INC05",
+    "E05EGRESS",
+    "TST_CO_03"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 91, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-03,TST-DEC-01,TST-DEC-02,TST-DEC-03,TST-DEC-04,TST-DEC-05,TST-DEC-06,TST-DEC-07,TST-DEC-08,TST-DEC-09,TST-DEC-10,TST-DEC-11,TST-DEC-12,TST-DEC-13,TST-DEC-14,TST-DEC-15,TST-DEC-16,TST-DEC-17,TST-DEC-18,TST-DEC-19,TST-DEC-20,TST-DEC-21,TST-DEC-23,TST-DEC-24,TST-DEC-25,TST-DEC-26,TST-DEC-27,TST-DEC-28,TST-ID-01,TST-ID-02,TST-ID-03,TST-ID-04,TST-ID-05,TST-ID-06,TST-ID-07,TST-ID-08,TST-ID-09,TST-ID-10,TST-ID-11,TST-ID-12,TST-POL-01,TST-POL-02,TST-POL-03,TST-POL-04,TST-POL-05,TST-POL-06,TST-POL-07,TST-POL-08,TST-POL-09,TST-POL-10,TST-POL-11,TST-POL-12,TST-POL-13,TST-POL-14,TST-POL-15,TST-POL-16,TST-POL-17,TST-POL-18,TST-POL-19,TST-POL-20,TST-POL-21,TST-POL-22,TST-POL-23,TST-POL-25 seconds=20.5 report=<sandbox>/I45/I45/report.json"
+   ],
+   "wall_seconds": 20.6
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 43,
+    "skipped": 0
+   },
+   "executed_methods": 43,
+   "expected_methods": 43,
+   "group": "I6",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 42.0,
+   "selectors": [
+    "TST_INT",
+    "TST_CO_09",
+    "INC06",
+    "E06EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 43, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-09,TST-INT-01,TST-INT-03,TST-INT-04,TST-INT-05,TST-INT-06,TST-INT-07,TST-INT-08,TST-INT-09,TST-INT-10,TST-INT-11,TST-INT-12,TST-INT-13,TST-INT-14,TST-INT-15,TST-INT-16,TST-INT-17,TST-INT-18,TST-INT-19,TST-INT-20,TST-INT-21,TST-INT-22,TST-INT-23,TST-INT-24,TST-INT-25,TST-INT-26,TST-INT-27,TST-INT-29 seconds=42.0 report=<sandbox>/I6/I6/report.json"
+   ],
+   "wall_seconds": 42.1
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 59,
+    "skipped": 0
+   },
+   "executed_methods": 59,
+   "expected_methods": 59,
+   "group": "I7",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 27.6,
+   "selectors": [
+    "TST_RUN",
+    "TST_MET",
+    "TST_OBS",
+    "INC07",
+    "E07EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 59, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-MET-01,TST-MET-03,TST-MET-04,TST-MET-05,TST-MET-06,TST-MET-07,TST-MET-08,TST-MET-09,TST-MET-10,TST-MET-11,TST-MET-13,TST-MET-14,TST-MET-15,TST-MET-16,TST-MET-17,TST-MET-18,TST-OBS-01,TST-OBS-02,TST-OBS-03,TST-OBS-04,TST-OBS-05,TST-OBS-06,TST-OBS-07,TST-OBS-08,TST-OBS-09,TST-RUN-01,TST-RUN-02,TST-RUN-03,TST-RUN-05,TST-RUN-06,TST-RUN-07,TST-RUN-08,TST-RUN-09,TST-RUN-10,TST-RUN-11,TST-RUN-12,TST-RUN-13,TST-RUN-14,TST-RUN-15 seconds=27.6 report=<sandbox>/I7/I7/report.json"
+   ],
+   "wall_seconds": 27.7
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 35,
+    "skipped": 0
+   },
+   "executed_methods": 35,
+   "expected_methods": 35,
+   "group": "I8a",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 14.1,
+   "selectors": [
+    "TST_GATE",
+    "TST_REV"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 35, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-GATE-01,TST-GATE-02,TST-GATE-03,TST-GATE-04,TST-GATE-05,TST-GATE-06,TST-GATE-07,TST-GATE-08,TST-GATE-09,TST-GATE-10,TST-GATE-11,TST-GATE-12,TST-GATE-13,TST-GATE-14,TST-GATE-15,TST-GATE-16,TST-GATE-17,TST-GATE-18,TST-GATE-19,TST-GATE-20,TST-GATE-21,TST-GATE-22,TST-REV-01,TST-REV-02,TST-REV-03,TST-REV-04,TST-REV-05,TST-REV-06,TST-REV-07,TST-REV-08,TST-REV-10,TST-REV-14,TST-REV-16,TST-REV-17,TST-REV-19 seconds=14.1 report=<sandbox>/I8a/I8a/report.json"
+   ],
+   "wall_seconds": 14.2
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 43,
+    "skipped": 0
+   },
+   "executed_methods": 43,
+   "expected_methods": 43,
+   "group": "I8b",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 16.3,
+   "selectors": [
+    "TST_CO_08",
+    "TST_NFR",
+    "I8_",
+    "INC08_S"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 43, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids=TST-CO-08,TST-NFR-01,TST-NFR-02,TST-NFR-05,TST-NFR-06,TST-NFR-07,TST-NFR-08,TST-NFR-09,TST-NFR-10,TST-NFR-11,TST-NFR-13,TST-NFR-14,TST-NFR-15,TST-NFR-16,TST-NFR-17,TST-NFR-18,TST-NFR-19,TST-NFR-20 seconds=16.3 report=<sandbox>/I8b/I8b/report.json"
+   ],
+   "wall_seconds": 16.4
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E8",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 29.4,
+   "selectors": [
+    "E08EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=29.4 report=<sandbox>/E8/E8/report.json"
+   ],
+   "wall_seconds": 29.5
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 33,
+    "skipped": 0
+   },
+   "executed_methods": 33,
+   "expected_methods": 33,
+   "group": "I9",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 11.9,
+   "selectors": [
+    "I9_",
+    "INC09_S"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 33, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=11.9 report=<sandbox>/I9/I9/report.json"
+   ],
+   "wall_seconds": 12.0
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E9",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 13.1,
+   "selectors": [
+    "E09EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=13.1 report=<sandbox>/E9/E9/report.json"
+   ],
+   "wall_seconds": 13.2
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 18,
+    "skipped": 0
+   },
+   "executed_methods": 18,
+   "expected_methods": 18,
+   "group": "S20",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 16.2,
+   "selectors": [
+    "STG20"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 18, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=16.2 report=<sandbox>/S20/S20/report.json"
+   ],
+   "wall_seconds": 16.2
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E20",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 15.6,
+   "selectors": [
+    "E20EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=15.6 report=<sandbox>/E20/E20/report.json"
+   ],
+   "wall_seconds": 15.7
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 7,
+    "skipped": 0
+   },
+   "executed_methods": 7,
+   "expected_methods": 7,
+   "group": "S21",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 8.7,
+   "selectors": [
+    "STG21"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 7, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=8.7 report=<sandbox>/S21/S21/report.json"
+   ],
+   "wall_seconds": 8.8
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E21",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 10.1,
+   "selectors": [
+    "E21EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=10.1 report=<sandbox>/E21/E21/report.json"
+   ],
+   "wall_seconds": 10.2
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 26,
+    "skipped": 0
+   },
+   "executed_methods": 26,
+   "expected_methods": 26,
+   "group": "S23",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 11.4,
+   "selectors": [
+    "STG23"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 26, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=11.4 report=<sandbox>/S23/S23/report.json"
+   ],
+   "wall_seconds": 11.4
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E23",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 11.6,
+   "selectors": [
+    "E23EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=11.6 report=<sandbox>/E23/E23/report.json"
+   ],
+   "wall_seconds": 11.7
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 21,
+    "skipped": 0
+   },
+   "executed_methods": 21,
+   "expected_methods": 21,
+   "group": "S24",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 9.2,
+   "selectors": [
+    "STG24"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 21, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=9.2 report=<sandbox>/S24/S24/report.json"
+   ],
+   "wall_seconds": 9.3
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E24",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 10.5,
+   "selectors": [
+    "E24EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=10.5 report=<sandbox>/E24/E24/report.json"
+   ],
+   "wall_seconds": 10.6
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 23,
+    "skipped": 0
+   },
+   "executed_methods": 23,
+   "expected_methods": 23,
+   "group": "S26",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 51.6,
+   "selectors": [
+    "STG26"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 23, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=51.6 report=<sandbox>/S26/S26/report.json"
+   ],
+   "wall_seconds": 51.7
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E26",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 55.4,
+   "selectors": [
+    "E26EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=55.4 report=<sandbox>/E26/E26/report.json"
+   ],
+   "wall_seconds": 55.4
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 25,
+    "skipped": 0
+   },
+   "executed_methods": 25,
+   "expected_methods": 25,
+   "group": "S27",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 7.4,
+   "selectors": [
+    "STG27"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 25, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=7.4 report=<sandbox>/S27/S27/report.json"
+   ],
+   "wall_seconds": 7.5
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E27",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 7.7,
+   "selectors": [
+    "E27EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=7.7 report=<sandbox>/E27/E27/report.json"
+   ],
+   "wall_seconds": 7.8
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 19,
+    "skipped": 0
+   },
+   "executed_methods": 19,
+   "expected_methods": 19,
+   "group": "S28",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 11.2,
+   "selectors": [
+    "STG28"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 19, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=11.2 report=<sandbox>/S28/S28/report.json"
+   ],
+   "wall_seconds": 11.3
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E28",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 11.5,
+   "selectors": [
+    "E28EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=11.5 report=<sandbox>/E28/E28/report.json"
+   ],
+   "wall_seconds": 11.6
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 19,
+    "skipped": 0
+   },
+   "executed_methods": 19,
+   "expected_methods": 19,
+   "group": "S31",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 3.4,
+   "selectors": [
+    "STG31"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 19, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=3.4 report=<sandbox>/S31/S31/report.json"
+   ],
+   "wall_seconds": 3.5
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E31",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 4.4,
+   "selectors": [
+    "E31EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=4.4 report=<sandbox>/E31/E31/report.json"
+   ],
+   "wall_seconds": 4.5
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 19,
+    "skipped": 0
+   },
+   "executed_methods": 19,
+   "expected_methods": 19,
+   "group": "S30",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 8.2,
+   "selectors": [
+    "STG30"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 19, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=8.2 report=<sandbox>/S30/S30/report.json"
+   ],
+   "wall_seconds": 8.3
+  },
+  {
+   "checksum_rc_post": 0,
+   "checksum_rc_pre": 0,
+   "complete": true,
+   "counts": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "ok": 1,
+    "skipped": 0
+   },
+   "executed_methods": 1,
+   "expected_methods": 1,
+   "group": "E30",
+   "python": "3.14.6",
+   "rc": 0,
+   "runner_seconds": 8.8,
+   "selectors": [
+    "E30EGRESS"
+   ],
+   "summary": [
+    "summary: unittest_rc=0 counts={'ok': 1, 'FAIL': 0, 'ERROR': 0, 'skipped': 0} ids= seconds=8.8 report=<sandbox>/E30/E30/report.json"
+   ],
+   "wall_seconds": 8.8
+  }
+ ],
+ "schema": "hub-regression-log/v1",
+ "total_executed": 586,
+ "total_expected": 586
+}

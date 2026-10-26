@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GxP Quality Command Centre</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <img src="/assets/birlasoft_wordmark.png" alt="birlasoft" class="wordmark">
+    <span class="divider"></span>
+    <span class="product">GxP Quality <b>Command Centre</b></span>
+  </div>
+  <div class="top-right">
+    <span class="pill pill-warn" title="Every number comes from the synthetic seeded dataset">Synthetic data · sandbox</span>
+    <span class="pill" id="ai-pill">AI: …</span>
+    <label class="persona">Persona
+      <select id="persona">
+        <option value="reviewer">Reviewer</option>
+        <option value="quality_lead">Quality lead</option>
+        <option value="compliance">Compliance</option>
+        <option value="finance_read">Finance (read)</option>
+        <option value="integration">Integration</option>
+        <option value="dispositioner">Dispositioner</option>
+      </select>
+    </label>
+  </div>
+</header>
+<div class="redrule"></div>
+<div class="shell">
+  <nav class="side" id="nav">
+    <a href="#/overview" data-r="overview"><span class="ic">◧</span>Executive overview</a>
+    <a href="#/cases" data-r="cases"><span class="ic">▤</span>Cases</a>
+    <a href="#/intake" data-r="intake"><span class="ic">⇶</span>Intake &amp; exceptions</a>
+    <a href="#/monthend" data-r="monthend"><span class="ic">∑</span>Month-end truth</a>
+    <a href="#/definitions" data-r="definitions"><span class="ic">≡</span>Definitions</a>
+    <a href="#/zoneh" data-r="zoneh"><span class="ic">⛨</span>Human gate (Zone H)</a>
+    <a href="#/assistant" data-r="assistant"><span class="ic">✦</span>AI assistant</a>
+    <a href="#/release" data-r="release"><span class="ic">⚑</span>Release &amp; evidence</a>
+    <a href="#/about" data-r="about"><span class="ic">ⓘ</span>System</a>
+    <div class="side-foot">Read-only view over the built hub.<br>Loopback only. No writes to the repository.</div>
+  </nav>
+  <main id="main" tabindex="-1"><div class="loading">Loading…</div></main>
+</div>
+<div id="drawer" class="drawer" aria-hidden="true"><div class="drawer-inner" id="drawer-inner"></div></div>
+<div id="toast" class="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

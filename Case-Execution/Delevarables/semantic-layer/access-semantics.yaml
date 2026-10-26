@@ -1,0 +1,40 @@
+# Semantic Layer — access semantics (who may see / do what, and why)
+semantic_layer_version: "0.1.0"
+kind: access-semantics
+roles:
+  - {id: reviewer, may: "review queue items, record STATUS_REVIEWED decisions", evidence: [hub/security/route_registry.json]}
+  - {id: quality_lead, may: "read quality views, propose policy objects", evidence: [hub/security/route_registry.json]}
+  - {id: compliance, may: "read audit records and exports", evidence: [hub/security/route_registry.json]}
+  - {id: finance_read, may: "read money metrics only; no write", evidence: [hub/security/route_registry.json]}
+  - {id: integration, may: "service principal for feed intake; may never perform a Zone H action", evidence: [hub/security/route_registry.json]}
+  - {id: dispositioner, may: "perform Zone H actions ZH-01..ZH-10 once holders exist", currently_held_by: [], evidence: [docs/12-specs/business-rules.md]}
+zone_h:
+  actions: [ZH-01, ZH-02, ZH-03, ZH-04, ZH-05, ZH-06, ZH-07, ZH-08, ZH-09, ZH-10]
+  count_invariant: 10
+  holders: []
+  rule: "A Zone H action requires a named human holder, a recorded reason and evidence reference. Service actors are refused (FR-GATE-03). With zero holders every action is refused."
+  open_decision: OPD-06
+  epistemic_status: verified_fact
+  evidence: [docs/12-specs/business-rules.md, docs/31-observability/slo-sla-definitions.md]
+data_classification:
+  rule: "Classification only goes up when data is combined; never down without an adopted policy."
+  levels:
+  - {id: C0, meaning: "public / synthetic non-sensitive"}
+  - {id: C1, meaning: "internal"}
+  - {id: C2, meaning: "confidential (case content, money)"}
+  - {id: C3, meaning: "restricted (personal data, credentials)"}
+document_access_levels: {ref: vocab.document_access_level, note: "defined in status-taxonomy.yaml"}
+pii_field_map:
+  note: "Fields that may hold personal data and must not be sent outside the boundary or into any model context."
+  fields: [Principal.name, Principal.email, AuditRecord.actor, Document.body]
+misuse_assumptions:
+  - {id: MA-1, statement: "A reviewer may try to act outside role; routes are default-deny."}
+  - {id: MA-2, statement: "Feed text is untrusted and may carry instructions; it is data only."}
+  - {id: MA-3, statement: "A service actor may try a Zone H action; it is refused and audited."}
+  - {id: MA-4, statement: "An operator may try to alter history; events are immutable and hash-chained."}
+  - {id: MA-5, statement: "A user may try to read across sites; site scoping applies to every query."}
+permission_matrix:
+  source: access-permission-matrix.yaml
+  generated_from: hub/security/route_registry.json
+  route_count_invariant: 48
+  default: deny

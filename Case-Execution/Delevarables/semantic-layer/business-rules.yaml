@@ -1,0 +1,401 @@
+# Semantic Layer — business rules, domain safety rules, as-found legacy rules and validation rules
+#
+# This file holds the HAND-CURATED rules. The 48 specification business rules (SBR-xxx-nn) are in spec-business-rules.yaml
+# (extracted verbatim from the specification so they can be checked for drift).
+#
+# category      business_requirement | domain_safety | legacy_as_found | validation | invariant | governance
+# strength      MUST | MUST_NOT | SHOULD | MAY | OBSERVED (legacy behaviour that is described, not endorsed)
+# open_decision identifier of an unresolved owner decision (see context-dependencies.yaml) when the rule's CONTENT depends on it
+# Every rule is model-independent and application-independent.
+
+semantic_layer_version: "0.1.0"
+kind: business_rules
+items:
+
+  # ================================================================== business requirements (BR-01 .. BR-13) restated as rules
+  - id: BR-01
+    category: business_requirement
+    strength: MUST
+    applies_to: [MetricValue, MetricDefinition]
+    statement: "Every reported figure that involves closed, resolved, cost or handling time declares which definition of the state it uses; figures built on different definitions are never combined or compared."
+    implements: [FR-MET-01, FR-MET-02]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/12-specs/business-rules.md]
+  - id: BR-02
+    category: business_requirement
+    strength: MUST
+    applies_to: [PolicyObject]
+    statement: "The organisation records WHO decides the definition of closed/resolved and the closure-time expectation. The product never chooses it."
+    open_decision: OPD-01
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/06-root-cause/confirmed-root-causes.md]
+  - id: BR-03
+    category: business_requirement
+    strength: MUST
+    applies_to: [Case, DecisionEvent]
+    statement: "Time-to-close is measurable under each candidate definition (receipt to ops-closed, receipt to evidence-complete) without prejudging which is correct."
+    implements: [FR-DEC-06, FR-MET-03]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-04
+    category: business_requirement
+    strength: MUST
+    applies_to: [FeedItem, Case]
+    statement: "Externally received case information is matched to exactly one core case, or flagged unmatched, before it reaches a reviewer queue."
+    implements: [FR-INT-05]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-05
+    category: business_requirement
+    strength: MUST
+    applies_to: [FeedItem, IntakeOutcome]
+    statement: "A re-delivered or replayed item does not increase the exception queue or alter totals."
+    implements: [FR-INT-02]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/historic-decisions.md]
+  - id: BR-06
+    category: business_requirement
+    strength: MUST
+    applies_to: [FeedItem]
+    statement: "Delayed, missing or revised items are detectable and attributable to a source and time without manual spreadsheet reconciliation."
+    implements: [FR-INT-08]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-07
+    category: business_requirement
+    strength: MUST
+    applies_to: [DecisionEvent, EvidenceRecord]
+    statement: "Each case decision carries the evidence relied on and its source, retrievable on request."
+    implements: [FR-DEC-01, FR-DEC-04]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-08
+    category: business_requirement
+    strength: MUST_NOT
+    applies_to: [ZoneHAction, DecisionEvent]
+    statement: "Batch disposition and any decision requiring an authorised person remains a human decision. No process makes it, pre-fills it as final, or simulates it."
+    implements: [FR-GATE-01, FR-GATE-03]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/domain-assurance.md]
+  - id: BR-09
+    category: business_requirement
+    strength: MUST
+    applies_to: [Case, DecisionEvent]
+    statement: "No case is closed without verifiable evidence unless an owner has explicitly authorised an exception rule. The system never judges evidence sufficiency."
+    implements: [FR-DEC-05]
+    open_decision: OPD-07
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/correspondence/operations-vs-risk-2024.md]
+  - id: BR-10
+    category: business_requirement
+    strength: MUST
+    applies_to: [MetricDefinition, OperatingCost]
+    statement: "Case cost and avoidable rework are attributable per case and per period using one agreed cut-off and denominator."
+    implements: [FR-MET-08]
+    open_decision: OPD-08
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-11
+    category: business_requirement
+    strength: MUST_NOT
+    applies_to: [Case]
+    statement: "Existing legitimate workflows, including the parallel workflow for older customers (segment legacy-v1), are not disrupted without an identified owner's agreement."
+    implements: [FR-CO-02]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-12
+    category: business_requirement
+    strength: MUST
+    applies_to: [Case, Site]
+    statement: "Backlog ageing and unresolved-exception rate are visible per site and comparable across sites."
+    implements: [FR-MET-05]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md]
+  - id: BR-13
+    category: business_requirement
+    strength: MUST
+    applies_to: [DeviationRegisterEntry, Capability]
+    statement: "A change to the handling process is releasable without causing a rollback of the kind documented in 2025 (a replayed partner delivery inflated the exception queue)."
+    implements: [FR-CO-01, FR-CO-03]
+    epistemic_status: verified_fact
+    evidence: [docs/03-problem-value/business-requirements.md, docs/historic-decisions.md]
+
+  # ================================================================== domain safety (GMP framing, not a compliance claim)
+  - id: DS-01
+    category: domain_safety
+    strength: MUST
+    applies_to: [ZoneHAction]
+    statement: "Decision requiring authorised human review: batch_disposition. Existing human approval gates are preserved."
+    epistemic_status: verified_fact
+    evidence: [docs/domain-assurance.md]
+  - id: DS-02
+    category: domain_safety
+    strength: MUST_NOT
+    applies_to: [Principal, DecisionEvent]
+    statement: "No silent cross-tenant action."
+    note: "The hub has no tenant concept (single store, single site); treated as met by absence of multi-tenancy, not tested as such (OB-09)."
+    epistemic_status: inference
+    evidence: [docs/domain-assurance.md, docs/25-governance/compliance-obligations.md]
+  - id: DS-03
+    category: domain_safety
+    strength: MUST
+    applies_to: [DecisionEvent, FeedItem, MetricValue]
+    statement: "Source attribution for each decision: who/what/when/which evidence/which source."
+    epistemic_status: verified_fact
+    evidence: [docs/domain-assurance.md]
+  - id: DS-04
+    category: domain_safety
+    strength: MUST
+    applies_to: [AuditRecord, DecisionEvent]
+    statement: "GMP data-integrity lens (ALCOA+): no silent drops, no silent skips, no in-place status overwrite, no dropped legitimate replays, no lost evidence. This is a design lens only; no regulatory compliance is claimed (21 CFR Part 11 'framing only', OD-30)."
+    epistemic_status: verified_fact
+    evidence: [docs/25-governance/compliance-obligations.md, docs/domain-assurance.md]
+  - id: DS-05
+    category: domain_safety
+    strength: MUST_NOT
+    applies_to: [ZoneHAction]
+    statement: "The product never claims or simulates an electronic signature. ZH-03 records that an authorised human acted; it is not a cryptographic or legal signature."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f02-human-disposition-gate.md, docs/25-governance/compliance-obligations.md]
+  - id: DS-06
+    category: domain_safety
+    strength: MUST
+    applies_to: [FeedItem, Document]
+    statement: "Internal feeds and extracted text are never treated as trusted instructions or authoritative approvals."
+    epistemic_status: verified_fact
+    evidence: [docs/partner-feed-operations.md, README.md]
+  - id: DS-07
+    category: domain_safety
+    strength: MUST_NOT
+    applies_to: [Principal]
+    statement: "The simulator's data and actions are never used for real-world decisions. The system is a training simulator, not certified for real pharmaceutical production."
+    epistemic_status: verified_fact
+    evidence: [README.md, docs/domain-assurance.md]
+
+  # ================================================================== as-found legacy rules (OBSERVED behaviour; described, not endorsed)
+  - id: LEG-01
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case, RuleSet]
+    ruleset: as-found-python
+    statement: >
+      priority(status, severity, amount): if status = CLOSED -> 'archive'; else if severity = CRITICAL or amount > 50000 -> 'urgent';
+      else if severity = HIGH or status = ESCALATED -> 'review'; else 'queue'. Used by the API and month-end reports.
+    epistemic_status: verified_fact
+    evidence: [app/legacy_logic.py]
+  - id: LEG-02
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case, RuleSet]
+    ruleset: as-found-python
+    statement: "manual_review_required(status, severity) is true when severity is HIGH or CRITICAL, or status is ESCALATED or REOPENED. 23.2 % (29 of 125) of baseline cases."
+    epistemic_status: verified_fact
+    evidence: [app/legacy_logic.py, docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: LEG-03
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case, RuleSet]
+    ruleset: as-found-js
+    statement: >
+      Front-end approval: amount is allowed when amount <= threshold(region, year) x 1.05, where the threshold comes from the archived decision policies
+      (batch_disposition limits per region and year, approval role operations_lead, currency USD). An UNKNOWN region or year silently yields 999,999.
+    note: "Does not agree with server policy (RC-4). The defaulted marker is mandatory in the target model."
+    epistemic_status: verified_fact
+    evidence: [legacy_js/legacy_policy.js, contracts/decision-policies-archive.json, docs/06-root-cause/confirmed-root-causes.md]
+  - id: LEG-04
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case, RuleSet]
+    ruleset: as-found-batch
+    statement: "Night-shift reconciliation flags an operational object when status is HOLD or REVIEW, or its value exceeds the regional policy threshold (2,500-8,500). It arbitrarily treats REVIEW as open."
+    epistemic_status: verified_fact
+    evidence: [legacy_batch/shift_reconciliation.py]
+  - id: LEG-05
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [RuleSet]
+    statement: "The three as-found implementations are unsynchronised and none is declared authoritative; which one is correct is a decision (RC-3), not an engineering choice. 0 of 125 baseline cases exceed 50,000."
+    open_decision: OPD-04
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md]
+  - id: LEG-06
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [MetricValue, Case]
+    statement: "The legacy month-end SQL report LEFT JOINs events and inflates SUM(amount) by 19.3 % (742,956.61 vs 622,826.44 on the baseline). The correct reference total is 622,826.44 for 125 cases."
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md, sql/legacy_reports.sql, hub/metrics/registry.py]
+  - id: LEG-07
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [FeedItem]
+    statement: "Legacy reconcile overwrites processing_status in place; every REPLAY becomes DUPLICATE without content comparison; invalid gateway events are counted but not stored; the source contract is not enforced; the Java reconciler skips unparsable amounts and uses double arithmetic."
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md, app/partner_feeds.py, legacy_java/ReconcileLegacy.java]
+  - id: LEG-08
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case, DecisionEvent]
+    statement: "Case state is a mutable snapshot: version = 1 for 125/125; the creation event stores the CURRENT status; only two event types exist (CASE_CREATED 125, STATUS_REVIEWED 20); 8 REOPENED cases have 0 reopen events; no closure, evidence or approver timestamp exists anywhere."
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md, docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: LEG-09
+    category: legacy_as_found
+    strength: OBSERVED
+    applies_to: [Case]
+    statement: "A completion flag is interpreted differently in MES and QA records (documented organisational issue); local interpretations of 'closed' differ between sites."
+    open_decision: OPD-01
+    epistemic_status: verified_fact
+    evidence: [docs/partner-feed-operations.md, docs/business-context.md, domain-profile.json]
+
+  # ================================================================== validation rules (data shape, identifiers, time, money)
+  - id: VAL-01
+    category: validation
+    strength: MUST
+    applies_to: [Case, Batch, Deviation, CAPA, LabResult, FeedItem, Document]
+    statement: "Identifiers match their registered patterns: case ^C[0-9]{8}$; batch ^BT[0-9]{8}$; deviation ^DEV[0-9]{8}$; CAPA ^CAPA[0-9]{8}$; lab result ^LAB[0-9]{8}$; feed item ^(FEED|REPLAY)-[0-9]{9}$; document ^DOC-[0-9]{8}$. A mismatch is the FLAG reason IDENTIFIER_PATTERN."
+    epistemic_status: assumption
+    evidence: [hub/crosswalk/registry.json, hub/intake/reasons.py]
+  - id: VAL-02
+    category: validation
+    strength: MUST
+    applies_to: [DecisionEvent, FeedItem, MetricValue]
+    statement: "Timestamps are UTC ISO-8601 (YYYY-MM-DDTHH:MM:SS[.ffffff]Z). Source timestamp, ingestion timestamp and revision date are three distinct clocks and are never conflated."
+    epistemic_status: verified_fact
+    evidence: [hub/policy/clocks.py, docs/source-systems-and-constraints.md]
+  - id: VAL-03
+    category: validation
+    strength: MUST
+    applies_to: [MetricValue, FeedItem]
+    statement: "Money is exact decimal arithmetic (no float); rounding is ROUND_HALF_EVEN at presentation only; an unparsable amount is an error (UNPARSABLE_AMOUNT), never silently skipped."
+    implements: [FR-MET-04]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, hub/metrics/registry.py]
+  - id: VAL-04
+    category: validation
+    strength: MUST
+    applies_to: [FeedItem]
+    statement: "Only schema revisions 1.0, 1.1 and 2.0 are supported; any other revision is UNSUPPORTED_REVISION and is quarantined with a reason code, not merely counted."
+    open_decision: OD-S12-11
+    epistemic_status: verified_fact
+    evidence: [docs/source-systems-and-constraints.md, docs/12-specs/business-rules.md]
+  - id: VAL-05
+    category: validation
+    strength: MUST
+    applies_to: [FeedItem]
+    statement: "Content hash = sha256 over canonical JSON (UTF-8, sorted keys, no insignificant whitespace) of {schema_rev, payload}; transport fields are excluded. Identity key = sha256 over canonical [source, partner, record_kind, ref_id, source_ts]."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md]
+  - id: VAL-06
+    category: validation
+    strength: MUST
+    applies_to: [FeedItem, CrosswalkLink]
+    statement: "Matching is exact string equality after Unicode NFC normalisation and trim on registered keys only. 0 hits = UNMATCHED_REF, 1 = link, more than 1 = AMBIGUOUS_MATCH. No fuzzy or similarity matching of any kind."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md]
+  - id: VAL-07
+    category: validation
+    strength: MUST
+    applies_to: [MetricValue]
+    statement: "Percentiles: median is the mean of the middle two values for even n; p90 is nearest-rank ceil(0.9 n); n = 0 yields null, never 0. (Convention chosen for testability; the owner may change it as policy.)"
+    epistemic_status: assumption
+    evidence: [docs/12-specs/business-rules.md]
+  - id: VAL-08
+    category: validation
+    strength: MUST
+    applies_to: [MetricDefinition]
+    statement: "A metric whose category is time or age, or whose name/window/denominator/documentation mentions closed, closure, resolved, resolution, approved, approval, cost or handling, cannot be registered without a definition tag."
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: VAL-09
+    category: validation
+    strength: MUST_NOT
+    applies_to: [OperatingCost, MetricDefinition]
+    statement: "operating_costs.total_cases is never accepted as 'cases created'; any metric sourced from operating_costs has basis = modelled."
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py, .fde/orchestrator-decisions.md]
+  - id: VAL-10
+    category: validation
+    strength: MUST
+    applies_to: [Run, FeedItem]
+    statement: "Item-level processing order: store raw -> identity/hash comparison (no-op duplicate or conflict) -> validate -> classify -> match -> outcome. A conflict still records validation results in all_reasons."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md]
+
+  # ================================================================== invariants (must always hold; each is testable)
+  - id: INV-01
+    category: invariant
+    strength: MUST
+    applies_to: [DecisionEvent, PolicyEvent, AuditRecord, FeedItem, IntakeOutcome, CrosswalkLink, Run]
+    statement: "Append-only: rows of the decision, policy, audit, raw-intake, intake-outcome, crosswalk and run record sets are never updated or deleted by application code. Corrections are new events that reference the corrected event."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]
+  - id: INV-02
+    category: invariant
+    strength: MUST
+    applies_to: [ZoneHAction, Principal]
+    statement: "Zone H actions are accepted only from an interactive human session whose principal is in zone_h.holders, holds role dispositioner, re-authenticated within the window, with mode/values permitting. Service accounts, the scheduler, importers and unauthenticated callers are always rejected and the rejection is audited. No flag, environment variable, header or CLI path skips this."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, hub/gate/actions.py, docs/23-human-control/approval-gates.md]
+  - id: INV-03
+    category: invariant
+    strength: MUST
+    applies_to: [ZoneHAction, PolicyObject, RuleSet, Capability]
+    statement: "Safe-by-default shipping state: no holder, disposition mode none, no adopted policy, no active rule set, schedule off, no capability authoritative, case creation disabled, search/templates off, contracts record_only, loopback only, synthetic data only."
+    epistemic_status: verified_fact
+    evidence: [docs/final-prd/final-as-built-prd.md, docs/12-specs/business-rules.md]
+  - id: INV-04
+    category: invariant
+    strength: MUST_NOT
+    applies_to: [DecisionEvent, RuleTrace, FeedItem, Document]
+    statement: "Untrusted text (feed notes, document bodies, emails, search results, template content) never populates a decision, disposition or policy field and never triggers a Zone H action."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, docs/11-data-context/metadata-model.md]
+  - id: INV-05
+    category: invariant
+    strength: MUST_NOT
+    applies_to: [Capability]
+    statement: "The product contains no AI, LLM or ML call and performs no model-inference egress (model_calls_total = 0; egress_attempts_total = 0). Any change needs a new qualification and a recorded human decision."
+    open_decision: RQ-1
+    epistemic_status: verified_fact
+    evidence: [.fde/orchestrator-decisions.md, docs/final-prd/final-ai-agent-baseline.md]
+  - id: INV-06
+    category: invariant
+    strength: MUST
+    applies_to: [MetricValue]
+    statement: "Every figure computed from synthetic data carries the label 'synthetic, unvalidated' and data_origin = synthetic."
+    implements: [PNFR-20]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: INV-07
+    category: invariant
+    strength: MUST
+    applies_to: [AuditRecord]
+    statement: "Hold-all retention: no delete path exists for retained tables until a retention policy is adopted. 123 records are under legal hold."
+    open_decision: OPD-09
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, docs/11-data-context/metadata-model.md]
+
+  # ================================================================== governance of change
+  - id: GOV-01
+    category: governance
+    strength: MUST
+    applies_to: [DeviationRegisterEntry]
+    statement: "A behavioural difference from the legacy golden baseline is acceptable only if it is in the deviation register with status approved and an approval reference. Currently 11 differences (DV-01..DV-11) are proposed and none is approved."
+    open_decision: OD-S12-13
+    epistemic_status: verified_fact
+    evidence: [docs/16-repo-validation/behavior-difference-report.md, docs/12-specs/business-rules.md]
+  - id: GOV-02
+    category: governance
+    strength: MUST
+    applies_to: [Capability]
+    statement: "Making any capability authoritative requires a recorded approval reference; without it the change is refused (E-CFG-INVALID)."
+    epistemic_status: verified_fact
+    evidence: [hub/config.py, docs/30-release/evidence/gate-results.json]
+  - id: GOV-03
+    category: governance
+    strength: MUST_NOT
+    applies_to: [MetricValue, PolicyException]
+    statement: "No fabrication: no invented stakeholders, approvals, KPIs or telemetry. Missing evidence is recorded as Unknown or Assumption with a named owner."
+    epistemic_status: verified_fact
+    evidence: [.fde/orchestrator-decisions.md, docs/00-preflight/operating-contract/evidence-contract.md]

@@ -1,0 +1,23 @@
+# Semantic Layer — domain constraints and validation rules (machine-checkable invariants)
+semantic_layer_version: "0.1.0"
+kind: domain-constraints
+constraints:
+  - {id: DC-01, statement: "Zone H has exactly 10 actions (ZH-01..ZH-10).", check: "len(zone_h.actions)==10"}
+  - {id: DC-02, statement: "zone_h.holders is empty until OPD-06 is decided.", check: "holders==[]"}
+  - {id: DC-03, statement: "CLOSED appears in at least 4 status vocabularies; cross-vocabulary mapping is forbidden.", check: "count>=4"}
+  - {id: DC-04, statement: "Intake natural key is exactly (partner, record_kind, ref_id, source_ts).", check: "key length 4"}
+  - {id: DC-05, statement: "15 intake reason codes in a fixed precedence; 5 queues.", check: "counts"}
+  - {id: DC-06, statement: "Money is exact decimal, quantised to 2 places ROUND_HALF_EVEN at presentation only.", check: "no float"}
+  - {id: DC-07, statement: "Month-end totals come from one table, no join (fan-out forbidden).", check: "single source"}
+  - {id: DC-08, statement: "Metrics of different definition tags are never combined.", check: "tag equality"}
+  - {id: DC-09, statement: "DecisionEvents are immutable and hash-chained.", check: "chain verifies"}
+  - {id: DC-10, statement: "model_calls_total == 0 and egress_attempts_total == 0.", check: "counters zero"}
+  - {id: DC-11, statement: "Every data value is labelled synthetic until validated.", check: "label present"}
+  - {id: DC-12, statement: "Every route is default-deny; the permission matrix has 48 routes.", check: "len==48"}
+validation_rules:
+  - {id: VR-01, field: Case.amount, rule: "parseable decimal; unparsable raises unless allow_partial"}
+  - {id: VR-02, field: "timestamps", rule: "UTC ISO-8601; negative delay (ingest before source) is reported, not corrected"}
+  - {id: VR-03, field: "ref_id", rule: "matches one of the 7 crosswalk id patterns or is routed unmatched"}
+  - {id: VR-04, field: "evidence_ref", rule: "must resolve to a stored record"}
+evidence: [docs/12-specs/business-rules.md, hub/metrics/registry.py]
+epistemic_status: verified_fact

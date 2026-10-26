@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GxP Hub Ontology Explorer</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2430;--mut:#5d6b7e;--line:#d9dee6;--acc:#1f5fbf;--accbg:#e4eefb;--warn:#a65b00;--warnbg:#fff1dc;--ok:#1b7a43}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12161c;--card:#1b212a;--ink:#e6eaf0;--mut:#9aa7b8;--line:#2b3441;--acc:#6aa5ff;--accbg:#1d2b44;--warn:#ffb454;--warnbg:#3a2a12;--ok:#5fd18c}}
+:root[data-theme=dark]{--bg:#12161c;--card:#1b212a;--ink:#e6eaf0;--mut:#9aa7b8;--line:#2b3441;--acc:#6aa5ff;--accbg:#1d2b44;--warn:#ffb454;--warnbg:#3a2a12;--ok:#5fd18c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,Segoe UI,sans-serif}
+header{padding:16px;border-bottom:1px solid var(--line);background:var(--card)}
+h1{margin:0;font-size:20px}.sub{color:var(--mut);font-size:13px}
+.banner{background:var(--warnbg);color:var(--warn);padding:6px 16px;font-size:13px}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+nav button{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:16px;cursor:pointer;font:inherit}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{padding:16px;max-width:1200px;margin:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}.stat b{font-size:22px;display:block}.stat span{color:var(--mut);font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:8px}
+.node{cursor:pointer}.node text{font-size:11px;fill:var(--ink)}.node circle{stroke:var(--card);stroke-width:2}
+.edge{stroke:var(--mut);stroke-width:1;opacity:.35}.edge.hl{stroke:var(--acc);opacity:1;stroke-width:2}.edge.gap{stroke-dasharray:4 3}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}th{color:var(--mut);font-weight:600}
+.tag{display:inline-block;background:var(--accbg);color:var(--acc);border-radius:10px;padding:0 8px;font-size:12px;margin:0 3px 3px 0}
+.tag.w{background:var(--warnbg);color:var(--warn)}input[type=search]{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit;margin-bottom:10px}
+pre{white-space:pre-wrap;font-size:12px;background:var(--bg);padding:8px;border-radius:6px;overflow:auto}.mut{color:var(--mut)}
+details summary{cursor:pointer;font-weight:600}
+</style></head><body>
+<header><h1>GxP Quality Hub: ontology explorer</h1><div class="sub">Generated from the semantic layer of <code>gxp-quality-hub-legacy</code>. Works offline.</div></header>
+<div class="banner">Synthetic data, unvalidated demo. Statuses carry no business meaning until a policy is adopted (Zone H ZH-05).</div>
+<nav id="nav"></nav><main id="main"></main>
+<script>
+const M=/*DATA*/null;
+const COLORS={business_object:"#1f5fbf",reference_data:"#2a9d8f",decision_record:"#8e44ad",governance:"#c0392b",policy:"#d68910",integration:"#16a085",operations:"#7f8c8d",measurement:"#2e86c1",identity_security:"#b03a78"};
+const tabs=["Overview","Graph","Classes","Vocabularies","Governance","Metrics","Rules","Gaps","SPARQL"];
+let cur="Overview",sel=null;
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function nav(){$("#nav").innerHTML=tabs.map(t=>`<button class="${t==cur?"on":""}" onclick="go('${t}')">${t}</button>`).join("")}
+function go(t){cur=t;nav();render()}
+function render(){const f={Overview:ov,Graph:gr,Classes:cl,Vocabularies:vo,Governance:gv,Metrics:me,Rules:ru,Gaps:ga,SPARQL:sq}[cur];$("#main").innerHTML=f();if(cur=="Graph")wire()}
+function ov(){const c=M.counts,i=M.instances;return `<div class="stats">${[["classes",c.classes],["relationships",c.relations],["vocabularies",c.vocabs],["concepts",c.concepts],["metrics",c.metrics],["rules",c.rules],["roles",c.roles],["Zone H actions",c.zoneh],["workflows",c.workflows]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("")}</div>
+<div class="card"><b>What this is.</b> A formal model (OWL 2 + SKOS, Turtle) of what the hub knows: <i>things</i> (classes), <i>how they connect</i> (relationships with keys and enforcement), <i>what states mean</i> (vocabularies), <i>who may act</i> (roles, human-only Zone H), <i>how success is measured</i> (metrics) and <i>what must hold</i> (rules). Each element keeps its evidence references and epistemic status.</div>
+<div class="card"><b>Three things to show in a demo.</b><ol><li><b>Same word, different meaning.</b> CLOSED appears in ${M.closed_in} vocabularies. The ontology keeps them apart and asserts no equivalence.</li><li><b>Human-only authority.</b> Ten Zone H actions need a named human; holders today: <b>${M.zoneh_holders}</b>.</li><li><b>Honest gaps.</b> Cases cannot be linked to batches, deviations or CAPAs automatically (a human decision). See the Gaps tab and SPARQL Q5.</li></ol></div>
+<div class="card"><b>Synthetic instance data loaded:</b> ${Object.entries(i).map(([k,v])=>`<span class="tag">${k} ${v}</span>`).join("")}</div>
+<div class="card mut">Files: <code>gxp-ontology.ttl</code> (schema), <code>gxp-instances.ttl</code> (synthetic data), <code>sparql_results.md</code>, <code>tools/</code> to regenerate.</div>`}
+function layout(){const cats=[...new Set(M.classes.map(c=>c.category))],W=1000,H=620,pos={};
+ cats.forEach((cat,k)=>{const ang=2*Math.PI*k/cats.length-Math.PI/2,cx=W/2+300*Math.cos(ang),cy=H/2+215*Math.sin(ang),mem=M.classes.filter(c=>c.category==cat);
+  mem.forEach((c,j)=>{const a2=2*Math.PI*j/mem.length,r=mem.length>1?38+mem.length*9:0;pos[c.id]=[cx+r*Math.cos(a2),cy+r*Math.sin(a2)]})});return {pos,W,H}}
+function gr(){const {pos,W,H}=layout();
+ const edges=M.relations.filter(r=>pos[r.from]&&pos[r.to]).map(r=>`<line class="edge ${r.enforcement=="none_in_legacy"||r.enforcement=="crosswalk_human"?"gap":""}" data-f="${r.from}" data-t="${r.to}" x1="${pos[r.from][0]}" y1="${pos[r.from][1]}" x2="${pos[r.to][0]}" y2="${pos[r.to][1]}"><title>${esc(r.from+" "+r.predicate+" "+r.to)}</title></line>`).join("");
+ const nodes=M.classes.map(c=>`<g class="node" data-id="${c.id}" transform="translate(${pos[c.id][0]},${pos[c.id][1]})"><circle r="9" fill="${COLORS[c.category]||"#888"}"/><text y="-13" text-anchor="middle">${c.id}</text></g>`).join("");
+ const leg=Object.entries(COLORS).map(([k,v])=>`<span class="tag" style="background:${v}22;color:${v}">${k.replace("_"," ")}</span>`).join("");
+ return `<div class="mut" style="margin-bottom:6px">Click a node. Dashed lines = human-asserted or no key in the legacy estate.</div><div style="margin-bottom:8px">${leg}</div><div class="grid"><svg viewBox="0 0 ${W} ${H}">${edges}${nodes}</svg><div class="card" id="side">Select a class.</div></div>`}
+function wire(){document.querySelectorAll(".node").forEach(n=>n.onclick=()=>{sel=n.dataset.id;show(sel)});if(sel)show(sel)}
+function show(id){const c=M.classes.find(x=>x.id==id);document.querySelectorAll(".edge").forEach(e=>e.classList.toggle("hl",e.dataset.f==id||e.dataset.t==id));
+ const rel=M.relations.filter(r=>r.from==id||r.to==id);
+ $("#side").innerHTML=`<b>${c.id}</b> <span class="tag">${c.category}</span><p>${esc(c.description)}</p>${c.identity&&c.identity.pattern?`<div class="mut">id pattern <code>${esc(c.identity.pattern)}</code></div>`:""}<div>${c.vocabulary?`<span class="tag">vocab ${esc(c.vocabulary)}</span>`:""}${c.sensitivity?`<span class="tag w">${esc(c.sensitivity)}</span>`:""}</div><details open><summary>Relationships (${rel.length})</summary><table>${rel.map(r=>`<tr><td>${r.id}</td><td>${r.from==id?"<b>"+r.from+"</b>":r.from} <i>${esc(r.predicate)}</i> ${r.to==id?"<b>"+r.to+"</b>":r.to}<div class="mut">${esc(r.cardinality)} · ${r.enforcement}</div></td></tr>`).join("")}</table></details><details><summary>Attributes (${Object.keys(c.attributes).length})</summary><table>${Object.entries(c.attributes).map(([k,v])=>`<tr><td>${k}</td><td class="mut">${esc(v).slice(0,160)}</td></tr>`).join("")}</table></details>`}
+function cl(){return `<input type="search" placeholder="Filter classes…" oninput="fl(this.value)"><div id="cl">${clh("")}</div>`}
+function clh(q){return M.classes.filter(c=>(c.id+c.description+c.category).toLowerCase().includes(q.toLowerCase())).map(c=>`<div class="card"><b>${c.id}</b> <span class="tag" style="background:${COLORS[c.category]}22;color:${COLORS[c.category]}">${c.category}</span>${c.sensitivity?`<span class="tag w">${esc(c.sensitivity)}</span>`:""}<span class="tag">${esc(c.mutability||"")}</span><div>${esc(c.description)}</div><div class="mut">attributes: ${Object.keys(c.attributes).join(", ")||"none"}</div></div>`).join("")}
+function fl(q){$("#cl").innerHTML=clh(q)}
+function vo(){return `<input type="search" placeholder="Filter vocabularies or values…" oninput="fv(this.value)"><div id="vo">${voh("")}</div>`}
+function voh(q){q=q.toLowerCase();return M.vocabs.filter(v=>(v.id+v.values.map(x=>x.value).join(" ")).toLowerCase().includes(q)).map(v=>`<div class="card"><b>${v.id}</b> <span class="tag">${v.entity||""}</span><span class="tag w">meaning: ${v.meaning}</span><span class="tag">owner: ${v.owner}</span><div class="mut">column ${esc(v.legacy_column)}</div><div>${v.values.map(x=>`<span class="tag ${x.value=="CLOSED"?"w":""}">${esc(x.value)}${x.count!=null?" · "+x.count:""}</span>`).join("")}</div></div>`).join("")}
+function fv(q){$("#vo").innerHTML=voh(q)}
+function gv(){return `<div class="card"><b>Zone H: human-only actions</b><p>${esc(M.zoneh_rule)}</p><p>Named holders today: <b>${M.zoneh_holders}</b> (every Zone H action is refused until holders are named).</p><table>${M.zoneh.map(z=>`<tr><td><b>${z.id}</b></td><td>${esc(z.note)}</td></tr>`).join("")}</table></div><div class="card"><b>Roles</b><table>${M.roles.map(r=>`<tr><td><b>${r.id}</b></td><td>${esc(r.may)}</td></tr>`).join("")}</table></div>`}
+function me(){return `<div class="card"><table><tr><th>ID</th><th>Metric</th><th>Class</th><th>Computable today</th></tr>${M.metrics.map(m=>`<tr><td>${m.id}</td><td>${esc(m.name)}<div class="mut">${esc(m.meaning).slice(0,140)}</div></td><td>${esc(m.cls)}</td><td>${m.computable?"<span class='tag'>yes</span>":"<span class='tag w'>no</span>"}</td></tr>`).join("")}</table></div>`}
+function ru(){return `<input type="search" placeholder="Filter rules…" oninput="fr(this.value)"><div id="ru" class="card">${ruh("")}</div>`}
+function ruh(q){q=q.toLowerCase();return `<table><tr><th>ID</th><th>Strength</th><th>Applies to</th><th>Statement</th></tr>${M.rules.filter(r=>(r.id+r.statement+r.applies.join(" ")).toLowerCase().includes(q)).map(r=>`<tr><td>${r.id}</td><td>${r.strength}</td><td>${esc(r.applies.join(", "))}</td><td>${esc(r.statement)}</td></tr>`).join("")}</table>`}
+function fr(q){$("#ru").innerHTML=ruh(q)}
+function ga(){const g=M.relations.filter(r=>["none_in_legacy","crosswalk_human"].includes(r.enforcement));return `<div class="card"><b>Known gaps recorded in the model</b>${M.known_gaps.map(k=>`<p><span class="tag w">${k.id}</span>${esc(k.statement)}</p>`).join("")}</div><div class="card"><b>Relationships with no legacy key or human-asserted only (${g.length})</b><table>${g.map(r=>`<tr><td>${r.id}</td><td>${r.from} <i>${esc(r.predicate)}</i> ${r.to}</td><td>${r.enforcement}</td></tr>`).join("")}</table></div>`}
+function sq(){return M.sparql.map(s=>`<details class="card"><summary>${esc(s.title)}</summary><pre>${esc(s.body.replace(/```sparql\n|```\n?/g,""))}</pre></details>`).join("")}
+nav();render();
+</script></body></html>

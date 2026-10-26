@@ -1,0 +1,155 @@
+# Semantic Layer — relationships between entities
+# Each relationship states HOW two entities relate, by WHAT KEY, whether the relationship is ENFORCED (declared FK/constraint) or
+# RECONSTRUCTED (exact-key crosswalk) or ABSENT in the legacy estate, and its cardinality.
+# The legacy estate has no constraints across case / batch / deviation / CAPA / lab / feed (root cause RC-7); the crosswalk exists to fill that gap
+# without guessing. Orphans remain orphans.
+#
+# enforcement values: legacy_fk | hub_constraint | crosswalk_rule | crosswalk_human | none_in_legacy | derived
+# directions read  from --predicate--> to
+
+semantic_layer_version: "0.1.0"
+kind: relationships
+items:
+
+  # ---------------------------------------------------------------- batch / quality chain (declared foreign keys in the legacy data)
+  - {id: REL-01, from: Batch,     predicate: "is made from",       to: Material,  cardinality: "many-to-one", key: "batch_records.material_id = materials.material_id", enforcement: legacy_fk,
+     epistemic_status: verified_fact, evidence: [docs/data-dictionary.md]}
+  - {id: REL-02, from: LabResult, predicate: "tests",              to: Batch,     cardinality: "many-to-one", key: "lab_results.batch_id = batch_records.batch_id", enforcement: legacy_fk, crosswalk_link_type: LT-03,
+     epistemic_status: verified_fact, evidence: [docs/domain-contracts.md, hub/crosswalk/registry.json]}
+  - {id: REL-03, from: Deviation, predicate: "concerns",           to: Batch,     cardinality: "many-to-one", key: "deviations.batch_id = batch_records.batch_id", enforcement: legacy_fk, crosswalk_link_type: LT-01,
+     epistemic_status: verified_fact, evidence: [docs/domain-contracts.md, hub/crosswalk/registry.json]}
+  - {id: REL-04, from: CAPA,      predicate: "corrects",           to: Deviation, cardinality: "many-to-one", key: "capa_actions.deviation_id = deviations.deviation_id", enforcement: legacy_fk, crosswalk_link_type: LT-02,
+     epistemic_status: verified_fact, evidence: [docs/domain-contracts.md, hub/crosswalk/registry.json]}
+
+  # ---------------------------------------------------------------- case to the quality chain: no key exists
+  - id: REL-05
+    from: Case
+    predicate: "relates to (human-asserted)"
+    to: Batch
+    cardinality: "many-to-many (unconstrained)"
+    key: "no key exists; created only by an authenticated human with a reason"
+    enforcement: crosswalk_human
+    crosswalk_link_type: LT-06
+    note: "Cases carry no batch/deviation/CAPA key (RC-7). Any case-to-quality-object link is a recorded human decision, never inferred."
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md, hub/crosswalk/registry.json, docs/12-specs/features/f05-identity-crosswalk.md]
+  - {id: REL-06, from: Case, predicate: "relates to (human-asserted)", to: Deviation, cardinality: "many-to-many (unconstrained)", key: "human decision (no key exists)", enforcement: crosswalk_human, crosswalk_link_type: LT-06,
+     epistemic_status: verified_fact, evidence: [hub/crosswalk/registry.json]}
+  - {id: REL-07, from: Case, predicate: "relates to (human-asserted)", to: CAPA,      cardinality: "many-to-many (unconstrained)", key: "human decision (no key exists)", enforcement: crosswalk_human, crosswalk_link_type: LT-06,
+     epistemic_status: verified_fact, evidence: [hub/crosswalk/registry.json]}
+
+  # ---------------------------------------------------------------- external information to case
+  - id: REL-08
+    from: FeedItem
+    predicate: "refers to"
+    to: Case
+    cardinality: "many-to-one (zero or one match required)"
+    key: "partner_feeds.ref_id = cases.id (exact string equality after NFC + trim)"
+    enforcement: crosswalk_rule
+    crosswalk_link_type: LT-04
+    note: "0 matches = UNMATCHED_REF; >1 = AMBIGUOUS_MATCH; never attached silently. Baseline: 168 of 8,567 feed rows link (97.98 % unmatched)."
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, docs/04-baseline-kpis/kpi-dictionary.md, hub/crosswalk/registry.json]
+  - id: REL-09
+    from: Document
+    predicate: "references"
+    to: Case
+    cardinality: "many-to-one"
+    key: "document.reference = cases.id"
+    enforcement: crosswalk_rule
+    crosswalk_link_type: LT-05
+    note: "Only 30 of 1,200 documents resolve to a case today."
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, hub/crosswalk/registry.json]
+  - {id: REL-10, from: FeedItem,     predicate: "originates from",        to: SourceSystem,  cardinality: "many-to-one", key: "partner / source name", enforcement: none_in_legacy,
+     epistemic_status: verified_fact, evidence: [docs/source-systems-and-constraints.md]}
+  - {id: REL-11, from: FeedItem,     predicate: "is validated against",   to: SourceContract, cardinality: "many-to-one", key: "source -> contract binding (record_only | enforce)", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/business-rules.md, hub/config.py]}
+  - {id: REL-12, from: IntakeOutcome, predicate: "classifies",            to: FeedItem,     cardinality: "many-to-one (latest outcome by sequence wins)", key: "intake_outcome.raw_id", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-13, from: IntakeOutcome, predicate: "may link via",          to: CrosswalkLink, cardinality: "one-to-zero-or-one", key: "matched_link", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+
+  # ---------------------------------------------------------------- decision record
+  - {id: REL-14, from: DecisionEvent, predicate: "is recorded about",     to: Case,         cardinality: "many-to-one (gapless seq per case)", key: "case_id + seq", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]}
+  - {id: REL-15, from: DecisionEvent, predicate: "cites",                 to: EvidenceRecord, cardinality: "many-to-many", key: "evidence_refs", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]}
+  - {id: REL-16, from: CaseState,     predicate: "is folded from",        to: DecisionEvent, cardinality: "one-to-many", key: "case_id", enforcement: derived,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/20-application/state-model.md]}
+  - {id: REL-17, from: DecisionEvent, predicate: "was authorised by",     to: AuditRecord,  cardinality: "many-to-one (Zone H types only)", key: "holder_check_ref", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-18, from: DecisionEvent, predicate: "corrects",              to: DecisionEvent, cardinality: "many-to-one", key: "CORRECTION event references corrected event_id", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/business-rules.md]}
+  - {id: REL-19, from: EvidenceRecord, predicate: "points at",            to: Document,     cardinality: "many-to-one (kind = document)", key: "source_ref + source_hash", enforcement: hub_constraint,
+     epistemic_status: inference, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-20, from: ZoneHAction,   predicate: "is recorded as",        to: DecisionEvent, cardinality: "one-to-many", key: "event types CLOSE_EXCEPTION, DISPOSITION_RECORDED, DISPOSITION_REFERENCED, QA_RELEASE_RECORDED, ESIGNATURE_RECORDED", enforcement: hub_constraint,
+     note: "ZH-05/06/07/08/09/10 are recorded as PolicyEvents instead.",
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, hub/gate/actions.py]}
+  - {id: REL-21, from: ZoneHAction,   predicate: "is recorded as",        to: PolicyEvent,   cardinality: "one-to-many", key: "policy_events.authority_ref (non-empty) + holder_check_ref", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [hub/gate/actions.py, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+
+  # ---------------------------------------------------------------- policy and rules
+  - {id: REL-22, from: PolicyEvent,   predicate: "changes",               to: PolicyObject,  cardinality: "many-to-one", key: "policy_ref", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-23, from: RuleRow,       predicate: "belongs to",            to: RuleSet,       cardinality: "many-to-one", key: "(ruleset_id, version)", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-24, from: RuleSet,       predicate: "is activated for a function by", to: PolicyEvent, cardinality: "one active set per function", key: "active_ruleset.function", enforcement: hub_constraint,
+     note: "Activation is ZH-06; ships with no active rule set.",
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/final-prd/final-capability-map.md]}
+  - {id: REL-25, from: RuleTrace,     predicate: "explains an evaluation of", to: Case,        cardinality: "many-to-one", key: "case + function + rule set", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/20-application/state-model.md]}
+  - {id: REL-26, from: RuleTrace,     predicate: "was produced by",       to: RuleSet,       cardinality: "many-to-one", key: "ruleset_ref", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/20-application/state-model.md]}
+  - {id: REL-27, from: PolicyObject,  predicate: "gives meaning to",      to: MetricDefinition, cardinality: "many-to-many", key: "definition_tag", enforcement: hub_constraint,
+     note: "Figures with different tags or tag-policy versions are never combined.",
+     epistemic_status: verified_fact, evidence: [docs/12-specs/business-rules.md, hub/metrics/registry.py]}
+
+  # ---------------------------------------------------------------- measurement
+  - {id: REL-28, from: MetricValue,   predicate: "is an instance of",     to: MetricDefinition, cardinality: "many-to-one", key: "(metric_id, metric_version)", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-29, from: MetricValue,   predicate: "is computed from",      to: DecisionEvent, cardinality: "many-to-many", key: "inputs_hash", enforcement: derived,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, hub/metrics/registry.py]}
+  - {id: REL-30, from: MetricDefinition, predicate: "is modelled from",   to: OperatingCost, cardinality: "many-to-many", key: "basis = modelled", enforcement: derived,
+     note: "OperatingCost may never be used as 'cases created' (OD-07).",
+     epistemic_status: verified_fact, evidence: [hub/metrics/registry.py, .fde/orchestrator-decisions.md]}
+
+  # ---------------------------------------------------------------- operations / governance
+  - {id: REL-31, from: Run,           predicate: "stamps",                to: FeedItem,      cardinality: "one-to-many", key: "run_id", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-32, from: Principal,     predicate: "performs",              to: AuditRecord,   cardinality: "one-to-many", key: "actor", enforcement: hub_constraint,
+     epistemic_status: verified_fact, evidence: [hub/security/authz.py, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]}
+  - {id: REL-33, from: DeviationRegisterEntry, predicate: "documents a behaviour difference of", to: Capability, cardinality: "many-to-one", key: "DV id -> capability affected", enforcement: none_in_legacy,
+     epistemic_status: inference, evidence: [docs/16-repo-validation/behavior-difference-report.md, docs/final-prd/final-capability-map.md]}
+  - {id: REL-34, from: Document,      predicate: "is governed by access level of", to: Principal, cardinality: "many-to-many via role mapping", key: "access_level -> role (proposal A-11-09)", enforcement: none_in_legacy,
+     epistemic_status: assumption, evidence: [docs/11-data-context/metadata-model.md]}
+  - {id: REL-35, from: UpstreamOutage, predicate: "affects",              to: SourceSystem,  cardinality: "many-to-one", key: "system_name", enforcement: none_in_legacy,
+     epistemic_status: verified_fact, evidence: [docs/04-baseline-kpis/kpi-dictionary.md]}
+  - {id: REL-36, from: PolicyException, predicate: "refers to",           to: Case,          cardinality: "many-to-one (99.11 % unmatched)", key: "policy_exceptions.ref_id = cases.id (no FK)", enforcement: none_in_legacy,
+     epistemic_status: verified_fact, evidence: [docs/04-baseline-kpis/kpi-dictionary.md]}
+
+# Crosswalk link-type codes (registered pairs only; any other pair is refused)
+crosswalk_link_types:
+  - {code: LT-01, from_type: deviation,  to_type: batch,     key_used: "deviations.batch_id = batch_records.batch_id",       creator_kind: rule}
+  - {code: LT-02, from_type: capa,       to_type: deviation, key_used: "capa_actions.deviation_id = deviations.deviation_id", creator_kind: rule}
+  - {code: LT-03, from_type: lab_result, to_type: batch,     key_used: "lab_results.batch_id = batch_records.batch_id",       creator_kind: rule}
+  - {code: LT-04, from_type: feed_item,  to_type: case,      key_used: "partner_feeds.ref_id = cases.id",                    creator_kind: rule}
+  - {code: LT-05, from_type: document,   to_type: case,      key_used: "document.reference = cases.id",                      creator_kind: rule}
+  - {code: LT-06, from_type: case,       to_type: batch,     key_used: "human decision (no key exists)",                     creator_kind: human}
+  - {code: LT-06, from_type: case,       to_type: deviation, key_used: "human decision (no key exists)",                     creator_kind: human}
+  - {code: LT-06, from_type: case,       to_type: capa,      key_used: "human decision (no key exists)",                     creator_kind: human}
+crosswalk_id_patterns:
+  case: '^C[0-9]{8}$'
+  batch: '^BT[0-9]{8}$'
+  deviation: '^DEV[0-9]{8}$'
+  capa: '^CAPA[0-9]{8}$'
+  lab_result: '^LAB[0-9]{8}$'
+  feed_item: '^(FEED|REPLAY)-[0-9]{9}$'
+  document: '^DOC-[0-9]{8}$'
+crosswalk_evidence: [hub/crosswalk/registry.json, docs/12-specs/features/f05-identity-crosswalk.md]
+
+# Known semantic gaps in the legacy relationship model (carried so a regenerated app does not "fix" them by guessing)
+known_gaps:
+  - {id: GAP-REL-1, statement: "The enterprise database's cross_references table has a single untyped relationship (relates_to, 4,166 rows) and operational_objects.entity_type is always batch_id (12,500 rows): no typed enterprise graph exists.", epistemic_status: verified_fact, evidence: [docs/11-data-context/knowledge-model.md]}
+  - {id: GAP-REL-2, statement: "Case-to-quality-object links cannot be derived; any such link is a human decision.", epistemic_status: verified_fact, evidence: [docs/06-root-cause/confirmed-root-causes.md]}
+  - {id: GAP-REL-3, statement: "Source-specific business_key is not an item identity; the natural key is (partner, record_kind, ref_id, source_ts).", epistemic_status: verified_fact, evidence: [.fde/orchestrator-decisions.md]}

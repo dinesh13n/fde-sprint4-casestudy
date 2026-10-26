@@ -1,0 +1,15 @@
+{
+  "_readme": "Copy to settings.local.json and fill in. This file is read after settings.json. Do not share settings.local.json.",
+  "ai": {
+    "provider": "azure_openai",
+    "openai": {"api_key": "sk-...", "model": "gpt-4.1-mini"}
+  },
+    "azure_openai": {
+      "api_key": "",
+      "api_key_env": "AZURE_OPENAI_API_KEY",
+      "endpoint": "https://foundry-dinesh-123.cognitiveservices.azure.com/",
+      "deployment": "gpt-4.1-mini",
+      "api_version": "2024-12-01-preview"
+    }
+  
+}

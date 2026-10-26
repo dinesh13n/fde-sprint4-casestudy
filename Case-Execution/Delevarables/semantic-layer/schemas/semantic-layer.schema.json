@@ -1,0 +1,18 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "title": "GxP Quality Hub semantic layer",
+ "type": "object",
+ "required": ["semantic_layer_version","label","entities","relationships","status_taxonomy","business_rules","metrics","access_semantics","ai_context_policy","workflow_semantics","domain_constraints","context_dependencies","spec_business_rules","access_permission_matrix","error_catalogue","glossary"],
+ "properties": {
+  "semantic_layer_version": {"type":"string","pattern":"^\\d+\\.\\d+\\.\\d+$"},
+  "label": {"const":"synthetic, unvalidated"},
+  "entities": {"type":"object","required":["items"],"properties":{"items":{"type":"array","minItems":1,"items":{"type":"object","required":["id","description","epistemic_status","evidence"],"properties":{"id":{"type":"string"},"description":{"type":"string","minLength":1},"epistemic_status":{"enum":["verified_fact","inference","assumption","unknown"]},"evidence":{"type":"array","minItems":1,"items":{"type":"string"}}}}}}},
+  "business_rules": {"type":"object","required":["items"],"properties":{"items":{"type":"array","minItems":1,"items":{"type":"object","required":["id","statement","epistemic_status","evidence"],"properties":{"id":{"type":"string"},"statement":{"type":"string"},"epistemic_status":{"enum":["verified_fact","inference","assumption","unknown"]},"evidence":{"type":"array","minItems":1}}}}}},
+  "metrics": {"type":"object","required":["items"],"properties":{"items":{"type":"array","minItems":1,"items":{"type":"object","required":["id","kind","name"],"properties":{"id":{"type":"string"},"kind":{"enum":["kpi","built_in_metric","slo_candidate","invariant_metric"]},"name":{"type":"string"}}}}}},
+  "spec_business_rules": {"type":"object","required":["items"],"properties":{"items":{"type":"array","minItems":1,"items":{"type":"object","required":["id","statement"],"properties":{"id":{"type":"string","pattern":"^SBR-[A-Z]+-\\d+$"}}}}}},
+  "access_permission_matrix": {"type":"object","required":["routes","default"],"properties":{"default":{"const":"deny"},"routes":{"type":"array","minItems":1,"items":{"type":"object","required":["method","path","roles"]}}}},
+  "error_catalogue": {"type":"object","required":["items"]},
+  "context_dependencies": {"type":"object","required":["open_decisions"],"properties":{"open_decisions":{"type":"array","items":{"type":"object","required":["id","topic","status"],"properties":{"status":{"enum":["open","accepted_open","answered","refuted"]}}}}}},
+  "glossary": {"type":"array","minItems":1,"items":{"type":"object","required":["term","definition","source"]}}
+ }
+}

@@ -1,0 +1,16 @@
+data/*.sqlite3
+__pycache__/
+*.pyc
+.env
+
+data/lake/
+*.class
+
+data/lake/
+*.class
+
+data/lake/
+*.class
+
+# generated graph exports (python -m graph.export)
+#exports/

@@ -1,0 +1,189 @@
+Semantic Layer Build for the Case Study
+Objective
+The discussion introduced a new capstone requirement: create a Semantic Layer that captures the business intelligence, domain knowledge, and application semantics independently of both the application and the underlying AI model. The goal is to ensure that if a model becomes unavailable, degraded, or is replaced, the core business knowledge can still be reused and operated upon.
+
+Core Principle
+The semantic layer should act as an intermediate knowledge layer between:
+
+The application
+The AI model
+Instead of embedding intelligence solely in prompts or relying completely on a specific LLM, the business context must be extracted and stored in a portable, deterministic format. This layer becomes the organization's owned asset and can be transferred across models.
+
+Problem Statement Being Addressed
+The meeting emphasized several scenarios:
+
+An AI model may become unavailable.
+A model may be withdrawn, degraded, or retrained.
+A customer may want to switch vendors or models.
+Organizations should not have to repeat the entire application redevelopment process because of a model change.
+The semantic layer provides a fallback capability and portability mechanism so that knowledge remains available even when the model changes.
+
+What Must Be Captured
+The semantic layer should include:
+
+Business glossary
+Entities
+Relationships
+Taxonomies
+Status definitions
+Business rules
+Metrics
+Access semantics
+Domain intelligence
+Competitive/business knowledge derived during the transformation process
+These elements collectively represent the business meaning of the system.
+
+Recommended Structure
+The guidance was to use a combination of artifacts rather than relying on a single document type.
+
+Markdown (.md)
+Use for:
+
+Human-readable explanations
+Documentation
+Design rationale
+Glossary
+README information
+YAML (.yaml)
+Use for:
+
+Entities
+Relationships
+Taxonomies
+Business rules
+Metrics
+Structured semantic definitions
+YAML was described as:
+
+Human readable
+Machine readable
+Versionable
+Easy for LLMs to consume and generate
+Portable across models
+JSON Schema
+Use for:
+
+Validation rules
+Structural constraints
+Semantic verification
+JSON
+Use for:
+
+API consumption
+Exchange and integration
+Tests
+Use for:
+
+Protecting semantic integrity
+Ensuring consistency when the layer is transferred
+Suggested Semantic Layer Repository Structure
+semantic-layer/
+│
+├── README.md
+├── glossary.md
+│
+├── entities.yaml
+├── relationships.yaml
+├── taxonomy.yaml
+├── business-rules.yaml
+├── metrics.yaml
+├── access-semantics.yaml
+│
+├── validation-schema.json
+├── api-contract.json
+│
+└── tests/
+This structure reflects the concepts discussed in the meeting and the example semantic repository described by the instructor.
+
+When to Build the Semantic Layer
+A key clarification was provided:
+
+Do not create the semantic layer first.
+
+The expected sequence is:
+
+Brownfield Repo
+      ↓
+Transformation Activities
+      ↓
+Enhanced Solution
+      ↓
+Semantic Layer Extraction
+      ↓
+PRD Generation
+      ↓
+Application Generation
+      ↓
+Portability Test
+The semantic layer should be captured after transformation, because only then does it contain the enriched intelligence and business understanding derived during the process.
+
+Validation Exercise Required
+The capstone requires proving that the semantic layer is portable.
+
+Process:
+
+Complete transformation.
+Extract semantic layer.
+Generate a PRD and application using the original setup.
+Move the semantic layer to another model or environment.
+Attempt to generate the PRD and application again.
+Compare results.
+The team must document:
+
+What worked
+What failed
+What required additional context
+What remained dependent on the original repository
+Gaps in semantic capture
+Compare-and-Contrast Expectations
+The final report should explicitly evaluate:
+
+Area	Evaluation
+PRD Generation	Was it reproducible from semantic layer alone?
+Application Generation	Did the generated applications match?
+Context Completeness	Was anything missing?
+Model Independence	How much dependency remained on the original model?
+Repo Dependency	Was the repository still required?
+Knowledge Transfer Quality	How successfully was business intelligence transferred?
+This comparison was highlighted as a major learning outcome of the exercise.
+
+System Prompt You Can Apply in the Case Study
+Create a complete Semantic Layer for this transformed repository.
+
+Extract and document all business knowledge independent of the AI model and application implementation.
+
+Capture:
+
+- Business Glossary
+- Entities
+- Relationships
+- Taxonomies
+- Status Definitions
+- Business Rules
+- Metrics and KPIs
+- Access Semantics
+- Domain Constraints
+- Validation Rules
+- Workflow Semantics
+- Context Dependencies
+
+Generate outputs using a combination of:
+
+1. Markdown (.md) for human-readable documentation and glossary.
+2. YAML (.yaml) for entities, relationships, taxonomy, rules, metrics, and semantic definitions.
+3. JSON Schema for validation requirements.
+4. JSON for application/API consumption.
+5. Test definitions for semantic integrity verification.
+
+Requirements:
+
+- The semantic layer must be model-independent.
+- The semantic layer must be portable across LLMs.
+- Avoid embedding business intelligence exclusively in prompts.
+- Ensure all critical knowledge required to recreate a PRD is captured.
+- Identify any gaps preventing independent application generation.
+- Produce a final assessment of semantic completeness and portability.
+
+Output the repository structure and all required semantic layer artifacts.
+Key Takeaway
+The instructor repeatedly emphasized that the exercise is not about writing better prompts. It is about separating business intelligence from the AI model, capturing it in a reusable semantic layer, and demonstrating that the knowledge can survive model replacement, degradation, or migration while still enabling PRD and application generation.

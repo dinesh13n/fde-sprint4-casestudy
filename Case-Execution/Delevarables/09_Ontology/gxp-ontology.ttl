@@ -1,0 +1,4508 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix gx: <https://example.org/gxp-hub/onto#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vc: <https://example.org/gxp-hub/vocab/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/gxp-hub/id/metric/K_01> a gx:MetricDefinition ;
+    rdfs:label "K-01 Unsafe action count" ;
+    rdfs:comment "Automated or simulated disposition, or closure without evidence and without an authorised exception." ;
+    gx:computableToday false ;
+    gx:definitionClass "invariant_zero_required" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:formula "count(unsafe events in window)" ;
+    gx:unit "count" .
+
+<https://example.org/gxp-hub/id/metric/K_02> a gx:MetricDefinition ;
+    rdfs:label "K-02 Source attribution rate" ;
+    rdfs:comment "Share of sampled decisions carrying an evidence reference and a source." ;
+    gx:computableToday true ;
+    gx:definitionClass "structural_proxy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "decisions with evidence_ref AND source / decisions sampled" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_03> a gx:MetricDefinition ;
+    rdfs:label "K-03 Definition transparency" ;
+    rdfs:comment "Share of reported figures that declare which closed/resolved definition they use." ;
+    gx:computableToday true ;
+    gx:definitionClass "verified_by_inspection" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "figures with definition tag / figures reported" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_04_EVID> a gx:MetricDefinition ;
+    rdfs:label "K-04-EVID Time to close (D-EVID)" ;
+    rdfs:comment "Elapsed time receipt -> closed AND evidence + authorised approver recorded." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "median/p90 of (max(closed_at, evidence_at, approver_at) - created_at)" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/K_04_FIN> a gx:MetricDefinition ;
+    rdfs:label "K-04-FIN Time to resolved (D-FIN)" ;
+    rdfs:comment "Elapsed time receipt -> 'successfully resolved for cost'." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "unknown" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "UNDEFINED (D-FIN is an unknown)" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/K_04_OPS> a gx:MetricDefinition ;
+    rdfs:label "K-04-OPS Time to close (D-OPS)" ;
+    rdfs:comment "Elapsed time receipt -> operations-closed." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "median and p90 of (closed_at - created_at) over cases with status CLOSED" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/K_05> a gx:MetricDefinition ;
+    rdfs:label "K-05 Time to evidence" ;
+    rdfs:comment "Receipt -> evidence-complete." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:formula "median hours (evidence_complete_at - created_at)" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/K_06> a gx:MetricDefinition ;
+    rdfs:label "K-06 Unmatched reference rate" ;
+    rdfs:comment "External items whose reference matches no core case." ;
+    gx:computableToday true ;
+    gx:definitionClass "definition_independent" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/42-executive-defence/lessons-learned.md" ;
+    gx:formula "count(ref_id NOT IN cases.id) / count(rows)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_07> a gx:MetricDefinition ;
+    rdfs:label "K-07 Replay safety" ;
+    rdfs:comment "Change in queue size and totals when an already-processed item is re-delivered." ;
+    gx:computableToday true ;
+    gx:definitionClass "invariant_zero_required" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:formula "queue_after - queue_before; totals_after - totals_before, after replay of n processed items" ;
+    gx:unit "count" .
+
+<https://example.org/gxp-hub/id/metric/K_08> a gx:MetricDefinition ;
+    rdfs:label "K-08 Reconciliation delay" ;
+    rdfs:comment "Hours from source event to record available." ;
+    gx:computableToday true ;
+    gx:definitionClass "definition_independent" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/operations-service-levels.md" ;
+    gx:formula "ingest_ts - source_ts; median, p90, share <= 4 h" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/K_09U> a gx:MetricDefinition ;
+    rdfs:label "K-09U Unresolved exception rate" ;
+    rdfs:comment "Share of policy exceptions not resolved. UE-1: outcome <> 'WAIVED'. UE-2: outcome IN ('OPEN','REVIEW')." ;
+    gx:computableToday true ;
+    gx:definitionClass "provisional_meaning_of_WAIVED_BLOCKED_unowned" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count / count(policy_exceptions)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_09_EVID> a gx:MetricDefinition ;
+    rdfs:label "K-09-EVID Backlog (D-EVID)" ;
+    rdfs:comment "Cases not both closed and evidence-complete." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count(cases) - count(closed AND evidence AND approver)" ;
+    gx:unit "count" .
+
+<https://example.org/gxp-hub/id/metric/K_09_FIN> a gx:MetricDefinition ;
+    rdfs:label "K-09-FIN Backlog (D-FIN)" ;
+    rdfs:comment "Undefined." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "unknown" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "UNDEFINED" ;
+    gx:unit "count" .
+
+<https://example.org/gxp-hub/id/metric/K_09_OPS> a gx:MetricDefinition ;
+    rdfs:label "K-09-OPS Backlog ageing and count (D-OPS)" ;
+    rdfs:comment "Not-closed cases and their age at AS_OF, per site (BR-12)." ;
+    gx:computableToday true ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:formula "count(status <> 'CLOSED'); median/p90 of (AS_OF - created_at)" ;
+    gx:unit "count; days" .
+
+<https://example.org/gxp-hub/id/metric/K_10> a gx:MetricDefinition ;
+    rdfs:label "K-10 Month-end comparability" ;
+    rdfs:comment "Operations month counts vs finance/cost month counts on one cut-off." ;
+    gx:computableToday true ;
+    gx:definitionClass "definition_dependent_cutoff_unowned" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "months where cases created in month = operating_costs.total_cases / months compared" ;
+    gx:unit "months; cases" .
+
+<https://example.org/gxp-hub/id/metric/K_11> a gx:MetricDefinition ;
+    rdfs:label "K-11 Decision recorded" ;
+    rdfs:comment "The definition decision and closure-time decision each have an owner+date or an 'accepted open' record." ;
+    gx:computableToday true ;
+    gx:definitionClass "governance" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:formula "count(DR-20, DR-21 with decision record) / 2" ;
+    gx:unit "count of 2" .
+
+<https://example.org/gxp-hub/id/metric/K_12> a gx:MetricDefinition ;
+    rdfs:label "K-12 Handling effort per case" ;
+    rdfs:comment "Labour hours per case." ;
+    gx:computableToday true ;
+    gx:definitionClass "denominator_is_operating_costs_not_cases" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "sum(labor_hours) / sum(total_cases) from operating_costs" ;
+    gx:unit "hours per case" .
+
+<https://example.org/gxp-hub/id/metric/K_13> a gx:MetricDefinition ;
+    rdfs:label "K-13 Infrastructure cost per case" ;
+    rdfs:comment "Infrastructure spend per case." ;
+    gx:computableToday true ;
+    gx:definitionClass "cost_proxy_D-FIN_dependent" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "sum(infrastructure_usd) / sum(total_cases)" ;
+    gx:unit "USD per case" .
+
+<https://example.org/gxp-hub/id/metric/K_14> a gx:MetricDefinition ;
+    rdfs:label "K-14 Throughput" ;
+    rdfs:comment "Cases created per month." ;
+    gx:computableToday true ;
+    gx:definitionClass "definition_independent" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count(cases) / months with data" ;
+    gx:unit "cases per month" .
+
+<https://example.org/gxp-hub/id/metric/K_15> a gx:MetricDefinition ;
+    rdfs:label "K-15 Rework (reopen) rate" ;
+    rdfs:comment "Share of cases in REOPENED." ;
+    gx:computableToday true ;
+    gx:definitionClass "snapshot_proxy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count(status = 'REOPENED') / count(cases)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_16> a gx:MetricDefinition ;
+    rdfs:label "K-16 Manual-review share (by code rule)" ;
+    rdfs:comment "Share of cases the legacy rule flags for manual review." ;
+    gx:computableToday true ;
+    gx:definitionClass "rule_derived" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/legacy_logic.py",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count(manual_review_required) / count(cases)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_17> a gx:MetricDefinition ;
+    rdfs:label "K-17 Deviations closed without root cause" ;
+    rdfs:comment "Integrity of closure." ;
+    gx:computableToday true ;
+    gx:definitionClass "quality" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "count(CLOSED AND root_cause IS NULL) / count(CLOSED) in deviations" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_18> a gx:MetricDefinition ;
+    rdfs:label "K-18 CAPA overdue share" ;
+    rdfs:comment "OVERDUE share of not-yet-verified CAPA." ;
+    gx:computableToday true ;
+    gx:definitionClass "quality" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "OVERDUE / (OVERDUE + OPEN)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_19> a gx:MetricDefinition ;
+    rdfs:label "K-19 Batch-run rejection / failure" ;
+    rdfs:comment "Rejected records over input; FAILED runs over runs." ;
+    gx:computableToday true ;
+    gx:definitionClass "error" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/baseline-kpi-sheet.md",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "sum(rejected) / sum(input); count(FAILED) / count(runs)" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_20> a gx:MetricDefinition ;
+    rdfs:label "K-20 Upstream outage MTTR and open outages" ;
+    rdfs:comment "Median resolve time; outages with no resolve time." ;
+    gx:computableToday true ;
+    gx:definitionClass "reliability" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/baseline-kpi-sheet.md",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:formula "median(resolved - began); count(resolved IS NULL)" ;
+    gx:unit "hours; count" .
+
+<https://example.org/gxp-hub/id/metric/K_21> a gx:MetricDefinition ;
+    rdfs:label "K-21 Adoption" ;
+    rdfs:comment "Share of cases handled via the new capability." ;
+    gx:computableToday false ;
+    gx:definitionClass "not_measurable_pre_intervention" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/final-prd/final-as-built-prd.md" ;
+    gx:formula "cases via new path / cases" ;
+    gx:unit "percent" .
+
+<https://example.org/gxp-hub/id/metric/K_22> a gx:MetricDefinition ;
+    rdfs:label "K-22 Rework effort" ;
+    rdfs:comment "Hours spent on avoidable rework." ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "unknown" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/42-executive-defence/lessons-learned.md" ;
+    gx:formula "sum of rework hours (needs a time record)" ;
+    gx:unit "hours" .
+
+<https://example.org/gxp-hub/id/metric/MET_BACKLOG_D_OPS> a gx:MetricDefinition ;
+    rdfs:label "MET-BACKLOG-D-OPS Backlog and ageing per site (D-OPS)" ;
+    rdfs:comment "" ;
+    gx:computableToday true ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:formula "Cases not in the closing-state set at as_of, per site, with ageing buckets <=90, 91-365, 366-730, >730 days from creation" .
+
+<https://example.org/gxp-hub/id/metric/MET_INV_01> a gx:MetricDefinition ;
+    rdfs:label "MET-INV-01 model_calls_total" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/MET_INV_02> a gx:MetricDefinition ;
+    rdfs:label "MET-INV-02 egress_attempts_total" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/MET_INV_03> a gx:MetricDefinition ;
+    rdfs:label "MET-INV-03 zone_h_service_actor_accepted" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/MET_MONTH_END_TOTAL> a gx:MetricDefinition ;
+    rdfs:label "MET-MONTH-END-TOTAL Month-end total of case amounts" ;
+    rdfs:comment "" ;
+    gx:computableToday true ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "hub/metrics/registry.py" ;
+    gx:formula "Exact decimal sum of cases.amount, one query on one table (no join, no fan-out), quantised to 2 decimals ROUND_HALF_EVEN at presentation" .
+
+<https://example.org/gxp-hub/id/metric/MET_TTC_C_EVID> a gx:MetricDefinition ;
+    rdfs:label "MET-TTC-C-EVID Time to evidence-complete (clock C-EVID)" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:formula "Same method as MET-TTC-C-OPS under the evidence-complete clock; a different definition, never combined with it." .
+
+<https://example.org/gxp-hub/id/metric/MET_TTC_C_OPS> a gx:MetricDefinition ;
+    rdfs:label "MET-TTC-C-OPS Time to ops-closed (clock C-OPS)" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:formula "Median and p90 of elapsed hours between the clock's start and stop events per completed cycle" .
+
+<https://example.org/gxp-hub/id/metric/MET_UNRESOLVED_EXC_RATE_D_OPS> a gx:MetricDefinition ;
+    rdfs:label "MET-UNRESOLVED-EXC-RATE-D-OPS Unresolved-exception rate per site (D-OPS)" ;
+    rdfs:comment "" ;
+    gx:computableToday true ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/34-measure-after/after-intervention-kpi-sheet.md",
+        "hub/metrics/registry.py" ;
+    gx:formula "Open exception-queue items / all exception-queue items, per site of the matched case (formula is a spec choice, A-12-F07-2)" .
+
+<https://example.org/gxp-hub/id/metric/SLO_01> a gx:MetricDefinition ;
+    rdfs:label "SLO-01 Availability in scheduled hours" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md",
+        "docs/operations-service-levels.md" .
+
+<https://example.org/gxp-hub/id/metric/SLO_02> a gx:MetricDefinition ;
+    rdfs:label "SLO-02 Overnight run finished before 06:00 local" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/SLO_03> a gx:MetricDefinition ;
+    rdfs:label "SLO-03 Requests answered without a server error" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/SLO_04> a gx:MetricDefinition ;
+    rdfs:label "SLO-04 Audit chain verifies" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/metric/SLO_05> a gx:MetricDefinition ;
+    rdfs:label "SLO-05 Partner source freshness" ;
+    rdfs:comment "" ;
+    gx:computableToday false ;
+    gx:definitionClass "none" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/31-observability/slo-sla-definitions.md" .
+
+<https://example.org/gxp-hub/id/role/compliance> a gx:Role ;
+    rdfs:label "compliance" ;
+    rdfs:comment "May: read audit records and exports" .
+
+<https://example.org/gxp-hub/id/role/dispositioner> a gx:Role ;
+    rdfs:label "dispositioner" ;
+    rdfs:comment "May: perform Zone H actions ZH-01..ZH-10 once holders exist" .
+
+<https://example.org/gxp-hub/id/role/finance_read> a gx:Role ;
+    rdfs:label "finance_read" ;
+    rdfs:comment "May: read money metrics only; no write" .
+
+<https://example.org/gxp-hub/id/role/integration> a gx:Role ;
+    rdfs:label "integration" ;
+    rdfs:comment "May: service principal for feed intake; may never perform a Zone H action" .
+
+<https://example.org/gxp-hub/id/role/quality_lead> a gx:Role ;
+    rdfs:label "quality_lead" ;
+    rdfs:comment "May: read quality views, propose policy objects" .
+
+<https://example.org/gxp-hub/id/role/reviewer> a gx:Role ;
+    rdfs:label "reviewer" ;
+    rdfs:comment "May: review queue items, record STATUS_REVIEWED decisions" .
+
+<https://example.org/gxp-hub/id/rule/BR_01> a gx:BusinessRule ;
+    rdfs:label "BR-01" ;
+    rdfs:comment "Every reported figure that involves closed, resolved, cost or handling time declares which definition of the state it uses; figures built on different definitions are never combined or compared." ;
+    gx:appliesTo gx:MetricDefinition,
+        gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/12-specs/business-rules.md" ;
+    gx:implements "FR-MET-01",
+        "FR-MET-02" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_02> a gx:BusinessRule ;
+    rdfs:label "BR-02" ;
+    rdfs:comment "The organisation records WHO decides the definition of closed/resolved and the closure-time expectation. The product never chooses it." ;
+    gx:appliesTo gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/06-root-cause/confirmed-root-causes.md" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_03> a gx:BusinessRule ;
+    rdfs:label "BR-03" ;
+    rdfs:comment "Time-to-close is measurable under each candidate definition (receipt to ops-closed, receipt to evidence-complete) without prejudging which is correct." ;
+    gx:appliesTo gx:Case,
+        gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-DEC-06",
+        "FR-MET-03" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_04> a gx:BusinessRule ;
+    rdfs:label "BR-04" ;
+    rdfs:comment "Externally received case information is matched to exactly one core case, or flagged unmatched, before it reaches a reviewer queue." ;
+    gx:appliesTo gx:Case,
+        gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-INT-05" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_05> a gx:BusinessRule ;
+    rdfs:label "BR-05" ;
+    rdfs:comment "A re-delivered or replayed item does not increase the exception queue or alter totals." ;
+    gx:appliesTo gx:FeedItem,
+        gx:IntakeOutcome ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/historic-decisions.md" ;
+    gx:implements "FR-INT-02" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_06> a gx:BusinessRule ;
+    rdfs:label "BR-06" ;
+    rdfs:comment "Delayed, missing or revised items are detectable and attributable to a source and time without manual spreadsheet reconciliation." ;
+    gx:appliesTo gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-INT-08" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_07> a gx:BusinessRule ;
+    rdfs:label "BR-07" ;
+    rdfs:comment "Each case decision carries the evidence relied on and its source, retrievable on request." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:EvidenceRecord ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-DEC-01",
+        "FR-DEC-04" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_08> a gx:BusinessRule ;
+    rdfs:label "BR-08" ;
+    rdfs:comment "Batch disposition and any decision requiring an authorised person remains a human decision. No process makes it, pre-fills it as final, or simulates it." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/domain-assurance.md" ;
+    gx:implements "FR-GATE-01",
+        "FR-GATE-03" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/BR_09> a gx:BusinessRule ;
+    rdfs:label "BR-09" ;
+    rdfs:comment "No case is closed without verifiable evidence unless an owner has explicitly authorised an exception rule. The system never judges evidence sufficiency." ;
+    gx:appliesTo gx:Case,
+        gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/correspondence/operations-vs-risk-2024.md" ;
+    gx:implements "FR-DEC-05" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_10> a gx:BusinessRule ;
+    rdfs:label "BR-10" ;
+    rdfs:comment "Case cost and avoidable rework are attributable per case and per period using one agreed cut-off and denominator." ;
+    gx:appliesTo gx:MetricDefinition,
+        gx:OperatingCost ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-MET-08" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_11> a gx:BusinessRule ;
+    rdfs:label "BR-11" ;
+    rdfs:comment "Existing legitimate workflows, including the parallel workflow for older customers (segment legacy-v1), are not disrupted without an identified owner's agreement." ;
+    gx:appliesTo gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-CO-02" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/BR_12> a gx:BusinessRule ;
+    rdfs:label "BR-12" ;
+    rdfs:comment "Backlog ageing and unresolved-exception rate are visible per site and comparable across sites." ;
+    gx:appliesTo gx:Case,
+        gx:Site ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md" ;
+    gx:implements "FR-MET-05" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/BR_13> a gx:BusinessRule ;
+    rdfs:label "BR-13" ;
+    rdfs:comment "A change to the handling process is releasable without causing a rollback of the kind documented in 2025 (a replayed partner delivery inflated the exception queue)." ;
+    gx:appliesTo gx:Capability,
+        gx:DeviationRegisterEntry ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/03-problem-value/business-requirements.md",
+        "docs/historic-decisions.md" ;
+    gx:implements "FR-CO-01",
+        "FR-CO-03" ;
+    gx:ruleCategory "business_requirement" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/DS_01> a gx:BusinessRule ;
+    rdfs:label "DS-01" ;
+    rdfs:comment "Decision requiring authorised human review: batch_disposition. Existing human approval gates are preserved." ;
+    gx:appliesTo gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-assurance.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/DS_02> a gx:BusinessRule ;
+    rdfs:label "DS-02" ;
+    rdfs:comment "No silent cross-tenant action." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:Principal ;
+    gx:epistemicStatus "inference" ;
+    gx:evidence "docs/25-governance/compliance-obligations.md",
+        "docs/domain-assurance.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/DS_03> a gx:BusinessRule ;
+    rdfs:label "DS-03" ;
+    rdfs:comment "Source attribution for each decision: who/what/when/which evidence/which source." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:FeedItem,
+        gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-assurance.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/DS_04> a gx:BusinessRule ;
+    rdfs:label "DS-04" ;
+    rdfs:comment "GMP data-integrity lens (ALCOA+): no silent drops, no silent skips, no in-place status overwrite, no dropped legitimate replays, no lost evidence. This is a design lens only; no regulatory compliance is claimed (21 CFR Part 11 'framing only', OD-30)." ;
+    gx:appliesTo gx:AuditRecord,
+        gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/25-governance/compliance-obligations.md",
+        "docs/domain-assurance.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/DS_05> a gx:BusinessRule ;
+    rdfs:label "DS-05" ;
+    rdfs:comment "The product never claims or simulates an electronic signature. ZH-03 records that an authorised human acted; it is not a cryptographic or legal signature." ;
+    gx:appliesTo gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f02-human-disposition-gate.md",
+        "docs/25-governance/compliance-obligations.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/DS_06> a gx:BusinessRule ;
+    rdfs:label "DS-06" ;
+    rdfs:comment "Internal feeds and extracted text are never treated as trusted instructions or authoritative approvals." ;
+    gx:appliesTo gx:Document,
+        gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "README.md",
+        "docs/partner-feed-operations.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/DS_07> a gx:BusinessRule ;
+    rdfs:label "DS-07" ;
+    rdfs:comment "The simulator's data and actions are never used for real-world decisions. The system is a training simulator, not certified for real pharmaceutical production." ;
+    gx:appliesTo gx:Principal ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "README.md",
+        "docs/domain-assurance.md" ;
+    gx:ruleCategory "domain_safety" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/GOV_01> a gx:BusinessRule ;
+    rdfs:label "GOV-01" ;
+    rdfs:comment "A behavioural difference from the legacy golden baseline is acceptable only if it is in the deviation register with status approved and an approval reference. Currently 11 differences (DV-01..DV-11) are proposed and none is approved." ;
+    gx:appliesTo gx:DeviationRegisterEntry ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/16-repo-validation/behavior-difference-report.md" ;
+    gx:ruleCategory "governance" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/GOV_02> a gx:BusinessRule ;
+    rdfs:label "GOV-02" ;
+    rdfs:comment "Making any capability authoritative requires a recorded approval reference; without it the change is refused (E-CFG-INVALID)." ;
+    gx:appliesTo gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/30-release/evidence/gate-results.json",
+        "hub/config.py" ;
+    gx:ruleCategory "governance" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/GOV_03> a gx:BusinessRule ;
+    rdfs:label "GOV-03" ;
+    rdfs:comment "No fabrication: no invented stakeholders, approvals, KPIs or telemetry. Missing evidence is recorded as Unknown or Assumption with a named owner." ;
+    gx:appliesTo gx:MetricValue,
+        gx:PolicyException ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/00-preflight/operating-contract/evidence-contract.md" ;
+    gx:ruleCategory "governance" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/INV_01> a gx:BusinessRule ;
+    rdfs:label "INV-01" ;
+    rdfs:comment "Append-only: rows of the decision, policy, audit, raw-intake, intake-outcome, crosswalk and run record sets are never updated or deleted by application code. Corrections are new events that reference the corrected event." ;
+    gx:appliesTo gx:AuditRecord,
+        gx:CrosswalkLink,
+        gx:DecisionEvent,
+        gx:FeedItem,
+        gx:IntakeOutcome,
+        gx:PolicyEvent,
+        gx:Run ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/INV_02> a gx:BusinessRule ;
+    rdfs:label "INV-02" ;
+    rdfs:comment "Zone H actions are accepted only from an interactive human session whose principal is in zone_h.holders, holds role dispositioner, re-authenticated within the window, with mode/values permitting. Service accounts, the scheduler, importers and unauthenticated callers are always rejected and the rejection is audited. No flag, environment variable, header or CLI path skips this." ;
+    gx:appliesTo gx:Principal,
+        gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/23-human-control/approval-gates.md",
+        "hub/gate/actions.py" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/INV_03> a gx:BusinessRule ;
+    rdfs:label "INV-03" ;
+    rdfs:comment "Safe-by-default shipping state: no holder, disposition mode none, no adopted policy, no active rule set, schedule off, no capability authoritative, case creation disabled, search/templates off, contracts record_only, loopback only, synthetic data only." ;
+    gx:appliesTo gx:Capability,
+        gx:PolicyObject,
+        gx:RuleSet,
+        gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/final-prd/final-as-built-prd.md" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/INV_04> a gx:BusinessRule ;
+    rdfs:label "INV-04" ;
+    rdfs:comment "Untrusted text (feed notes, document bodies, emails, search results, template content) never populates a decision, disposition or policy field and never triggers a Zone H action." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:Document,
+        gx:FeedItem,
+        gx:RuleTrace ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/metadata-model.md",
+        "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/INV_05> a gx:BusinessRule ;
+    rdfs:label "INV-05" ;
+    rdfs:comment "The product contains no AI, LLM or ML call and performs no model-inference egress (model_calls_total = 0; egress_attempts_total = 0). Any change needs a new qualification and a recorded human decision." ;
+    gx:appliesTo gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/final-prd/final-ai-agent-baseline.md" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/INV_06> a gx:BusinessRule ;
+    rdfs:label "INV-06" ;
+    rdfs:comment "Every figure computed from synthetic data carries the label 'synthetic, unvalidated' and data_origin = synthetic." ;
+    gx:appliesTo gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:implements "PNFR-20" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/INV_07> a gx:BusinessRule ;
+    rdfs:label "INV-07" ;
+    rdfs:comment "Hold-all retention: no delete path exists for retained tables until a retention policy is adopted. 123 records are under legal hold." ;
+    gx:appliesTo gx:AuditRecord ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/metadata-model.md",
+        "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "invariant" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/LEG_01> a gx:BusinessRule ;
+    rdfs:label "LEG-01" ;
+    rdfs:comment "priority(status, severity, amount): if status = CLOSED -> 'archive'; else if severity = CRITICAL or amount > 50000 -> 'urgent'; else if severity = HIGH or status = ESCALATED -> 'review'; else 'queue'. Used by the API and month-end reports." ;
+    gx:appliesTo gx:Case,
+        gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/legacy_logic.py" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_02> a gx:BusinessRule ;
+    rdfs:label "LEG-02" ;
+    rdfs:comment "manual_review_required(status, severity) is true when severity is HIGH or CRITICAL, or status is ESCALATED or REOPENED. 23.2 % (29 of 125) of baseline cases." ;
+    gx:appliesTo gx:Case,
+        gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/legacy_logic.py",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_03> a gx:BusinessRule ;
+    rdfs:label "LEG-03" ;
+    rdfs:comment "Front-end approval: amount is allowed when amount <= threshold(region, year) x 1.05, where the threshold comes from the archived decision policies (batch_disposition limits per region and year, approval role operations_lead, currency USD). An UNKNOWN region or year silently yields 999,999." ;
+    gx:appliesTo gx:Case,
+        gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "contracts/decision-policies-archive.json",
+        "docs/06-root-cause/confirmed-root-causes.md",
+        "legacy_js/legacy_policy.js" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_04> a gx:BusinessRule ;
+    rdfs:label "LEG-04" ;
+    rdfs:comment "Night-shift reconciliation flags an operational object when status is HOLD or REVIEW, or its value exceeds the regional policy threshold (2,500-8,500). It arbitrarily treats REVIEW as open." ;
+    gx:appliesTo gx:Case,
+        gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "legacy_batch/shift_reconciliation.py" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_05> a gx:BusinessRule ;
+    rdfs:label "LEG-05" ;
+    rdfs:comment "The three as-found implementations are unsynchronised and none is declared authoritative; which one is correct is a decision (RC-3), not an engineering choice. 0 of 125 baseline cases exceed 50,000." ;
+    gx:appliesTo gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_06> a gx:BusinessRule ;
+    rdfs:label "LEG-06" ;
+    rdfs:comment "The legacy month-end SQL report LEFT JOINs events and inflates SUM(amount) by 19.3 % (742,956.61 vs 622,826.44 on the baseline). The correct reference total is 622,826.44 for 125 cases." ;
+    gx:appliesTo gx:Case,
+        gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "hub/metrics/registry.py",
+        "sql/legacy_reports.sql" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_07> a gx:BusinessRule ;
+    rdfs:label "LEG-07" ;
+    rdfs:comment "Legacy reconcile overwrites processing_status in place; every REPLAY becomes DUPLICATE without content comparison; invalid gateway events are counted but not stored; the source contract is not enforced; the Java reconciler skips unparsable amounts and uses double arithmetic." ;
+    gx:appliesTo gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/partner_feeds.py",
+        "docs/06-root-cause/confirmed-root-causes.md",
+        "legacy_java/ReconcileLegacy.java" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_08> a gx:BusinessRule ;
+    rdfs:label "LEG-08" ;
+    rdfs:comment "Case state is a mutable snapshot: version = 1 for 125/125; the creation event stores the CURRENT status; only two event types exist (CASE_CREATED 125, STATUS_REVIEWED 20); 8 REOPENED cases have 0 reopen events; no closure, evidence or approver timestamp exists anywhere." ;
+    gx:appliesTo gx:Case,
+        gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/06-root-cause/confirmed-root-causes.md" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/LEG_09> a gx:BusinessRule ;
+    rdfs:label "LEG-09" ;
+    rdfs:comment "A completion flag is interpreted differently in MES and QA records (documented organisational issue); local interpretations of 'closed' differ between sites." ;
+    gx:appliesTo gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/business-context.md",
+        "docs/partner-feed-operations.md",
+        "domain-profile.json" ;
+    gx:ruleCategory "legacy_as_found" ;
+    gx:strength "OBSERVED" .
+
+<https://example.org/gxp-hub/id/rule/VAL_01> a gx:BusinessRule ;
+    rdfs:label "VAL-01" ;
+    rdfs:comment "Identifiers match their registered patterns: case ^C[0-9]{8}$; batch ^BT[0-9]{8}$; deviation ^DEV[0-9]{8}$; CAPA ^CAPA[0-9]{8}$; lab result ^LAB[0-9]{8}$; feed item ^(FEED|REPLAY)-[0-9]{9}$; document ^DOC-[0-9]{8}$. A mismatch is the FLAG reason IDENTIFIER_PATTERN." ;
+    gx:appliesTo gx:Batch,
+        gx:CAPA,
+        gx:Case,
+        gx:Deviation,
+        gx:Document,
+        gx:FeedItem,
+        gx:LabResult ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "hub/crosswalk/registry.json",
+        "hub/intake/reasons.py" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_02> a gx:BusinessRule ;
+    rdfs:label "VAL-02" ;
+    rdfs:comment "Timestamps are UTC ISO-8601 (YYYY-MM-DDTHH:MM:SS[.ffffff]Z). Source timestamp, ingestion timestamp and revision date are three distinct clocks and are never conflated." ;
+    gx:appliesTo gx:DecisionEvent,
+        gx:FeedItem,
+        gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/source-systems-and-constraints.md",
+        "hub/policy/clocks.py" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_03> a gx:BusinessRule ;
+    rdfs:label "VAL-03" ;
+    rdfs:comment "Money is exact decimal arithmetic (no float); rounding is ROUND_HALF_EVEN at presentation only; an unparsable amount is an error (UNPARSABLE_AMOUNT), never silently skipped." ;
+    gx:appliesTo gx:FeedItem,
+        gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "hub/metrics/registry.py" ;
+    gx:implements "FR-MET-04" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_04> a gx:BusinessRule ;
+    rdfs:label "VAL-04" ;
+    rdfs:comment "Only schema revisions 1.0, 1.1 and 2.0 are supported; any other revision is UNSUPPORTED_REVISION and is quarantined with a reason code, not merely counted." ;
+    gx:appliesTo gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/source-systems-and-constraints.md" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_05> a gx:BusinessRule ;
+    rdfs:label "VAL-05" ;
+    rdfs:comment "Content hash = sha256 over canonical JSON (UTF-8, sorted keys, no insignificant whitespace) of {schema_rev, payload}; transport fields are excluded. Identity key = sha256 over canonical [source, partner, record_kind, ref_id, source_ts]." ;
+    gx:appliesTo gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_06> a gx:BusinessRule ;
+    rdfs:label "VAL-06" ;
+    rdfs:comment "Matching is exact string equality after Unicode NFC normalisation and trim on registered keys only. 0 hits = UNMATCHED_REF, 1 = link, more than 1 = AMBIGUOUS_MATCH. No fuzzy or similarity matching of any kind." ;
+    gx:appliesTo gx:CrosswalkLink,
+        gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_07> a gx:BusinessRule ;
+    rdfs:label "VAL-07" ;
+    rdfs:comment "Percentiles: median is the mean of the middle two values for even n; p90 is nearest-rank ceil(0.9 n); n = 0 yields null, never 0. (Convention chosen for testability; the owner may change it as policy.)" ;
+    gx:appliesTo gx:MetricValue ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_08> a gx:BusinessRule ;
+    rdfs:label "VAL-08" ;
+    rdfs:comment "A metric whose category is time or age, or whose name/window/denominator/documentation mentions closed, closure, resolved, resolution, approved, approval, cost or handling, cannot be registered without a definition tag." ;
+    gx:appliesTo gx:MetricDefinition ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/rule/VAL_09> a gx:BusinessRule ;
+    rdfs:label "VAL-09" ;
+    rdfs:comment "operating_costs.total_cases is never accepted as 'cases created'; any metric sourced from operating_costs has basis = modelled." ;
+    gx:appliesTo gx:MetricDefinition,
+        gx:OperatingCost ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "hub/metrics/registry.py" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST_NOT" .
+
+<https://example.org/gxp-hub/id/rule/VAL_10> a gx:BusinessRule ;
+    rdfs:label "VAL-10" ;
+    rdfs:comment "Item-level processing order: store raw -> identity/hash comparison (no-op duplicate or conflict) -> validate -> classify -> match -> outcome. A conflict still records validation results in all_reasons." ;
+    gx:appliesTo gx:FeedItem,
+        gx:Run ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md" ;
+    gx:ruleCategory "validation" ;
+    gx:strength "MUST" .
+
+<https://example.org/gxp-hub/id/workflow/WF_DECISION> a gx:Workflow ;
+    rdfs:label "Decision lifecycle" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/workflow/WF_INTAKE> a gx:Workflow ;
+    rdfs:label "Intake pipeline" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/workflow/WF_LEGACY> a gx:Workflow ;
+    rdfs:label "Legacy case workflow" ;
+    rdfs:comment "Eight or more incompatible status vocabularies; CLOSED appears in four. No transition log exists." ;
+    gx:usesVocabulary vc:vocab_case_status .
+
+<https://example.org/gxp-hub/id/workflow/WF_POLICY> a gx:Workflow ;
+    rdfs:label "Policy object lifecycle" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/workflow/WF_RELEASE> a gx:Workflow ;
+    rdfs:label "Release and cutover" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/workflow/WF_RUNS> a gx:Workflow ;
+    rdfs:label "Run jobs" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/workflow/WF_ZONE_H> a gx:Workflow ;
+    rdfs:label "Zone H human-only actions" ;
+    rdfs:comment "" .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_01> a gx:ZoneHAction ;
+    rdfs:label "ZH-01" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_02> a gx:ZoneHAction ;
+    rdfs:label "ZH-02" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_03> a gx:ZoneHAction ;
+    rdfs:label "ZH-03" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_04> a gx:ZoneHAction ;
+    rdfs:label "ZH-04" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_05> a gx:ZoneHAction ;
+    rdfs:label "ZH-05" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_06> a gx:ZoneHAction ;
+    rdfs:label "ZH-06" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_07> a gx:ZoneHAction ;
+    rdfs:label "ZH-07" ;
+    rdfs:comment "Record only; semantics undefined in the spec (RTD-67)." ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_08> a gx:ZoneHAction ;
+    rdfs:label "ZH-08" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_09> a gx:ZoneHAction ;
+    rdfs:label "ZH-09" ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/id/zoneh/ZH_10> a gx:ZoneHAction ;
+    rdfs:label "ZH-10" ;
+    rdfs:comment "Includes rule-row edits and policy withdrawal (FAC-13)." ;
+    gx:holderCount 0 ;
+    gx:requiresNamedHuman true .
+
+<https://example.org/gxp-hub/onto> a owl:Ontology ;
+    rdfs:label "GxP Quality Hub ontology (demo)" ;
+    rdfs:comment "Generated from the semantic layer of gxp-quality-hub-legacy. SYNTHETIC, UNVALIDATED: demo of the model, not a validated GxP record. Statuses carry no business meaning until a policy is adopted (Zone H ZH-05)." ;
+    owl:versionInfo "0.1.0" .
+
+gx:Batch_assay_unit a owl:DatatypeProperty ;
+    rdfs:label "Batch.assay_unit" ;
+    rdfs:comment "Unit of the assay; units differ across inherited practices." ;
+    rdfs:domain gx:Batch ;
+    rdfs:range xsd:string .
+
+gx:Batch_batch_site a owl:DatatypeProperty ;
+    rdfs:label "Batch.batch_site" ;
+    rdfs:comment "Site that produced the batch." ;
+    rdfs:domain gx:Batch ;
+    rdfs:range xsd:string .
+
+gx:Batch_material_id a owl:DatatypeProperty ;
+    rdfs:label "Batch.material_id" ;
+    rdfs:comment "Material produced (foreign key to Material)." ;
+    rdfs:domain gx:Batch ;
+    rdfs:range xsd:string .
+
+gx:Batch_observed_assay a owl:DatatypeProperty ;
+    rdfs:label "Batch.observed_assay" ;
+    rdfs:comment "Measured assay value." ;
+    rdfs:domain gx:Batch ;
+    rdfs:range xsd:string .
+
+gx:Batch_qa_status a owl:ObjectProperty ;
+    rdfs:label "Batch.qa_status" ;
+    rdfs:comment "REVIEW | QA_HOLD | CLOSED (vocab.batch_qa_status). Meaning of CLOSED is not defined." ;
+    rdfs:domain gx:Batch ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_batch_qa_status .
+
+gx:CAPA_action_owner a owl:DatatypeProperty ;
+    rdfs:label "CAPA.action_owner" ;
+    rdfs:comment "Pseudonymous owner/team string (C2); no identity directory exists." ;
+    rdfs:domain gx:CAPA ;
+    rdfs:range xsd:string .
+
+gx:CAPA_deviation_id a owl:DatatypeProperty ;
+    rdfs:label "CAPA.deviation_id" ;
+    rdfs:comment "Deviation the action addresses." ;
+    rdfs:domain gx:CAPA ;
+    rdfs:range xsd:string .
+
+gx:CAPA_due_at a owl:DatatypeProperty ;
+    rdfs:label "CAPA.due_at" ;
+    rdfs:comment "Due timestamp." ;
+    rdfs:domain gx:CAPA ;
+    rdfs:range xsd:string .
+
+gx:CAPA_state a owl:ObjectProperty ;
+    rdfs:label "CAPA.state" ;
+    rdfs:comment "OPEN | OVERDUE | VERIFIED (vocab.capa_state)." ;
+    rdfs:domain gx:CAPA ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_capa_state .
+
+gx:Capability_authority_state a owl:DatatypeProperty ;
+    rdfs:label "Capability.authority_state" ;
+    rdfs:comment "shadow | authoritative (vocab.capability_authority)." ;
+    rdfs:domain gx:Capability ;
+    rdfs:range xsd:string .
+
+gx:CaseState_cycle a owl:DatatypeProperty ;
+    rdfs:label "CaseState.cycle" ;
+    rdfs:comment "Current reopen cycle." ;
+    rdfs:domain gx:CaseState ;
+    rdfs:range xsd:string .
+
+gx:CaseState_last_seq a owl:DatatypeProperty ;
+    rdfs:label "CaseState.last_seq" ;
+    rdfs:comment "Sequence number of the last folded event." ;
+    rdfs:domain gx:CaseState ;
+    rdfs:range xsd:string .
+
+gx:CaseState_state a owl:DatatypeProperty ;
+    rdfs:label "CaseState.state" ;
+    rdfs:comment "Current state (vocab.case_status)." ;
+    rdfs:domain gx:CaseState ;
+    rdfs:range xsd:string .
+
+gx:Case_account_id a owl:DatatypeProperty ;
+    rdfs:label "Case.account_id" ;
+    rdfs:comment "Pseudonymous account reference (ACCT-nnnnnn); quasi-identifier (C2)." ;
+    rdfs:domain gx:Case ;
+    rdfs:range xsd:string .
+
+gx:Case_amount a owl:DatatypeProperty ;
+    rdfs:label "Case.amount" ;
+    rdfs:comment "Monetary value used by the approval/priority rules and month-end totals. Currency is not stored on the row." ;
+    rdfs:domain gx:Case ;
+    rdfs:range xsd:string .
+
+gx:Case_created_at a owl:DatatypeProperty ;
+    rdfs:label "Case.created_at" ;
+    rdfs:comment "UTC ISO-8601 receipt timestamp." ;
+    rdfs:domain gx:Case ;
+    rdfs:range xsd:string .
+
+gx:Case_region a owl:ObjectProperty ;
+    rdfs:label "Case.region" ;
+    rdfs:comment "AMER | APAC | EMEA. Drives the regional approval limit in the rule sets." ;
+    rdfs:domain gx:Case ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_region .
+
+gx:Case_segment a owl:ObjectProperty ;
+    rdfs:label "Case.segment" ;
+    rdfs:comment "Customer/workflow segment: enterprise, legacy-v1, priority, regulated, standard. 'legacy-v1' is the parallel workflow for older customers, which must not be changed (BR-11)." ;
+    rdfs:domain gx:Case ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_case_segment .
+
+gx:Case_severity a owl:ObjectProperty ;
+    rdfs:label "Case.severity" ;
+    rdfs:comment "CRITICAL | HIGH | MEDIUM | LOW." ;
+    rdfs:domain gx:Case ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_severity .
+
+gx:Case_site a owl:ObjectProperty ;
+    rdfs:label "Case.site" ;
+    rdfs:comment "Operating site alias (BR-SP, DE-BY, GB-ENG, IN-BLR, JP-KN, US-TX). Aliases are not mapped to a master site list (unknown)." ;
+    rdfs:domain gx:Case ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_site .
+
+gx:Case_status a owl:ObjectProperty ;
+    rdfs:label "Case.status" ;
+    rdfs:comment "Current legacy status (vocab.case_status). A snapshot; history is not kept in the legacy system." ;
+    rdfs:domain gx:Case ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_case_status .
+
+gx:Case_version a owl:DatatypeProperty ;
+    rdfs:label "Case.version" ;
+    rdfs:comment "Row version; equals 1 for all 125 baseline cases and is never incremented (evidence of mutable-snapshot design)." ;
+    rdfs:domain gx:Case ;
+    rdfs:range xsd:string .
+
+gx:CrossVocabularyMappingPolicy a owl:Class ;
+    rdfs:comment "Vocabularies are never mapped to each other automatically. A mapping exists only as an adopted PolicyObject (Zone H, ZH-05)." .
+
+gx:CrosswalkLink_creator_kind a owl:DatatypeProperty ;
+    rdfs:label "CrosswalkLink.creator_kind" ;
+    rdfs:comment "rule | human. A human link requires a non-empty reason." ;
+    rdfs:domain gx:CrosswalkLink ;
+    rdfs:range xsd:string .
+
+gx:CrosswalkLink_key_used a owl:DatatypeProperty ;
+    rdfs:label "CrosswalkLink.key_used" ;
+    rdfs:comment "The registered key that justified the link." ;
+    rdfs:domain gx:CrosswalkLink ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_actor a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.actor" ;
+    rdfs:comment "Principal that caused the event." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_actor_kind a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.actor_kind" ;
+    rdfs:comment "human | rule | system (vocab.actor_kind). Zone H event types require human." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_basis a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.basis" ;
+    rdfs:comment "Reason/basis text, at most 2000 characters." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_case_id a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.case_id" ;
+    rdfs:comment "Case the event belongs to." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_closure_check a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.closure_check" ;
+    rdfs:comment "passed | exception | not_configured." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_cycle a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.cycle" ;
+    rdfs:comment "Reopen cycle number; increments on REOPEN." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_event_type a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.event_type" ;
+    rdfs:comment "See vocab.decision_event_type." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_evidence_refs a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.evidence_refs" ;
+    rdfs:comment "References to EvidenceRecord ids relied on." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_from_state a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.from_state" ;
+    rdfs:comment "State before (nullable for non-state events)." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_holder_check_ref a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.holder_check_ref" ;
+    rdfs:comment "Audit reference to the Zone H holder check; required for Zone H event types." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_mode_at_write a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.mode_at_write" ;
+    rdfs:comment "Disposition recording mode in force when written (event | external_ref)." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_occurred_at a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.occurred_at" ;
+    rdfs:comment "When it happened (never earlier than the previous event of the case)." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_prev_hash_and_hash a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.prev_hash_and_hash" ;
+    rdfs:comment "Hash chain linking events (tamper evidence)." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_recorded_at a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.recorded_at" ;
+    rdfs:comment "Server UTC time of recording; not client-settable." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:DecisionEvent_to_state a owl:DatatypeProperty ;
+    rdfs:label "DecisionEvent.to_state" ;
+    rdfs:comment "State after; required when the event affects state." ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range xsd:string .
+
+gx:Deviation_batch_id a owl:DatatypeProperty ;
+    rdfs:label "Deviation.batch_id" ;
+    rdfs:comment "Batch affected." ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range xsd:string .
+
+gx:Deviation_classification a owl:ObjectProperty ;
+    rdfs:label "Deviation.classification" ;
+    rdfs:comment "CRITICAL | MAJOR | MINOR (vocab.deviation_classification)." ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_deviation_classification .
+
+gx:Deviation_opened_at a owl:DatatypeProperty ;
+    rdfs:label "Deviation.opened_at" ;
+    rdfs:comment "UTC timestamp when the deviation was opened." ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range xsd:string .
+
+gx:Deviation_root_cause a owl:ObjectProperty ;
+    rdfs:label "Deviation.root_cause" ;
+    rdfs:comment "Free text; nullable. 8 of 12 CLOSED baseline deviations have none (K-17 = 66.7 %)." ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_quality_fault .
+
+gx:Deviation_status a owl:ObjectProperty ;
+    rdfs:label "Deviation.status" ;
+    rdfs:comment "OPEN | INVESTIGATION | CLOSED (vocab.deviation_status)." ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_deviation_status .
+
+gx:Document_access_level a owl:DatatypeProperty ;
+    rdfs:label "Document.access_level" ;
+    rdfs:comment "restricted | operations | engineering | quality (restricted = 328 of 1,200)." ;
+    rdfs:domain gx:Document ;
+    rdfs:range xsd:string .
+
+gx:Document_doc_type a owl:DatatypeProperty ;
+    rdfs:label "Document.doc_type" ;
+    rdfs:comment "sop | coa | batch-record." ;
+    rdfs:domain gx:Document ;
+    rdfs:range xsd:string .
+
+gx:Document_ocr_confidence a owl:DatatypeProperty ;
+    rdfs:label "Document.ocr_confidence" ;
+    rdfs:comment "Nullable; NULL means unknown." ;
+    rdfs:domain gx:Document ;
+    rdfs:range xsd:string .
+
+gx:Document_reference a owl:DatatypeProperty ;
+    rdfs:label "Document.reference" ;
+    rdfs:comment "Case or object referenced; only 30 of 1,200 resolve today." ;
+    rdfs:domain gx:Document ;
+    rdfs:range xsd:string .
+
+gx:EvidenceRecord_access_level a owl:DatatypeProperty ;
+    rdfs:label "EvidenceRecord.access_level" ;
+    rdfs:comment "Defaults to restricted (deny by default)." ;
+    rdfs:domain gx:EvidenceRecord ;
+    rdfs:range xsd:string .
+
+gx:EvidenceRecord_kind a owl:DatatypeProperty ;
+    rdfs:label "EvidenceRecord.kind" ;
+    rdfs:comment "document | intake_item | crosswalk_object | external_ref." ;
+    rdfs:domain gx:EvidenceRecord ;
+    rdfs:range xsd:string .
+
+gx:EvidenceRecord_source_ref_and_hash a owl:DatatypeProperty ;
+    rdfs:label "EvidenceRecord.source_ref_and_hash" ;
+    rdfs:comment "Where the evidence lives and its content hash." ;
+    rdfs:domain gx:EvidenceRecord ;
+    rdfs:range xsd:string .
+
+gx:FeedItem_processing_status a owl:DatatypeProperty ;
+    rdfs:label "FeedItem.processing_status" ;
+    rdfs:comment "Legacy: NEW | RETRY | REPLAY, overwritten in place (a defect)." ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range xsd:string .
+
+gx:FeedItem_raw_json a owl:DatatypeProperty ;
+    rdfs:label "FeedItem.raw_json" ;
+    rdfs:comment "Original payload. Treated as UNTRUSTED text." ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range xsd:string .
+
+gx:FeedItem_record_kind a owl:DatatypeProperty ;
+    rdfs:label "FeedItem.record_kind" ;
+    rdfs:comment "OOS_RESULT | DEVIATION | CAPA_UPDATE (vocab.partner_record_kind)." ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range xsd:string .
+
+gx:FeedItem_schema_rev a owl:DatatypeProperty ;
+    rdfs:label "FeedItem.schema_rev" ;
+    rdfs:comment "Source schema revision." ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range xsd:string .
+
+gx:FeedItem_source_ts_vs_ingest_ts a owl:DatatypeProperty ;
+    rdfs:label "FeedItem.source_ts_vs_ingest_ts" ;
+    rdfs:comment "Distinct clocks: when the source says it happened vs when it was ingested. 26.1 % of baseline delays are negative." ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range xsd:string .
+
+gx:HumanHolder a owl:Class .
+
+gx:IntakeOutcome_counts_toward_totals a owl:DatatypeProperty ;
+    rdfs:label "IntakeOutcome.counts_toward_totals" ;
+    rdfs:comment "False for NOOP_DUPLICATE." ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range xsd:string .
+
+gx:IntakeOutcome_outcome a owl:DatatypeProperty ;
+    rdfs:label "IntakeOutcome.outcome" ;
+    rdfs:comment "See vocab.intake_outcome." ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range xsd:string .
+
+gx:IntakeOutcome_primary_reason a owl:DatatypeProperty ;
+    rdfs:label "IntakeOutcome.primary_reason" ;
+    rdfs:comment "First applicable reason in the fixed precedence (vocab.intake_reason)." ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range xsd:string .
+
+gx:IntakeOutcome_queue a owl:DatatypeProperty ;
+    rdfs:label "IntakeOutcome.queue" ;
+    rdfs:comment "Exactly one queue (vocab.intake_queue)." ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range xsd:string .
+
+gx:LabResult_analyte a owl:DatatypeProperty ;
+    rdfs:label "LabResult.analyte" ;
+    rdfs:comment "Substance/property measured." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range xsd:string .
+
+gx:LabResult_batch_id a owl:DatatypeProperty ;
+    rdfs:label "LabResult.batch_id" ;
+    rdfs:comment "Batch tested." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range xsd:string .
+
+gx:LabResult_measured_at a owl:DatatypeProperty ;
+    rdfs:label "LabResult.measured_at" ;
+    rdfs:comment "UTC timestamp of measurement." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range xsd:string .
+
+gx:LabResult_result_value a owl:DatatypeProperty ;
+    rdfs:label "LabResult.result_value" ;
+    rdfs:comment "Numeric result; nullable (a pending result has no value)." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range xsd:string .
+
+gx:LabResult_test_status a owl:ObjectProperty ;
+    rdfs:label "LabResult.test_status" ;
+    rdfs:comment "PENDING | OOS | VALID | INVALID (vocab.lab_test_status)." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range skos:Concept ;
+    gx:statusVocabulary vc:vocab_lab_test_status .
+
+gx:LabResult_unit a owl:DatatypeProperty ;
+    rdfs:label "LabResult.unit" ;
+    rdfs:comment "Unit of the result." ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range xsd:string .
+
+gx:Material_material_name a owl:DatatypeProperty ;
+    rdfs:label "Material.material_name" ;
+    rdfs:comment "Name of the material." ;
+    rdfs:domain gx:Material ;
+    rdfs:range xsd:string .
+
+gx:Material_source_site a owl:DatatypeProperty ;
+    rdfs:label "Material.source_site" ;
+    rdfs:comment "Originating site." ;
+    rdfs:domain gx:Material ;
+    rdfs:range xsd:string .
+
+gx:Material_spec_version a owl:DatatypeProperty ;
+    rdfs:label "Material.spec_version" ;
+    rdfs:comment "Specification version in force for the material." ;
+    rdfs:domain gx:Material ;
+    rdfs:range xsd:string .
+
+gx:MetricDefinition_basis a owl:DatatypeProperty ;
+    rdfs:label "MetricDefinition.basis" ;
+    rdfs:comment "event_derived | modelled." ;
+    rdfs:domain gx:MetricDefinition ;
+    rdfs:range xsd:string .
+
+gx:MetricDefinition_category a owl:DatatypeProperty ;
+    rdfs:label "MetricDefinition.category" ;
+    rdfs:comment "time | count | money | rate | age." ;
+    rdfs:domain gx:MetricDefinition ;
+    rdfs:range xsd:string .
+
+gx:PolicyEvent_authority_ref a owl:DatatypeProperty ;
+    rdfs:label "PolicyEvent.authority_ref" ;
+    rdfs:comment "Mandatory, non-empty reference to the human authority for the change. The product cannot verify it." ;
+    rdfs:domain gx:PolicyEvent ;
+    rdfs:range xsd:string .
+
+gx:PolicyEvent_event_type a owl:DatatypeProperty ;
+    rdfs:label "PolicyEvent.event_type" ;
+    rdfs:comment "See vocab.policy_event_type." ;
+    rdfs:domain gx:PolicyEvent ;
+    rdfs:range xsd:string .
+
+gx:PolicyException_outcome a owl:DatatypeProperty ;
+    rdfs:label "PolicyException.outcome" ;
+    rdfs:comment "REVIEW | OPEN | WAIVED | BLOCKED (vocab.policy_exception_outcome)." ;
+    rdfs:domain gx:PolicyException ;
+    rdfs:range xsd:string .
+
+gx:PolicyException_policy_code a owl:DatatypeProperty ;
+    rdfs:label "PolicyException.policy_code" ;
+    rdfs:comment "One of qa_signature, oos_hold, sop_effective_date, electronic_record_retention." ;
+    rdfs:domain gx:PolicyException ;
+    rdfs:range xsd:string .
+
+gx:PolicyObject_definition_tag a owl:DatatypeProperty ;
+    rdfs:label "PolicyObject.definition_tag" ;
+    rdfs:comment "Label that figures must carry, e.g. D-OPS, D-EVID, D-FIN." ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range xsd:string .
+
+gx:PolicyObject_effective_window a owl:DatatypeProperty ;
+    rdfs:label "PolicyObject.effective_window" ;
+    rdfs:comment "effective_from / effective_to." ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range xsd:string .
+
+gx:PolicyObject_kind a owl:DatatypeProperty ;
+    rdfs:label "PolicyObject.kind" ;
+    rdfs:comment "DEFINITION | CLOSURE | CLOCK | CONSISTENCY | CUTOFF (vocab.policy_kind)." ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range xsd:string .
+
+gx:PolicyObject_owner a owl:DatatypeProperty ;
+    rdfs:label "PolicyObject.owner" ;
+    rdfs:comment "Defaults to 'unassigned'." ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range xsd:string .
+
+gx:PolicyObject_status a owl:DatatypeProperty ;
+    rdfs:label "PolicyObject.status" ;
+    rdfs:comment "candidate | adopted | accepted-open (vocab.policy_status). 'accepted-open' means a human recorded that the question is deliberately undecided." ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range xsd:string .
+
+gx:Principal_actor_kind a owl:DatatypeProperty ;
+    rdfs:label "Principal.actor_kind" ;
+    rdfs:comment "human | service | rule | system." ;
+    rdfs:domain gx:Principal ;
+    rdfs:range xsd:string .
+
+gx:Principal_roles a owl:DatatypeProperty ;
+    rdfs:label "Principal.roles" ;
+    rdfs:comment "reviewer, quality_lead, compliance, finance_read, integration, dispositioner (vocab.role)." ;
+    rdfs:domain gx:Principal ;
+    rdfs:range xsd:string .
+
+gx:REL_01 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "is made from" ;
+    rdfs:domain gx:Batch ;
+    rdfs:range gx:Material ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "legacy_fk" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/data-dictionary.md" ;
+    gx:joinKey "batch_records.material_id = materials.material_id" .
+
+gx:REL_02 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "tests" ;
+    rdfs:domain gx:LabResult ;
+    rdfs:range gx:Batch ;
+    gx:cardinality "many-to-one" ;
+    gx:crosswalkLinkType "LT-03" ;
+    gx:enforcement "legacy_fk" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-contracts.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "lab_results.batch_id = batch_records.batch_id" .
+
+gx:REL_03 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "concerns" ;
+    rdfs:domain gx:Deviation ;
+    rdfs:range gx:Batch ;
+    gx:cardinality "many-to-one" ;
+    gx:crosswalkLinkType "LT-01" ;
+    gx:enforcement "legacy_fk" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-contracts.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "deviations.batch_id = batch_records.batch_id" .
+
+gx:REL_04 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "corrects" ;
+    rdfs:domain gx:CAPA ;
+    rdfs:range gx:Deviation ;
+    gx:cardinality "many-to-one" ;
+    gx:crosswalkLinkType "LT-02" ;
+    gx:enforcement "legacy_fk" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-contracts.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "capa_actions.deviation_id = deviations.deviation_id" .
+
+gx:REL_05 a owl:ObjectProperty ;
+    rdfs:label "relates to (human-asserted)" ;
+    rdfs:domain gx:Case ;
+    rdfs:range gx:Batch ;
+    gx:cardinality "many-to-many (unconstrained)" ;
+    gx:crosswalkLinkType "LT-06" ;
+    gx:enforcement "crosswalk_human" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "docs/12-specs/features/f05-identity-crosswalk.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "no key exists; created only by an authenticated human with a reason" .
+
+gx:REL_06 a owl:ObjectProperty ;
+    rdfs:label "relates to (human-asserted)" ;
+    rdfs:domain gx:Case ;
+    rdfs:range gx:Deviation ;
+    gx:cardinality "many-to-many (unconstrained)" ;
+    gx:crosswalkLinkType "LT-06" ;
+    gx:enforcement "crosswalk_human" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/crosswalk/registry.json" ;
+    gx:joinKey "human decision (no key exists)" .
+
+gx:REL_07 a owl:ObjectProperty ;
+    rdfs:label "relates to (human-asserted)" ;
+    rdfs:domain gx:Case ;
+    rdfs:range gx:CAPA ;
+    gx:cardinality "many-to-many (unconstrained)" ;
+    gx:crosswalkLinkType "LT-06" ;
+    gx:enforcement "crosswalk_human" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/crosswalk/registry.json" ;
+    gx:joinKey "human decision (no key exists)" .
+
+gx:REL_08 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "refers to" ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range gx:Case ;
+    gx:cardinality "many-to-one (zero or one match required)" ;
+    gx:crosswalkLinkType "LT-04" ;
+    gx:enforcement "crosswalk_rule" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/12-specs/business-rules.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "partner_feeds.ref_id = cases.id (exact string equality after NFC + trim)" .
+
+gx:REL_09 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "references" ;
+    rdfs:domain gx:Document ;
+    rdfs:range gx:Case ;
+    gx:cardinality "many-to-one" ;
+    gx:crosswalkLinkType "LT-05" ;
+    gx:enforcement "crosswalk_rule" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "hub/crosswalk/registry.json" ;
+    gx:joinKey "document.reference = cases.id" .
+
+gx:REL_10 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "originates from" ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range gx:SourceSystem ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "none_in_legacy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/source-systems-and-constraints.md" ;
+    gx:joinKey "partner / source name" .
+
+gx:REL_11 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "is validated against" ;
+    rdfs:domain gx:FeedItem ;
+    rdfs:range gx:SourceContract ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "hub/config.py" ;
+    gx:joinKey "source -> contract binding (record_only | enforce)" .
+
+gx:REL_12 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "classifies" ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range gx:FeedItem ;
+    gx:cardinality "many-to-one (latest outcome by sequence wins)" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "intake_outcome.raw_id" .
+
+gx:REL_13 a owl:ObjectProperty ;
+    rdfs:label "may link via" ;
+    rdfs:domain gx:IntakeOutcome ;
+    rdfs:range gx:CrosswalkLink ;
+    gx:cardinality "one-to-zero-or-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "matched_link" .
+
+gx:REL_14 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "is recorded about" ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range gx:Case ;
+    gx:cardinality "many-to-one (gapless seq per case)" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "case_id + seq" .
+
+gx:REL_15 a owl:ObjectProperty ;
+    rdfs:label "cites" ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range gx:EvidenceRecord ;
+    gx:cardinality "many-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "evidence_refs" .
+
+gx:REL_16 a owl:ObjectProperty ;
+    rdfs:label "is folded from" ;
+    rdfs:domain gx:CaseState ;
+    rdfs:range gx:DecisionEvent ;
+    gx:cardinality "one-to-many" ;
+    gx:enforcement "derived" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/20-application/state-model.md" ;
+    gx:joinKey "case_id" .
+
+gx:REL_17 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "was authorised by" ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range gx:AuditRecord ;
+    gx:cardinality "many-to-one (Zone H types only)" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "holder_check_ref" .
+
+gx:REL_18 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "corrects" ;
+    rdfs:domain gx:DecisionEvent ;
+    rdfs:range gx:DecisionEvent ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md" ;
+    gx:joinKey "CORRECTION event references corrected event_id" .
+
+gx:REL_19 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "points at" ;
+    rdfs:domain gx:EvidenceRecord ;
+    rdfs:range gx:Document ;
+    gx:cardinality "many-to-one (kind = document)" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "inference" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "source_ref + source_hash" .
+
+gx:REL_20 a owl:ObjectProperty ;
+    rdfs:label "is recorded as" ;
+    rdfs:domain gx:ZoneHAction ;
+    rdfs:range gx:DecisionEvent ;
+    gx:cardinality "one-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/gate/actions.py" ;
+    gx:joinKey "event types CLOSE_EXCEPTION, DISPOSITION_RECORDED, DISPOSITION_REFERENCED, QA_RELEASE_RECORDED, ESIGNATURE_RECORDED" .
+
+gx:REL_21 a owl:ObjectProperty ;
+    rdfs:label "is recorded as" ;
+    rdfs:domain gx:ZoneHAction ;
+    rdfs:range gx:PolicyEvent ;
+    gx:cardinality "one-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/gate/actions.py" ;
+    gx:joinKey "policy_events.authority_ref (non-empty) + holder_check_ref" .
+
+gx:REL_22 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "changes" ;
+    rdfs:domain gx:PolicyEvent ;
+    rdfs:range gx:PolicyObject ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "policy_ref" .
+
+gx:REL_23 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "belongs to" ;
+    rdfs:domain gx:RuleRow ;
+    rdfs:range gx:RuleSet ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "(ruleset_id, version)" .
+
+gx:REL_24 a owl:ObjectProperty ;
+    rdfs:label "is activated for a function by" ;
+    rdfs:domain gx:RuleSet ;
+    rdfs:range gx:PolicyEvent ;
+    gx:cardinality "one active set per function" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/final-prd/final-capability-map.md" ;
+    gx:joinKey "active_ruleset.function" .
+
+gx:REL_25 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "explains an evaluation of" ;
+    rdfs:domain gx:RuleTrace ;
+    rdfs:range gx:Case ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/20-application/state-model.md" ;
+    gx:joinKey "case + function + rule set" .
+
+gx:REL_26 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "was produced by" ;
+    rdfs:domain gx:RuleTrace ;
+    rdfs:range gx:RuleSet ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/20-application/state-model.md" ;
+    gx:joinKey "ruleset_ref" .
+
+gx:REL_27 a owl:ObjectProperty ;
+    rdfs:label "gives meaning to" ;
+    rdfs:domain gx:PolicyObject ;
+    rdfs:range gx:MetricDefinition ;
+    gx:cardinality "many-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "hub/metrics/registry.py" ;
+    gx:joinKey "definition_tag" .
+
+gx:REL_28 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "is an instance of" ;
+    rdfs:domain gx:MetricValue ;
+    rdfs:range gx:MetricDefinition ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "(metric_id, metric_version)" .
+
+gx:REL_29 a owl:ObjectProperty ;
+    rdfs:label "is computed from" ;
+    rdfs:domain gx:MetricValue ;
+    rdfs:range gx:DecisionEvent ;
+    gx:cardinality "many-to-many" ;
+    gx:enforcement "derived" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/metrics/registry.py" ;
+    gx:joinKey "inputs_hash" .
+
+gx:REL_30 a owl:ObjectProperty ;
+    rdfs:label "is modelled from" ;
+    rdfs:domain gx:MetricDefinition ;
+    rdfs:range gx:OperatingCost ;
+    gx:cardinality "many-to-many" ;
+    gx:enforcement "derived" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "hub/metrics/registry.py" ;
+    gx:joinKey "basis = modelled" .
+
+gx:REL_31 a owl:ObjectProperty ;
+    rdfs:label "stamps" ;
+    rdfs:domain gx:Run ;
+    rdfs:range gx:FeedItem ;
+    gx:cardinality "one-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:joinKey "run_id" .
+
+gx:REL_32 a owl:ObjectProperty ;
+    rdfs:label "performs" ;
+    rdfs:domain gx:Principal ;
+    rdfs:range gx:AuditRecord ;
+    gx:cardinality "one-to-many" ;
+    gx:enforcement "hub_constraint" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/security/authz.py" ;
+    gx:joinKey "actor" .
+
+gx:REL_33 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "documents a behaviour difference of" ;
+    rdfs:domain gx:DeviationRegisterEntry ;
+    rdfs:range gx:Capability ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "none_in_legacy" ;
+    gx:epistemicStatus "inference" ;
+    gx:evidence "docs/16-repo-validation/behavior-difference-report.md",
+        "docs/final-prd/final-capability-map.md" ;
+    gx:joinKey "DV id -> capability affected" .
+
+gx:REL_34 a owl:ObjectProperty ;
+    rdfs:label "is governed by access level of" ;
+    rdfs:domain gx:Document ;
+    rdfs:range gx:Principal ;
+    gx:cardinality "many-to-many via role mapping" ;
+    gx:enforcement "none_in_legacy" ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/11-data-context/metadata-model.md" ;
+    gx:joinKey "access_level -> role (proposal A-11-09)" .
+
+gx:REL_35 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "affects" ;
+    rdfs:domain gx:UpstreamOutage ;
+    rdfs:range gx:SourceSystem ;
+    gx:cardinality "many-to-one" ;
+    gx:enforcement "none_in_legacy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:joinKey "system_name" .
+
+gx:REL_36 a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "refers to" ;
+    rdfs:domain gx:PolicyException ;
+    rdfs:range gx:Case ;
+    gx:cardinality "many-to-one (99.11 % unmatched)" ;
+    gx:enforcement "none_in_legacy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:joinKey "policy_exceptions.ref_id = cases.id (no FK)" .
+
+gx:ReferenceVersion_data_json a owl:DatatypeProperty ;
+    rdfs:label "ReferenceVersion.data_json" ;
+    rdfs:comment "Payload of the reference value." ;
+    rdfs:domain gx:ReferenceVersion ;
+    rdfs:range xsd:string .
+
+gx:ReferenceVersion_valid_from a owl:DatatypeProperty ;
+    rdfs:label "ReferenceVersion.valid_from" ;
+    rdfs:comment "Start of validity." ;
+    rdfs:domain gx:ReferenceVersion ;
+    rdfs:range xsd:string .
+
+gx:ReferenceVersion_valid_to a owl:DatatypeProperty ;
+    rdfs:label "ReferenceVersion.valid_to" ;
+    rdfs:comment "End of validity; windows overlap, so interpretation rules are needed." ;
+    rdfs:domain gx:ReferenceVersion ;
+    rdfs:range xsd:string .
+
+gx:RuleRow_conditions a owl:DatatypeProperty ;
+    rdfs:label "RuleRow.conditions" ;
+    rdfs:comment "List of {field, op, value}." ;
+    rdfs:domain gx:RuleRow ;
+    rdfs:range xsd:string .
+
+gx:RuleRow_is_default a owl:DatatypeProperty ;
+    rdfs:label "RuleRow.is_default" ;
+    rdfs:comment "Marks the fallback row; an outcome produced by it carries the defaulted marker." ;
+    rdfs:domain gx:RuleRow ;
+    rdfs:range xsd:string .
+
+gx:RuleRow_outcome a owl:DatatypeProperty ;
+    rdfs:label "RuleRow.outcome" ;
+    rdfs:comment "{kind, function, value}." ;
+    rdfs:domain gx:RuleRow ;
+    rdfs:range xsd:string .
+
+gx:RuleSet_functions a owl:DatatypeProperty ;
+    rdfs:label "RuleSet.functions" ;
+    rdfs:comment "Which decision functions the set answers (e.g. approval, priority, manual-review)." ;
+    rdfs:domain gx:RuleSet ;
+    rdfs:range xsd:string .
+
+gx:RuleSet_origin a owl:DatatypeProperty ;
+    rdfs:label "RuleSet.origin" ;
+    rdfs:comment "as-found | custom (vocab.ruleset_origin). As-found sets are read-only." ;
+    rdfs:domain gx:RuleSet ;
+    rdfs:range xsd:string .
+
+gx:RuleTrace_flag_state a owl:DatatypeProperty ;
+    rdfs:label "RuleTrace.flag_state" ;
+    rdfs:comment "Flags start open; human actions append flag_action rows." ;
+    rdfs:domain gx:RuleTrace ;
+    rdfs:range xsd:string .
+
+gx:Run_job a owl:DatatypeProperty ;
+    rdfs:label "Run.job" ;
+    rdfs:comment "See vocab.run_job." ;
+    rdfs:domain gx:Run ;
+    rdfs:range xsd:string .
+
+gx:Run_trigger a owl:DatatypeProperty ;
+    rdfs:label "Run.trigger" ;
+    rdfs:comment "manual | scheduled." ;
+    rdfs:domain gx:Run ;
+    rdfs:range xsd:string .
+
+gx:SOP_effective_at a owl:DatatypeProperty ;
+    rdfs:label "SOP.effective_at" ;
+    rdfs:comment "Start of effectiveness." ;
+    rdfs:domain gx:SOP ;
+    rdfs:range xsd:string .
+
+gx:SOP_retired_at a owl:DatatypeProperty ;
+    rdfs:label "SOP.retired_at" ;
+    rdfs:comment "End of effectiveness; nullable (still in force)." ;
+    rdfs:domain gx:SOP ;
+    rdfs:range xsd:string .
+
+gx:Site_region a owl:DatatypeProperty ;
+    rdfs:label "Site.region" ;
+    rdfs:comment "AMER | APAC | EMEA." ;
+    rdfs:domain gx:Site ;
+    rdfs:range xsd:string .
+
+gx:SourceSystem_schema_revisions a owl:DatatypeProperty ;
+    rdfs:label "SourceSystem.schema_revisions" ;
+    rdfs:comment "Supported 1.0, 1.1, 2.0; anything else is UNSUPPORTED_REVISION." ;
+    rdfs:domain gx:SourceSystem ;
+    rdfs:range xsd:string .
+
+gx:ZoneHAction_name a owl:DatatypeProperty ;
+    rdfs:label "ZoneHAction.name" ;
+    rdfs:comment "See vocab.zone_h_action." ;
+    rdfs:domain gx:ZoneHAction ;
+    rdfs:range xsd:string .
+
+gx:ZoneHAction_preconditions a owl:DatatypeProperty ;
+    rdfs:label "ZoneHAction.preconditions" ;
+    rdfs:comment "Interactive human session AND principal in zone_h.holders AND role dispositioner AND re-authentication within the window AND mode permits AND current pack hash (ZH-01..03)." ;
+    rdfs:domain gx:ZoneHAction ;
+    rdfs:range xsd:string .
+
+gx:appliesTo a owl:ObjectProperty .
+
+gx:cardinality a owl:AnnotationProperty ;
+    rdfs:label "cardinality" .
+
+gx:category a owl:AnnotationProperty ;
+    rdfs:label "category" .
+
+gx:computableToday a owl:DatatypeProperty .
+
+gx:countInBaseline a owl:AnnotationProperty .
+
+gx:crosswalkLinkType a owl:AnnotationProperty .
+
+gx:definitionClass a owl:AnnotationProperty .
+
+gx:describesClass a owl:ObjectProperty .
+
+gx:enforcement a owl:AnnotationProperty ;
+    rdfs:label "enforcement" .
+
+gx:epistemicStatus a owl:AnnotationProperty ;
+    rdfs:label "epistemic status" .
+
+gx:evidence a owl:AnnotationProperty ;
+    rdfs:label "evidence reference" .
+
+gx:formula a owl:DatatypeProperty .
+
+gx:holderCount a owl:DatatypeProperty .
+
+gx:identityPattern a owl:AnnotationProperty ;
+    rdfs:label "identity pattern" .
+
+gx:implements a owl:AnnotationProperty .
+
+gx:joinKey a owl:AnnotationProperty ;
+    rdfs:label "join key" .
+
+gx:legacyColumn a owl:AnnotationProperty ;
+    rdfs:label "legacy column" .
+
+gx:legacySource a owl:AnnotationProperty ;
+    rdfs:label "legacy source" .
+
+gx:meaningStatus a owl:AnnotationProperty .
+
+gx:mutability a owl:AnnotationProperty ;
+    rdfs:label "mutability" .
+
+gx:requiresNamedHuman a owl:DatatypeProperty .
+
+gx:roleTag a owl:AnnotationProperty .
+
+gx:ruleCategory a owl:AnnotationProperty .
+
+gx:sensitivity a owl:AnnotationProperty ;
+    rdfs:label "sensitivity class" .
+
+gx:statusVocabulary a owl:AnnotationProperty ;
+    rdfs:label "status vocabulary" .
+
+gx:strength a owl:AnnotationProperty .
+
+gx:unit a owl:DatatypeProperty .
+
+gx:usesVocabulary a owl:ObjectProperty .
+
+<https://example.org/gxp-hub/vocab/vocab_actor_kind/human> a skos:Concept ;
+    skos:inScheme vc:vocab_actor_kind ;
+    skos:prefLabel "human" ;
+    skos:topConceptOf vc:vocab_actor_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_actor_kind/rule> a skos:Concept ;
+    skos:inScheme vc:vocab_actor_kind ;
+    skos:prefLabel "rule" ;
+    skos:topConceptOf vc:vocab_actor_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_actor_kind/service> a skos:Concept ;
+    skos:inScheme vc:vocab_actor_kind ;
+    skos:note "Audit log only." ;
+    skos:prefLabel "service" ;
+    skos:topConceptOf vc:vocab_actor_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_actor_kind/system> a skos:Concept ;
+    skos:inScheme vc:vocab_actor_kind ;
+    skos:prefLabel "system" ;
+    skos:topConceptOf vc:vocab_actor_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_approval_state/APPROVED> a skos:Concept ;
+    skos:inScheme vc:vocab_approval_state ;
+    skos:prefLabel "APPROVED" ;
+    skos:topConceptOf vc:vocab_approval_state .
+
+<https://example.org/gxp-hub/vocab/vocab_approval_state/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_approval_state ;
+    skos:note "Human-only; all 40 release approvals are OPEN." ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_approval_state .
+
+<https://example.org/gxp-hub/vocab/vocab_as_found_ruleset/as_found_batch> a skos:Concept ;
+    skos:inScheme vc:vocab_as_found_ruleset ;
+    skos:note "Night-shift threshold 2,500-8,500; arbitrarily treats REVIEW and HOLD as open/flagged." ;
+    skos:prefLabel "as-found-batch" ;
+    skos:topConceptOf vc:vocab_as_found_ruleset .
+
+<https://example.org/gxp-hub/vocab/vocab_as_found_ruleset/as_found_js> a skos:Concept ;
+    skos:inScheme vc:vocab_as_found_ruleset ;
+    skos:note "Allowed if amount <= regional limit x 1.05; unknown region/year defaults to 999,999." ;
+    skos:prefLabel "as-found-js" ;
+    skos:topConceptOf vc:vocab_as_found_ruleset .
+
+<https://example.org/gxp-hub/vocab/vocab_as_found_ruleset/as_found_python> a skos:Concept ;
+    skos:inScheme vc:vocab_as_found_ruleset ;
+    skos:note "Urgent if severity CRITICAL or amount > 50,000; review if HIGH or ESCALATED; archive if CLOSED; else queue." ;
+    skos:prefLabel "as-found-python" ;
+    skos:topConceptOf vc:vocab_as_found_ruleset .
+
+<https://example.org/gxp-hub/vocab/vocab_audit_outcome/denied> a skos:Concept ;
+    skos:inScheme vc:vocab_audit_outcome ;
+    skos:prefLabel "denied" ;
+    skos:topConceptOf vc:vocab_audit_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_audit_outcome/error> a skos:Concept ;
+    skos:inScheme vc:vocab_audit_outcome ;
+    skos:prefLabel "error" ;
+    skos:topConceptOf vc:vocab_audit_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_audit_outcome/success> a skos:Concept ;
+    skos:inScheme vc:vocab_audit_outcome ;
+    skos:prefLabel "success" ;
+    skos:topConceptOf vc:vocab_audit_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A0> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A0" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A1> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A1" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A2> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A2" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A3> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A3" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A4> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A4" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_autonomy_level/A5> a skos:Concept ;
+    skos:inScheme vc:vocab_autonomy_level ;
+    skos:prefLabel "A5" ;
+    skos:topConceptOf vc:vocab_autonomy_level .
+
+<https://example.org/gxp-hub/vocab/vocab_batch_qa_status/CLOSED> a skos:Concept ;
+    skos:inScheme vc:vocab_batch_qa_status ;
+    skos:note "Same label as CLOSED in other vocabularies, NOT the same meaning. No skos:exactMatch is asserted (ZH-05)." ;
+    skos:prefLabel "CLOSED" ;
+    skos:topConceptOf vc:vocab_batch_qa_status ;
+    gx:countInBaseline 33 .
+
+<https://example.org/gxp-hub/vocab/vocab_batch_qa_status/QA_HOLD> a skos:Concept ;
+    skos:inScheme vc:vocab_batch_qa_status ;
+    skos:prefLabel "QA_HOLD" ;
+    skos:topConceptOf vc:vocab_batch_qa_status ;
+    gx:countInBaseline 42 .
+
+<https://example.org/gxp-hub/vocab/vocab_batch_qa_status/REVIEW> a skos:Concept ;
+    skos:inScheme vc:vocab_batch_qa_status ;
+    skos:prefLabel "REVIEW" ;
+    skos:topConceptOf vc:vocab_batch_qa_status ;
+    gx:countInBaseline 50 .
+
+<https://example.org/gxp-hub/vocab/vocab_calendar_basis/business_calendar> a skos:Concept ;
+    skos:inScheme vc:vocab_calendar_basis ;
+    skos:note "Requires calendar_ref." ;
+    skos:prefLabel "business_calendar" ;
+    skos:topConceptOf vc:vocab_calendar_basis .
+
+<https://example.org/gxp-hub/vocab/vocab_calendar_basis/wall_clock> a skos:Concept ;
+    skos:inScheme vc:vocab_calendar_basis ;
+    skos:prefLabel "wall_clock" ;
+    skos:topConceptOf vc:vocab_calendar_basis .
+
+<https://example.org/gxp-hub/vocab/vocab_capa_state/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_capa_state ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_capa_state ;
+    gx:countInBaseline 7 .
+
+<https://example.org/gxp-hub/vocab/vocab_capa_state/OVERDUE> a skos:Concept ;
+    skos:inScheme vc:vocab_capa_state ;
+    skos:prefLabel "OVERDUE" ;
+    skos:topConceptOf vc:vocab_capa_state ;
+    gx:countInBaseline 6 .
+
+<https://example.org/gxp-hub/vocab/vocab_capa_state/VERIFIED> a skos:Concept ;
+    skos:inScheme vc:vocab_capa_state ;
+    skos:prefLabel "VERIFIED" ;
+    skos:topConceptOf vc:vocab_capa_state ;
+    gx:countInBaseline 8 .
+
+<https://example.org/gxp-hub/vocab/vocab_capability_authority/authoritative> a skos:Concept ;
+    skos:inScheme vc:vocab_capability_authority ;
+    skos:note "Needs a recorded approval_ref; refused without it." ;
+    skos:prefLabel "authoritative" ;
+    skos:topConceptOf vc:vocab_capability_authority .
+
+<https://example.org/gxp-hub/vocab/vocab_capability_authority/shadow> a skos:Concept ;
+    skos:inScheme vc:vocab_capability_authority ;
+    skos:note "Legacy remains authoritative." ;
+    skos:prefLabel "shadow" ;
+    skos:topConceptOf vc:vocab_capability_authority .
+
+<https://example.org/gxp-hub/vocab/vocab_case_segment/enterprise> a skos:Concept ;
+    skos:inScheme vc:vocab_case_segment ;
+    skos:prefLabel "enterprise" ;
+    skos:topConceptOf vc:vocab_case_segment ;
+    gx:countInBaseline 22 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_segment/legacy_v1> a skos:Concept ;
+    skos:inScheme vc:vocab_case_segment ;
+    skos:note "Parallel workflow for older customers; must not be changed or retired by this product (FR-CO-02, BR-11); owner unknown." ;
+    skos:prefLabel "legacy-v1" ;
+    skos:topConceptOf vc:vocab_case_segment ;
+    gx:countInBaseline 23 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_segment/priority> a skos:Concept ;
+    skos:inScheme vc:vocab_case_segment ;
+    skos:prefLabel "priority" ;
+    skos:topConceptOf vc:vocab_case_segment ;
+    gx:countInBaseline 21 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_segment/regulated> a skos:Concept ;
+    skos:inScheme vc:vocab_case_segment ;
+    skos:prefLabel "regulated" ;
+    skos:topConceptOf vc:vocab_case_segment ;
+    gx:countInBaseline 33 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_segment/standard> a skos:Concept ;
+    skos:inScheme vc:vocab_case_segment ;
+    skos:prefLabel "standard" ;
+    skos:topConceptOf vc:vocab_case_segment ;
+    gx:countInBaseline 26 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_status/CLOSED> a skos:Concept ;
+    skos:inScheme vc:vocab_case_status ;
+    skos:note "D-OPS reading used by legacy code: status = 'CLOSED'.",
+        "Same label as CLOSED in other vocabularies, NOT the same meaning. No skos:exactMatch is asserted (ZH-05)." ;
+    skos:prefLabel "CLOSED" ;
+    skos:topConceptOf vc:vocab_case_status ;
+    gx:countInBaseline 36 ;
+    gx:roleTag "closing_label" .
+
+<https://example.org/gxp-hub/vocab/vocab_case_status/ESCALATED> a skos:Concept ;
+    skos:inScheme vc:vocab_case_status ;
+    skos:prefLabel "ESCALATED" ;
+    skos:topConceptOf vc:vocab_case_status ;
+    gx:countInBaseline 9 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_status/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_case_status ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_case_status ;
+    gx:countInBaseline 42 .
+
+<https://example.org/gxp-hub/vocab/vocab_case_status/REOPENED> a skos:Concept ;
+    skos:inScheme vc:vocab_case_status ;
+    skos:note "8 reopened cases have 0 reopen events: marked LEGACY_UNEVIDENCED_REOPEN on import." ;
+    skos:prefLabel "REOPENED" ;
+    skos:topConceptOf vc:vocab_case_status ;
+    gx:countInBaseline 8 ;
+    gx:roleTag "reopened" .
+
+<https://example.org/gxp-hub/vocab/vocab_case_status/UNDER_REVIEW> a skos:Concept ;
+    skos:inScheme vc:vocab_case_status ;
+    skos:prefLabel "UNDER_REVIEW" ;
+    skos:topConceptOf vc:vocab_case_status ;
+    gx:countInBaseline 30 .
+
+<https://example.org/gxp-hub/vocab/vocab_clock_verdict/not_available_event_missing> a skos:Concept ;
+    skos:inScheme vc:vocab_clock_verdict ;
+    skos:prefLabel "not_available_event_missing" ;
+    skos:topConceptOf vc:vocab_clock_verdict .
+
+<https://example.org/gxp-hub/vocab/vocab_clock_verdict/not_available_no_adopted_policy> a skos:Concept ;
+    skos:inScheme vc:vocab_clock_verdict ;
+    skos:prefLabel "not_available_no_adopted_policy" ;
+    skos:topConceptOf vc:vocab_clock_verdict .
+
+<https://example.org/gxp-hub/vocab/vocab_clock_verdict/not_within> a skos:Concept ;
+    skos:inScheme vc:vocab_clock_verdict ;
+    skos:prefLabel "not_within" ;
+    skos:topConceptOf vc:vocab_clock_verdict .
+
+<https://example.org/gxp-hub/vocab/vocab_clock_verdict/within> a skos:Concept ;
+    skos:inScheme vc:vocab_clock_verdict ;
+    skos:prefLabel "within" ;
+    skos:topConceptOf vc:vocab_clock_verdict .
+
+<https://example.org/gxp-hub/vocab/vocab_closure_check/exception> a skos:Concept ;
+    skos:inScheme vc:vocab_closure_check ;
+    skos:prefLabel "exception" ;
+    skos:topConceptOf vc:vocab_closure_check .
+
+<https://example.org/gxp-hub/vocab/vocab_closure_check/not_configured> a skos:Concept ;
+    skos:inScheme vc:vocab_closure_check ;
+    skos:prefLabel "not_configured" ;
+    skos:topConceptOf vc:vocab_closure_check .
+
+<https://example.org/gxp-hub/vocab/vocab_closure_check/passed> a skos:Concept ;
+    skos:inScheme vc:vocab_closure_check ;
+    skos:prefLabel "passed" ;
+    skos:topConceptOf vc:vocab_closure_check .
+
+<https://example.org/gxp-hub/vocab/vocab_closure_unconfigured_behaviour/none> a skos:Concept ;
+    skos:inScheme vc:vocab_closure_unconfigured_behaviour ;
+    skos:note "No check; events flagged closure_check = not_configured." ;
+    skos:prefLabel "none" ;
+    skos:topConceptOf vc:vocab_closure_unconfigured_behaviour .
+
+<https://example.org/gxp-hub/vocab/vocab_closure_unconfigured_behaviour/treat_label_CLOSED_as_closing> a skos:Concept ;
+    skos:inScheme vc:vocab_closure_unconfigured_behaviour ;
+    skos:note "Fail-closed default." ;
+    skos:prefLabel "treat_label_CLOSED_as_closing" ;
+    skos:topConceptOf vc:vocab_closure_unconfigured_behaviour .
+
+<https://example.org/gxp-hub/vocab/vocab_data_classification/C0> a skos:Concept ;
+    skos:inScheme vc:vocab_data_classification ;
+    skos:prefLabel "C0" ;
+    skos:topConceptOf vc:vocab_data_classification .
+
+<https://example.org/gxp-hub/vocab/vocab_data_classification/C1> a skos:Concept ;
+    skos:inScheme vc:vocab_data_classification ;
+    skos:prefLabel "C1" ;
+    skos:topConceptOf vc:vocab_data_classification .
+
+<https://example.org/gxp-hub/vocab/vocab_data_classification/C2> a skos:Concept ;
+    skos:inScheme vc:vocab_data_classification ;
+    skos:prefLabel "C2" ;
+    skos:topConceptOf vc:vocab_data_classification .
+
+<https://example.org/gxp-hub/vocab/vocab_data_classification/C3> a skos:Concept ;
+    skos:inScheme vc:vocab_data_classification ;
+    skos:prefLabel "C3" ;
+    skos:topConceptOf vc:vocab_data_classification .
+
+<https://example.org/gxp-hub/vocab/vocab_data_origin/production> a skos:Concept ;
+    skos:inScheme vc:vocab_data_origin ;
+    skos:prefLabel "production" ;
+    skos:topConceptOf vc:vocab_data_origin .
+
+<https://example.org/gxp-hub/vocab/vocab_data_origin/synthetic> a skos:Concept ;
+    skos:inScheme vc:vocab_data_origin ;
+    skos:note "Only accepted value until real data is approved (HAR-15). Label must be 'synthetic, unvalidated'." ;
+    skos:prefLabel "synthetic" ;
+    skos:topConceptOf vc:vocab_data_origin .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/CASE_CREATED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "CASE_CREATED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/CASE_IMPORTED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Legacy backfill; actor_kind system." ;
+    skos:prefLabel "CASE_IMPORTED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/CLOSE_EXCEPTION> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "CLOSE_EXCEPTION" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/CORRECTION> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "CORRECTION" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/DISPOSITION_RECORDED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "DISPOSITION_RECORDED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/DISPOSITION_REFERENCED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "DISPOSITION_REFERENCED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/ESIGNATURE_RECORDED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Records that an authorised human acted; NOT a cryptographic or legal signature." ;
+    skos:prefLabel "ESIGNATURE_RECORDED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/EVIDENCE_ATTACHED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "EVIDENCE_ATTACHED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/FACT_EVIDENCE_COMPLETE> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Fact (c): evidence-complete." ;
+    skos:prefLabel "FACT_EVIDENCE_COMPLETE" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/FACT_OPS_CLOSED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Fact (b): operations-closed." ;
+    skos:prefLabel "FACT_OPS_CLOSED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/FACT_RECEIVED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Fact (a): receipt of the case. Human-entered only (facts.derivation = human_only)." ;
+    skos:prefLabel "FACT_RECEIVED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/OVERRIDE_RECORDED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "OVERRIDE_RECORDED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/QA_RELEASE_RECORDED> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "QA_RELEASE_RECORDED" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/REOPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:note "Increments cycle." ;
+    skos:prefLabel "REOPEN" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_decision_event_type/STATUS_CHANGE> a skos:Concept ;
+    skos:inScheme vc:vocab_decision_event_type ;
+    skos:prefLabel "STATUS_CHANGE" ;
+    skos:topConceptOf vc:vocab_decision_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_definition_tag/C_EVID> a skos:Concept ;
+    skos:inScheme vc:vocab_definition_tag ;
+    skos:prefLabel "C-EVID" ;
+    skos:topConceptOf vc:vocab_definition_tag .
+
+<https://example.org/gxp-hub/vocab/vocab_definition_tag/C_OPS> a skos:Concept ;
+    skos:inScheme vc:vocab_definition_tag ;
+    skos:prefLabel "C-OPS" ;
+    skos:topConceptOf vc:vocab_definition_tag .
+
+<https://example.org/gxp-hub/vocab/vocab_definition_tag/D_EVID> a skos:Concept ;
+    skos:inScheme vc:vocab_definition_tag ;
+    skos:prefLabel "D-EVID" ;
+    skos:topConceptOf vc:vocab_definition_tag .
+
+<https://example.org/gxp-hub/vocab/vocab_definition_tag/D_FIN> a skos:Concept ;
+    skos:inScheme vc:vocab_definition_tag ;
+    skos:prefLabel "D-FIN" ;
+    skos:topConceptOf vc:vocab_definition_tag .
+
+<https://example.org/gxp-hub/vocab/vocab_definition_tag/D_OPS> a skos:Concept ;
+    skos:inScheme vc:vocab_definition_tag ;
+    skos:prefLabel "D-OPS" ;
+    skos:topConceptOf vc:vocab_definition_tag .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_classification/CRITICAL> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_classification ;
+    skos:prefLabel "CRITICAL" ;
+    skos:topConceptOf vc:vocab_deviation_classification ;
+    gx:countInBaseline 11 .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_classification/MAJOR> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_classification ;
+    skos:prefLabel "MAJOR" ;
+    skos:topConceptOf vc:vocab_deviation_classification ;
+    gx:countInBaseline 15 .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_classification/MINOR> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_classification ;
+    skos:prefLabel "MINOR" ;
+    skos:topConceptOf vc:vocab_deviation_classification ;
+    gx:countInBaseline 16 .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_status/CLOSED> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_status ;
+    skos:note "Same label as CLOSED in other vocabularies, NOT the same meaning. No skos:exactMatch is asserted (ZH-05)." ;
+    skos:prefLabel "CLOSED" ;
+    skos:topConceptOf vc:vocab_deviation_status ;
+    gx:countInBaseline 12 .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_status/INVESTIGATION> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_status ;
+    skos:prefLabel "INVESTIGATION" ;
+    skos:topConceptOf vc:vocab_deviation_status ;
+    gx:countInBaseline 16 .
+
+<https://example.org/gxp-hub/vocab/vocab_deviation_status/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_deviation_status ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_deviation_status ;
+    gx:countInBaseline 14 .
+
+<https://example.org/gxp-hub/vocab/vocab_disposition_mode/event> a skos:Concept ;
+    skos:inScheme vc:vocab_disposition_mode ;
+    skos:note "Decision stored as DISPOSITION_RECORDED; needs disposition.values set." ;
+    skos:prefLabel "event" ;
+    skos:topConceptOf vc:vocab_disposition_mode .
+
+<https://example.org/gxp-hub/vocab/vocab_disposition_mode/external_ref> a skos:Concept ;
+    skos:inScheme vc:vocab_disposition_mode ;
+    skos:note "Only a reference to an external system-of-record decision is stored (verified: false)." ;
+    skos:prefLabel "external_ref" ;
+    skos:topConceptOf vc:vocab_disposition_mode .
+
+<https://example.org/gxp-hub/vocab/vocab_disposition_mode/none> a skos:Concept ;
+    skos:inScheme vc:vocab_disposition_mode ;
+    skos:note "Default. ZH-01..03 return E-GATE-MODE-NONE." ;
+    skos:prefLabel "none" ;
+    skos:topConceptOf vc:vocab_disposition_mode .
+
+<https://example.org/gxp-hub/vocab/vocab_document_access_level/engineering> a skos:Concept ;
+    skos:inScheme vc:vocab_document_access_level ;
+    skos:prefLabel "engineering" ;
+    skos:topConceptOf vc:vocab_document_access_level ;
+    gx:countInBaseline 305 .
+
+<https://example.org/gxp-hub/vocab/vocab_document_access_level/operations> a skos:Concept ;
+    skos:inScheme vc:vocab_document_access_level ;
+    skos:prefLabel "operations" ;
+    skos:topConceptOf vc:vocab_document_access_level ;
+    gx:countInBaseline 295 .
+
+<https://example.org/gxp-hub/vocab/vocab_document_access_level/quality> a skos:Concept ;
+    skos:inScheme vc:vocab_document_access_level ;
+    skos:prefLabel "quality" ;
+    skos:topConceptOf vc:vocab_document_access_level ;
+    gx:countInBaseline 272 .
+
+<https://example.org/gxp-hub/vocab/vocab_document_access_level/restricted> a skos:Concept ;
+    skos:inScheme vc:vocab_document_access_level ;
+    skos:prefLabel "restricted" ;
+    skos:topConceptOf vc:vocab_document_access_level ;
+    gx:countInBaseline 328 .
+
+<https://example.org/gxp-hub/vocab/vocab_document_type/batch_record> a skos:Concept ;
+    skos:inScheme vc:vocab_document_type ;
+    skos:prefLabel "batch-record" ;
+    skos:topConceptOf vc:vocab_document_type .
+
+<https://example.org/gxp-hub/vocab/vocab_document_type/coa> a skos:Concept ;
+    skos:inScheme vc:vocab_document_type ;
+    skos:prefLabel "coa" ;
+    skos:topConceptOf vc:vocab_document_type .
+
+<https://example.org/gxp-hub/vocab/vocab_document_type/sop> a skos:Concept ;
+    skos:inScheme vc:vocab_document_type ;
+    skos:prefLabel "sop" ;
+    skos:topConceptOf vc:vocab_document_type .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/CLOSED> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:note "Same label as CLOSED in other vocabularies, NOT the same meaning. No skos:exactMatch is asserted (ZH-05)." ;
+    skos:prefLabel "CLOSED" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/ESCALATED> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:prefLabel "ESCALATED" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/HOLD> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:prefLabel "HOLD" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/REOPENED> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:prefLabel "REOPENED" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_enterprise_object_status/REVIEW> a skos:Concept ;
+    skos:inScheme vc:vocab_enterprise_object_status ;
+    skos:note "Night-shift job arbitrarily treats REVIEW as open." ;
+    skos:prefLabel "REVIEW" ;
+    skos:topConceptOf vc:vocab_enterprise_object_status .
+
+<https://example.org/gxp-hub/vocab/vocab_epistemic_status/assumption> a skos:Concept ;
+    skos:inScheme vc:vocab_epistemic_status ;
+    skos:prefLabel "assumption" ;
+    skos:topConceptOf vc:vocab_epistemic_status .
+
+<https://example.org/gxp-hub/vocab/vocab_epistemic_status/inference> a skos:Concept ;
+    skos:inScheme vc:vocab_epistemic_status ;
+    skos:prefLabel "inference" ;
+    skos:topConceptOf vc:vocab_epistemic_status .
+
+<https://example.org/gxp-hub/vocab/vocab_epistemic_status/unknown> a skos:Concept ;
+    skos:inScheme vc:vocab_epistemic_status ;
+    skos:prefLabel "unknown" ;
+    skos:topConceptOf vc:vocab_epistemic_status .
+
+<https://example.org/gxp-hub/vocab/vocab_epistemic_status/verified_fact> a skos:Concept ;
+    skos:inScheme vc:vocab_epistemic_status ;
+    skos:prefLabel "verified_fact" ;
+    skos:topConceptOf vc:vocab_epistemic_status .
+
+<https://example.org/gxp-hub/vocab/vocab_evidence_kind/crosswalk_object> a skos:Concept ;
+    skos:inScheme vc:vocab_evidence_kind ;
+    skos:prefLabel "crosswalk_object" ;
+    skos:topConceptOf vc:vocab_evidence_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_evidence_kind/document> a skos:Concept ;
+    skos:inScheme vc:vocab_evidence_kind ;
+    skos:prefLabel "document" ;
+    skos:topConceptOf vc:vocab_evidence_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_evidence_kind/external_ref> a skos:Concept ;
+    skos:inScheme vc:vocab_evidence_kind ;
+    skos:prefLabel "external_ref" ;
+    skos:topConceptOf vc:vocab_evidence_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_evidence_kind/intake_item> a skos:Concept ;
+    skos:inScheme vc:vocab_evidence_kind ;
+    skos:prefLabel "intake_item" ;
+    skos:topConceptOf vc:vocab_evidence_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_hub_queue_state/DISPOSITIONED> a skos:Concept ;
+    skos:inScheme vc:vocab_hub_queue_state ;
+    skos:prefLabel "DISPOSITIONED" ;
+    skos:topConceptOf vc:vocab_hub_queue_state .
+
+<https://example.org/gxp-hub/vocab/vocab_hub_queue_state/INVESTIGATING> a skos:Concept ;
+    skos:inScheme vc:vocab_hub_queue_state ;
+    skos:prefLabel "INVESTIGATING" ;
+    skos:topConceptOf vc:vocab_hub_queue_state .
+
+<https://example.org/gxp-hub/vocab/vocab_hub_queue_state/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_hub_queue_state ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_hub_queue_state .
+
+<https://example.org/gxp-hub/vocab/vocab_hub_queue_state/QA_REVIEW> a skos:Concept ;
+    skos:inScheme vc:vocab_hub_queue_state ;
+    skos:prefLabel "QA_REVIEW" ;
+    skos:topConceptOf vc:vocab_hub_queue_state .
+
+<https://example.org/gxp-hub/vocab/vocab_hub_queue_state/REOPENED> a skos:Concept ;
+    skos:inScheme vc:vocab_hub_queue_state ;
+    skos:prefLabel "REOPENED" ;
+    skos:topConceptOf vc:vocab_hub_queue_state .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_class_to_outcome/EXCEPTION_EXCEPTION> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_class_to_outcome ;
+    skos:prefLabel "EXCEPTION -> EXCEPTION" ;
+    skos:topConceptOf vc:vocab_intake_class_to_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_class_to_outcome/FLAG_VALIDATED_WITH_FLAGS> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_class_to_outcome ;
+    skos:prefLabel "FLAG -> VALIDATED_WITH_FLAGS" ;
+    skos:topConceptOf vc:vocab_intake_class_to_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_class_to_outcome/QUARANTINE_QUARANTINED> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_class_to_outcome ;
+    skos:prefLabel "QUARANTINE -> QUARANTINED" ;
+    skos:topConceptOf vc:vocab_intake_class_to_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_class_to_outcome/no_reason_VALIDATED> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_class_to_outcome ;
+    skos:prefLabel "no reason -> VALIDATED" ;
+    skos:topConceptOf vc:vocab_intake_class_to_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/CONFLICT_RESOLVED> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:note "Requires resolution (accept_revision | keep_original | reject_both), a non-empty reason and a resolver." ;
+    skos:prefLabel "CONFLICT_RESOLVED" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/EXCEPTION> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:prefLabel "EXCEPTION" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/NOOP_DUPLICATE> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:note "Excluded from every queue, total and metric by definition." ;
+    skos:prefLabel "NOOP_DUPLICATE" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/QUARANTINED> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:prefLabel "QUARANTINED" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/VALIDATED> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:prefLabel "VALIDATED" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_outcome/VALIDATED_WITH_FLAGS> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_outcome ;
+    skos:prefLabel "VALIDATED_WITH_FLAGS" ;
+    skos:topConceptOf vc:vocab_intake_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_queue/ambiguous_match> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_queue ;
+    skos:prefLabel "ambiguous_match" ;
+    skos:topConceptOf vc:vocab_intake_queue .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_queue/flagged_value> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_queue ;
+    skos:prefLabel "flagged_value" ;
+    skos:topConceptOf vc:vocab_intake_queue .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_queue/quarantine_invalid> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_queue ;
+    skos:prefLabel "quarantine_invalid" ;
+    skos:topConceptOf vc:vocab_intake_queue .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_queue/revision_review> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_queue ;
+    skos:prefLabel "revision_review" ;
+    skos:topConceptOf vc:vocab_intake_queue .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_queue/unmatched> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_queue ;
+    skos:prefLabel "unmatched" ;
+    skos:topConceptOf vc:vocab_intake_queue .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/AMBIGUOUS_MATCH> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "AMBIGUOUS_MATCH" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/CONTRACT_VIOLATION> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:note "Only when the source contract is bound in enforce mode." ;
+    skos:prefLabel "CONTRACT_VIOLATION" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/IDENTIFIER_PATTERN> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "IDENTIFIER_PATTERN" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/INVALID_JSON> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "INVALID_JSON" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/MISSING_ENVELOPE_FIELD> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "MISSING_ENVELOPE_FIELD" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/MISSING_PAYLOAD_FIELD> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "MISSING_PAYLOAD_FIELD" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/NEGATIVE_VALUE> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "NEGATIVE_VALUE" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/NO_BUSINESS_KEY> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "NO_BUSINESS_KEY" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/REVISED_CONFLICT> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "REVISED_CONFLICT" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNKNOWN_CURRENCY> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNKNOWN_CURRENCY" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNKNOWN_RECORD_KIND> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNKNOWN_RECORD_KIND" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNKNOWN_UNIT> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNKNOWN_UNIT" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNMATCHED_REF> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNMATCHED_REF" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNPARSABLE_AMOUNT> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNPARSABLE_AMOUNT" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_intake_reason/UNSUPPORTED_REVISION> a skos:Concept ;
+    skos:inScheme vc:vocab_intake_reason ;
+    skos:prefLabel "UNSUPPORTED_REVISION" ;
+    skos:topConceptOf vc:vocab_intake_reason .
+
+<https://example.org/gxp-hub/vocab/vocab_integration_attempt_status/FAILED> a skos:Concept ;
+    skos:inScheme vc:vocab_integration_attempt_status ;
+    skos:prefLabel "FAILED" ;
+    skos:topConceptOf vc:vocab_integration_attempt_status .
+
+<https://example.org/gxp-hub/vocab/vocab_integration_attempt_status/RETRY> a skos:Concept ;
+    skos:inScheme vc:vocab_integration_attempt_status ;
+    skos:prefLabel "RETRY" ;
+    skos:topConceptOf vc:vocab_integration_attempt_status .
+
+<https://example.org/gxp-hub/vocab/vocab_integration_attempt_status/SUCCESS> a skos:Concept ;
+    skos:inScheme vc:vocab_integration_attempt_status ;
+    skos:prefLabel "SUCCESS" ;
+    skos:topConceptOf vc:vocab_integration_attempt_status .
+
+<https://example.org/gxp-hub/vocab/vocab_integration_attempt_status/TIMEOUT> a skos:Concept ;
+    skos:inScheme vc:vocab_integration_attempt_status ;
+    skos:prefLabel "TIMEOUT" ;
+    skos:topConceptOf vc:vocab_integration_attempt_status .
+
+<https://example.org/gxp-hub/vocab/vocab_lab_test_status/INVALID> a skos:Concept ;
+    skos:inScheme vc:vocab_lab_test_status ;
+    skos:prefLabel "INVALID" ;
+    skos:topConceptOf vc:vocab_lab_test_status ;
+    gx:countInBaseline 26 .
+
+<https://example.org/gxp-hub/vocab/vocab_lab_test_status/OOS> a skos:Concept ;
+    skos:inScheme vc:vocab_lab_test_status ;
+    skos:prefLabel "OOS" ;
+    skos:topConceptOf vc:vocab_lab_test_status ;
+    gx:countInBaseline 35 .
+
+<https://example.org/gxp-hub/vocab/vocab_lab_test_status/PENDING> a skos:Concept ;
+    skos:inScheme vc:vocab_lab_test_status ;
+    skos:prefLabel "PENDING" ;
+    skos:topConceptOf vc:vocab_lab_test_status ;
+    gx:countInBaseline 36 .
+
+<https://example.org/gxp-hub/vocab/vocab_lab_test_status/VALID> a skos:Concept ;
+    skos:inScheme vc:vocab_lab_test_status ;
+    skos:prefLabel "VALID" ;
+    skos:topConceptOf vc:vocab_lab_test_status ;
+    gx:countInBaseline 28 .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_basis/event_derived> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_basis ;
+    skos:prefLabel "event_derived" ;
+    skos:topConceptOf vc:vocab_metric_basis .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_basis/modelled> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_basis ;
+    skos:prefLabel "modelled" ;
+    skos:topConceptOf vc:vocab_metric_basis .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_category/age> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_category ;
+    skos:prefLabel "age" ;
+    skos:topConceptOf vc:vocab_metric_category .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_category/count> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_category ;
+    skos:prefLabel "count" ;
+    skos:topConceptOf vc:vocab_metric_category .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_category/money> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_category ;
+    skos:prefLabel "money" ;
+    skos:topConceptOf vc:vocab_metric_category .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_category/rate> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_category ;
+    skos:prefLabel "rate" ;
+    skos:topConceptOf vc:vocab_metric_category .
+
+<https://example.org/gxp-hub/vocab/vocab_metric_category/time> a skos:Concept ;
+    skos:inScheme vc:vocab_metric_category ;
+    skos:prefLabel "time" ;
+    skos:topConceptOf vc:vocab_metric_category .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_processing_status/NEW> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_processing_status ;
+    skos:prefLabel "NEW" ;
+    skos:topConceptOf vc:vocab_partner_processing_status ;
+    gx:countInBaseline 8000 .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_processing_status/REPLAY> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_processing_status ;
+    skos:prefLabel "REPLAY" ;
+    skos:topConceptOf vc:vocab_partner_processing_status ;
+    gx:countInBaseline 67 .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_processing_status/RETRY> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_processing_status ;
+    skos:prefLabel "RETRY" ;
+    skos:topConceptOf vc:vocab_partner_processing_status ;
+    gx:countInBaseline 500 .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_record_kind/CAPA_UPDATE> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_record_kind ;
+    skos:prefLabel "CAPA_UPDATE" ;
+    skos:topConceptOf vc:vocab_partner_record_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_record_kind/DEVIATION> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_record_kind ;
+    skos:prefLabel "DEVIATION" ;
+    skos:topConceptOf vc:vocab_partner_record_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_partner_record_kind/OOS_RESULT> a skos:Concept ;
+    skos:inScheme vc:vocab_partner_record_kind ;
+    skos:prefLabel "OOS_RESULT" ;
+    skos:topConceptOf vc:vocab_partner_record_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/CLOSURE_ACTIVATED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "CLOSURE_ACTIVATED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/CONTRACT_BINDING_CHANGED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "CONTRACT_BINDING_CHANGED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/DISPOSITION_MODE_CHANGED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "DISPOSITION_MODE_CHANGED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/EXCEPTION_RULE_ACCEPTED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "EXCEPTION_RULE_ACCEPTED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/POLICY_ACCEPTED_OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "POLICY_ACCEPTED_OPEN" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/POLICY_ADOPTED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "POLICY_ADOPTED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/POLICY_VERSION_CREATED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "POLICY_VERSION_CREATED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/POLICY_WITHDRAWN> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "POLICY_WITHDRAWN" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/RULESET_ACTIVATED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "RULESET_ACTIVATED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/RULESET_DEACTIVATED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "RULESET_DEACTIVATED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/RULE_ROW_CHANGED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "RULE_ROW_CHANGED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_event_type/SCHEDULE_CHANGED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_event_type ;
+    skos:prefLabel "SCHEDULE_CHANGED" ;
+    skos:topConceptOf vc:vocab_policy_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_exception_outcome/BLOCKED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_exception_outcome ;
+    skos:note "Meaning unowned (U-04-03)." ;
+    skos:prefLabel "BLOCKED" ;
+    skos:topConceptOf vc:vocab_policy_exception_outcome ;
+    gx:countInBaseline 51 .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_exception_outcome/OPEN> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_exception_outcome ;
+    skos:prefLabel "OPEN" ;
+    skos:topConceptOf vc:vocab_policy_exception_outcome ;
+    gx:countInBaseline 57 .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_exception_outcome/REVIEW> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_exception_outcome ;
+    skos:prefLabel "REVIEW" ;
+    skos:topConceptOf vc:vocab_policy_exception_outcome ;
+    gx:countInBaseline 60 .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_exception_outcome/WAIVED> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_exception_outcome ;
+    skos:note "Meaning unowned (U-04-03)." ;
+    skos:prefLabel "WAIVED" ;
+    skos:topConceptOf vc:vocab_policy_exception_outcome ;
+    gx:countInBaseline 56 .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_kind/CLOCK> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_kind ;
+    skos:prefLabel "CLOCK" ;
+    skos:topConceptOf vc:vocab_policy_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_kind/CLOSURE> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_kind ;
+    skos:prefLabel "CLOSURE" ;
+    skos:topConceptOf vc:vocab_policy_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_kind/CONSISTENCY> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_kind ;
+    skos:prefLabel "CONSISTENCY" ;
+    skos:topConceptOf vc:vocab_policy_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_kind/CUTOFF> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_kind ;
+    skos:prefLabel "CUTOFF" ;
+    skos:topConceptOf vc:vocab_policy_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_kind/DEFINITION> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_kind ;
+    skos:prefLabel "DEFINITION" ;
+    skos:topConceptOf vc:vocab_policy_kind .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_name/electronic_record_retention> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_name ;
+    skos:prefLabel "electronic_record_retention" ;
+    skos:topConceptOf vc:vocab_policy_name .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_name/oos_hold> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_name ;
+    skos:prefLabel "oos_hold" ;
+    skos:topConceptOf vc:vocab_policy_name .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_name/qa_signature> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_name ;
+    skos:prefLabel "qa_signature" ;
+    skos:topConceptOf vc:vocab_policy_name .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_name/sop_effective_date> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_name ;
+    skos:prefLabel "sop_effective_date" ;
+    skos:topConceptOf vc:vocab_policy_name .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_status/accepted_open> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_status ;
+    skos:note "A human recorded that the question is deliberately undecided; no verdicts." ;
+    skos:prefLabel "accepted-open" ;
+    skos:topConceptOf vc:vocab_policy_status .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_status/adopted> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_status ;
+    skos:note "Applies from effective_from to effective_to; a withdrawal event ends it the day before withdrawn_from." ;
+    skos:prefLabel "adopted" ;
+    skos:topConceptOf vc:vocab_policy_status .
+
+<https://example.org/gxp-hub/vocab/vocab_policy_status/candidate> a skos:Concept ;
+    skos:inScheme vc:vocab_policy_status ;
+    skos:note "No verdicts are produced from a candidate." ;
+    skos:prefLabel "candidate" ;
+    skos:topConceptOf vc:vocab_policy_status .
+
+<https://example.org/gxp-hub/vocab/vocab_priority_outcome/archive> a skos:Concept ;
+    skos:inScheme vc:vocab_priority_outcome ;
+    skos:prefLabel "archive" ;
+    skos:topConceptOf vc:vocab_priority_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_priority_outcome/queue> a skos:Concept ;
+    skos:inScheme vc:vocab_priority_outcome ;
+    skos:prefLabel "queue" ;
+    skos:topConceptOf vc:vocab_priority_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_priority_outcome/review> a skos:Concept ;
+    skos:inScheme vc:vocab_priority_outcome ;
+    skos:prefLabel "review" ;
+    skos:topConceptOf vc:vocab_priority_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_priority_outcome/urgent> a skos:Concept ;
+    skos:inScheme vc:vocab_priority_outcome ;
+    skos:prefLabel "urgent" ;
+    skos:topConceptOf vc:vocab_priority_outcome .
+
+<https://example.org/gxp-hub/vocab/vocab_product_part/API> a skos:Concept ;
+    skos:inScheme vc:vocab_product_part ;
+    skos:prefLabel "API" ;
+    skos:topConceptOf vc:vocab_product_part .
+
+<https://example.org/gxp-hub/vocab/vocab_product_part/BIOLOGIC> a skos:Concept ;
+    skos:inScheme vc:vocab_product_part ;
+    skos:prefLabel "BIOLOGIC" ;
+    skos:topConceptOf vc:vocab_product_part .
+
+<https://example.org/gxp-hub/vocab/vocab_product_part/STERILE_VIAL> a skos:Concept ;
+    skos:inScheme vc:vocab_product_part ;
+    skos:prefLabel "STERILE_VIAL" ;
+    skos:topConceptOf vc:vocab_product_part .
+
+<https://example.org/gxp-hub/vocab/vocab_product_part/TABLET> a skos:Concept ;
+    skos:inScheme vc:vocab_product_part ;
+    skos:prefLabel "TABLET" ;
+    skos:topConceptOf vc:vocab_product_part .
+
+<https://example.org/gxp-hub/vocab/vocab_quality_fault/expired_calibration> a skos:Concept ;
+    skos:inScheme vc:vocab_quality_fault ;
+    skos:prefLabel "expired calibration" ;
+    skos:topConceptOf vc:vocab_quality_fault .
+
+<https://example.org/gxp-hub/vocab/vocab_quality_fault/missing_signature> a skos:Concept ;
+    skos:inScheme vc:vocab_quality_fault ;
+    skos:prefLabel "missing signature" ;
+    skos:topConceptOf vc:vocab_quality_fault .
+
+<https://example.org/gxp-hub/vocab/vocab_quality_fault/out_of_specification> a skos:Concept ;
+    skos:inScheme vc:vocab_quality_fault ;
+    skos:prefLabel "out of specification" ;
+    skos:topConceptOf vc:vocab_quality_fault .
+
+<https://example.org/gxp-hub/vocab/vocab_quality_fault/sample_retest_conflict> a skos:Concept ;
+    skos:inScheme vc:vocab_quality_fault ;
+    skos:prefLabel "sample retest conflict" ;
+    skos:topConceptOf vc:vocab_quality_fault .
+
+<https://example.org/gxp-hub/vocab/vocab_quality_fault/unclosed_deviation> a skos:Concept ;
+    skos:inScheme vc:vocab_quality_fault ;
+    skos:prefLabel "unclosed deviation" ;
+    skos:topConceptOf vc:vocab_quality_fault .
+
+<https://example.org/gxp-hub/vocab/vocab_region/AMER> a skos:Concept ;
+    skos:inScheme vc:vocab_region ;
+    skos:prefLabel "AMER" ;
+    skos:topConceptOf vc:vocab_region ;
+    gx:countInBaseline 46 .
+
+<https://example.org/gxp-hub/vocab/vocab_region/APAC> a skos:Concept ;
+    skos:inScheme vc:vocab_region ;
+    skos:prefLabel "APAC" ;
+    skos:topConceptOf vc:vocab_region ;
+    gx:countInBaseline 39 .
+
+<https://example.org/gxp-hub/vocab/vocab_region/EMEA> a skos:Concept ;
+    skos:inScheme vc:vocab_region ;
+    skos:prefLabel "EMEA" ;
+    skos:topConceptOf vc:vocab_region ;
+    gx:countInBaseline 40 .
+
+<https://example.org/gxp-hub/vocab/vocab_release_gate_result/GO> a skos:Concept ;
+    skos:inScheme vc:vocab_release_gate_result ;
+    skos:prefLabel "GO" ;
+    skos:topConceptOf vc:vocab_release_gate_result .
+
+<https://example.org/gxp-hub/vocab/vocab_release_gate_result/NO_GO> a skos:Concept ;
+    skos:inScheme vc:vocab_release_gate_result ;
+    skos:prefLabel "NO-GO" ;
+    skos:topConceptOf vc:vocab_release_gate_result .
+
+<https://example.org/gxp-hub/vocab/vocab_role/compliance> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "compliance" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_role/dispositioner> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "dispositioner" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_role/finance_read> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "finance_read" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_role/integration> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "integration" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_role/quality_lead> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "quality_lead" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_role/reviewer> a skos:Concept ;
+    skos:inScheme vc:vocab_role ;
+    skos:prefLabel "reviewer" ;
+    skos:topConceptOf vc:vocab_role .
+
+<https://example.org/gxp-hub/vocab/vocab_ruleset_origin/as_found> a skos:Concept ;
+    skos:inScheme vc:vocab_ruleset_origin ;
+    skos:note "Read-only; mirrors a legacy implementation." ;
+    skos:prefLabel "as-found" ;
+    skos:topConceptOf vc:vocab_ruleset_origin .
+
+<https://example.org/gxp-hub/vocab/vocab_ruleset_origin/custom> a skos:Concept ;
+    skos:inScheme vc:vocab_ruleset_origin ;
+    skos:prefLabel "custom" ;
+    skos:topConceptOf vc:vocab_ruleset_origin .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_ABANDONED> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_ABANDONED" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_CHECKPOINT> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_CHECKPOINT" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_FAILED> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_FAILED" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_FINISHED> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_FINISHED" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_REFUSED> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_REFUSED" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_event_type/RUN_STARTED> a skos:Concept ;
+    skos:inScheme vc:vocab_run_event_type ;
+    skos:prefLabel "RUN_STARTED" ;
+    skos:topConceptOf vc:vocab_run_event_type .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/backfill_legacy> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "backfill_legacy" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/intake_gateway> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "intake_gateway" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/intake_partner_feed> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "intake_partner_feed" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/intake_source_messages> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "intake_source_messages" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/intake_vendor_csv> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "intake_vendor_csv" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/metrics_snapshot> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "metrics_snapshot" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/rebuild_projection> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "rebuild_projection" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/verify_audit> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "verify_audit" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_job/verify_projection> a skos:Concept ;
+    skos:inScheme vc:vocab_run_job ;
+    skos:prefLabel "verify_projection" ;
+    skos:topConceptOf vc:vocab_run_job .
+
+<https://example.org/gxp-hub/vocab/vocab_run_trigger/manual> a skos:Concept ;
+    skos:inScheme vc:vocab_run_trigger ;
+    skos:prefLabel "manual" ;
+    skos:topConceptOf vc:vocab_run_trigger .
+
+<https://example.org/gxp-hub/vocab/vocab_run_trigger/scheduled> a skos:Concept ;
+    skos:inScheme vc:vocab_run_trigger ;
+    skos:note "Schedule ships OFF; enabling is ZH-09." ;
+    skos:prefLabel "scheduled" ;
+    skos:topConceptOf vc:vocab_run_trigger .
+
+<https://example.org/gxp-hub/vocab/vocab_schema_revision/0_9> a skos:Concept ;
+    skos:inScheme vc:vocab_schema_revision ;
+    skos:note "Accepted by OD-28 as a recorded oddity; allowed-versions list is an open item." ;
+    skos:prefLabel "0.9" ;
+    skos:topConceptOf vc:vocab_schema_revision .
+
+<https://example.org/gxp-hub/vocab/vocab_schema_revision/1_0> a skos:Concept ;
+    skos:inScheme vc:vocab_schema_revision ;
+    skos:prefLabel "1.0" ;
+    skos:topConceptOf vc:vocab_schema_revision .
+
+<https://example.org/gxp-hub/vocab/vocab_schema_revision/1_1> a skos:Concept ;
+    skos:inScheme vc:vocab_schema_revision ;
+    skos:prefLabel "1.1" ;
+    skos:topConceptOf vc:vocab_schema_revision .
+
+<https://example.org/gxp-hub/vocab/vocab_schema_revision/2_0> a skos:Concept ;
+    skos:inScheme vc:vocab_schema_revision ;
+    skos:prefLabel "2.0" ;
+    skos:topConceptOf vc:vocab_schema_revision .
+
+<https://example.org/gxp-hub/vocab/vocab_schema_revision/unsupported_variants> a skos:Concept ;
+    skos:inScheme vc:vocab_schema_revision ;
+    skos:prefLabel "unsupported variants" ;
+    skos:topConceptOf vc:vocab_schema_revision .
+
+<https://example.org/gxp-hub/vocab/vocab_severity/CRITICAL> a skos:Concept ;
+    skos:inScheme vc:vocab_severity ;
+    skos:prefLabel "CRITICAL" ;
+    skos:topConceptOf vc:vocab_severity ;
+    gx:countInBaseline 2 .
+
+<https://example.org/gxp-hub/vocab/vocab_severity/HIGH> a skos:Concept ;
+    skos:inScheme vc:vocab_severity ;
+    skos:prefLabel "HIGH" ;
+    skos:topConceptOf vc:vocab_severity ;
+    gx:countInBaseline 13 .
+
+<https://example.org/gxp-hub/vocab/vocab_severity/LOW> a skos:Concept ;
+    skos:inScheme vc:vocab_severity ;
+    skos:prefLabel "LOW" ;
+    skos:topConceptOf vc:vocab_severity ;
+    gx:countInBaseline 66 .
+
+<https://example.org/gxp-hub/vocab/vocab_severity/MEDIUM> a skos:Concept ;
+    skos:inScheme vc:vocab_severity ;
+    skos:prefLabel "MEDIUM" ;
+    skos:topConceptOf vc:vocab_severity ;
+    gx:countInBaseline 44 .
+
+<https://example.org/gxp-hub/vocab/vocab_site/BR_SP> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "BR-SP" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_site/DE_BY> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "DE-BY" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_site/GB_ENG> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "GB-ENG" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_site/IN_BLR> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "IN-BLR" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_site/JP_KN> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "JP-KN" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_site/US_TX> a skos:Concept ;
+    skos:inScheme vc:vocab_site ;
+    skos:prefLabel "US-TX" ;
+    skos:topConceptOf vc:vocab_site .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_01> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-01" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_02> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-02" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_03> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-03" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_04> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-04" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_05> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-05" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_06> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-06" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_07> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:note "Record only; semantics undefined in the spec (RTD-67)." ;
+    skos:prefLabel "ZH-07" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_08> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-08" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_09> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:prefLabel "ZH-09" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+<https://example.org/gxp-hub/vocab/vocab_zone_h_action/ZH_10> a skos:Concept ;
+    skos:inScheme vc:vocab_zone_h_action ;
+    skos:note "Includes rule-row edits and policy withdrawal (FAC-13)." ;
+    skos:prefLabel "ZH-10" ;
+    skos:topConceptOf vc:vocab_zone_h_action .
+
+gx:Category_identity_security a owl:Class ;
+    rdfs:label "Identity Security" ;
+    rdfs:comment "Grouping class: entity category 'identity_security'." .
+
+gx:SourceContract a owl:Class ;
+    rdfs:label "SourceContract" ;
+    rdfs:comment "Declared shape of messages from a source (integration/source-contract-v1.json). Binding mode is per source: record_only (default) or enforce." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/21-integration/data-contracts.md",
+        "hub/intake/contracts/source-contract-v1.json",
+        "integration/source-contract-v1.json" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C1" .
+
+gx:UpstreamOutage a owl:Class ;
+    rdfs:label "UpstreamOutage" ;
+    rdfs:comment "A recorded outage or partial rerun of an upstream system, with began/resolved times; some are unresolved." ;
+    rdfs:subClassOf gx:Category_operations ;
+    gx:category "operations" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/partner-feed-operations.md" ;
+    gx:legacyColumn "upstream_outages.incident_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'upstream_outages', 'rows_in_baseline': 72}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C1" .
+
+gx:Category_operations a owl:Class ;
+    rdfs:label "Operations" ;
+    rdfs:comment "Grouping class: entity category 'operations'." .
+
+gx:SOP a owl:Class ;
+    rdfs:label "SOP" ;
+    rdfs:comment "A Standard Operating Procedure version with an effective window. Versions are effective-dated; supersession is a window, not an overwrite." ;
+    rdfs:subClassOf gx:Category_reference_data ;
+    gx:category "reference_data" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/domain-contracts.md" ;
+    gx:legacyColumn "sop_versions.(sop_id,version)" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'sop_versions', 'rows_in_baseline': 45}" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C1" .
+
+gx:Category_measurement a owl:Class ;
+    rdfs:label "Measurement" ;
+    rdfs:comment "Grouping class: entity category 'measurement'." .
+
+gx:DeviationRegisterEntry a owl:Class ;
+    rdfs:label "DeviationRegisterEntry" ;
+    rdfs:comment "A recorded difference between legacy behaviour (golden baseline) and hub behaviour (DV-01..DV-11) with a preserve-or-fix decision. Acceptable only if approved with an approval reference (none approved yet)." ;
+    rdfs:subClassOf gx:Category_governance ;
+    gx:category "governance" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/16-repo-validation/behavior-difference-report.md" ;
+    gx:identityPattern "^DV-[0-9]{2}$" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C1" .
+
+gx:OperatingCost a owl:Class ;
+    rdfs:label "OperatingCost" ;
+    rdfs:comment "Monthly modelled operating-cost estimate (labour hours, cases, infrastructure USD). total_cases is NOT 'cases created' (random; OD-07). Any metric using it is basis = modelled." ;
+    rdfs:subClassOf gx:Category_measurement ;
+    gx:category "measurement" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:legacyColumn "operating_costs.period" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'operating_costs', 'rows_in_baseline': 36}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C2" .
+
+gx:ReferenceVersion a owl:Class ;
+    rdfs:label "ReferenceVersion" ;
+    rdfs:comment "Versioned master/reference value with an overlapping validity window; requires temporal interpretation (which version applied at time T)." ;
+    rdfs:subClassOf gx:Category_reference_data ;
+    gx:category "reference_data" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/partner-feed-operations.md" ;
+    gx:legacyColumn "reference_versions.(ref_key,version)" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'reference_versions', 'rows_in_baseline': 180}" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C1" .
+
+gx:Site a owl:Class ;
+    rdfs:label "Site" ;
+    rdfs:comment "An operating site, referenced by cases and batches through local aliases. Backlog and exception measures are always reported per site." ;
+    rdfs:subClassOf gx:Category_reference_data ;
+    gx:category "reference_data" ;
+    gx:epistemicStatus "inference" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "cases.site" .
+
+gx:SourceSystem a owl:Class ;
+    rdfs:label "SourceSystem" ;
+    rdfs:comment "An upstream system or partner feed: ElectronicBatchRecord (publishes OOS_RESULT, DEVIATION, CAPA_UPDATE), LIMS-QMS (competing facts and effective-dated master data), and the partner gateway. Their messages are data, never instructions." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/21-integration/integration-inventory.md",
+        "docs/partner-feed-operations.md",
+        "docs/source-systems-and-constraints.md" ;
+    gx:mutability "external_read_only" ;
+    gx:sensitivity "C1" .
+
+gx:CaseState a owl:Class ;
+    rdfs:label "CaseState" ;
+    rdfs:comment "The current state of a case, derived by folding its DecisionEvents. A rebuildable projection, never an independent source of truth." ;
+    rdfs:subClassOf gx:Category_decision_record ;
+    gx:category "decision_record" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/20-application/state-model.md" ;
+    gx:mutability "derived_projection" ;
+    gx:sensitivity "C2" .
+
+gx:Category_decision_record a owl:Class ;
+    rdfs:label "Decision Record" ;
+    rdfs:comment "Grouping class: entity category 'decision_record'." .
+
+gx:Category_governance a owl:Class ;
+    rdfs:label "Governance" ;
+    rdfs:comment "Grouping class: entity category 'governance'." .
+
+gx:Category_policy a owl:Class ;
+    rdfs:label "Policy" ;
+    rdfs:comment "Grouping class: entity category 'policy'." .
+
+gx:Category_reference_data a owl:Class ;
+    rdfs:label "Reference Data" ;
+    rdfs:comment "Grouping class: entity category 'reference_data'." .
+
+gx:RuleRow a owl:Class ;
+    rdfs:label "RuleRow" ;
+    rdfs:comment "One ordered row in a rule set: conditions (field/op/value), an outcome, an effective window, an owner and an is-default flag." ;
+    rdfs:subClassOf gx:Category_policy ;
+    gx:category "policy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/policy/rulesets.py" ;
+    gx:mutability "versioned_immutable" ;
+    gx:sensitivity "C2" .
+
+gx:RuleTrace a owl:Class ;
+    rdfs:label "RuleTrace" ;
+    rdfs:comment "Text explanation of one rule evaluation for a case: rule set, row and inputs. Produces reviewer-visible flags. A recommendation only; a human may override, dismiss or refuse it with a reason." ;
+    rdfs:subClassOf gx:Category_decision_record ;
+    gx:category "decision_record" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f08-reviewer-support.md",
+        "docs/20-application/state-model.md" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+vc:vocab_approval_state a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.approval_state" ;
+    gx:describesClass gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/30-release/release-approvals.md",
+        "docs/final-prd/final-acceptance-evidence-map.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_calendar_basis a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.calendar_basis" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/policy/clocks.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_capability_authority a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.capability_authority" ;
+    gx:describesClass gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/final-prd/final-capability-map.md",
+        "hub/config.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_closure_unconfigured_behaviour a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.closure_unconfigured_behaviour" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/decision/settings.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_data_origin a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.data_origin" ;
+    gx:describesClass gx:MetricValue ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/config.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_metric_basis a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.metric_basis" ;
+    gx:describesClass gx:MetricDefinition ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_release_gate_result a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.release_gate_result" ;
+    gx:describesClass gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/final-prd/final-as-built-prd.md",
+        "hub/release/gonogo.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_ruleset_origin a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.ruleset_origin" ;
+    gx:describesClass gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/policy/rulesets.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_run_trigger a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.run_trigger" ;
+    gx:describesClass gx:Run ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/runs/catalogue.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:CrosswalkLink a owl:Class ;
+    rdfs:label "CrosswalkLink" ;
+    rdfs:comment "An explicit, exact-key link between two objects of different identifier spaces (case, batch, deviation, CAPA, lab result, feed item, document). Created by a rule from a registered exact key, or by a human with a reason. Orphans stay orphans: no similarity matching." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/12-specs/features/f05-identity-crosswalk.md",
+        "hub/crosswalk/registry.json" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+gx:Material a owl:Class ;
+    rdfs:label "Material" ;
+    rdfs:comment "A pharmaceutical material/product type that batches are made from." ;
+    rdfs:subClassOf gx:Category_reference_data ;
+    gx:category "reference_data" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/data-dictionary.md" ;
+    gx:legacyColumn "materials.material_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'materials', 'rows_in_baseline': 30}" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C1" .
+
+gx:AuditRecord a owl:Class ;
+    rdfs:label "AuditRecord" ;
+    rdfs:comment "Hash-chained access/audit entry written in the same transaction as the change it audits. Records who/what/outcome/reason/correlation id. Anchor seal is opt-in; deletion after the last anchor is not detectable (stated limitation)." ;
+    rdfs:subClassOf gx:Category_governance ;
+    gx:category "governance" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/42-executive-defence/demo-day-script.md",
+        "hub/security/audit.py" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C3" .
+
+gx:Category_business_object a owl:Class ;
+    rdfs:label "Business Object" ;
+    rdfs:comment "Grouping class: entity category 'business_object'." .
+
+gx:Category_integration a owl:Class ;
+    rdfs:label "Integration" ;
+    rdfs:comment "Grouping class: entity category 'integration'." .
+
+gx:PolicyException a owl:Class ;
+    rdfs:label "PolicyException" ;
+    rdfs:comment "A legacy record that a policy was waived, blocked or put under review for a referenced object. Meaning of WAIVED and BLOCKED is not owned." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/partner-feed-operations.md" ;
+    gx:legacyColumn "policy_exceptions.exception_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'policy_exceptions', 'rows_in_baseline': 224}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C2" ;
+    gx:statusVocabulary vc:vocab_policy_exception_outcome .
+
+gx:Role a owl:Class .
+
+vc:vocab_as_found_ruleset a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.as_found_ruleset" ;
+    gx:describesClass gx:RuleSet ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "hub/policy/as_found_pins.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_audit_outcome a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.audit_outcome" ;
+    gx:describesClass gx:AuditRecord ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_closure_check a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.closure_check" ;
+    gx:describesClass gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_disposition_mode a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.disposition_mode" ;
+    gx:describesClass gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f02-human-disposition-gate.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_document_type a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.document_type" ;
+    gx:describesClass gx:Document ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_partner_processing_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.partner_processing_status" ;
+    gx:describesClass gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "partner_feeds.processing_status" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_partner_record_kind a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.partner_record_kind" ;
+    gx:describesClass gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/source-systems-and-constraints.md",
+        "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:EvidenceRecord a owl:Class ;
+    rdfs:label "EvidenceRecord" ;
+    rdfs:comment "A reference to something relied on for a decision: a document, an intake item, a crosswalk object or an external reference. The product stores the reference and a hash; it never judges sufficiency." ;
+    rdfs:subClassOf gx:Category_decision_record ;
+    gx:category "decision_record" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C3" .
+
+gx:PolicyEvent a owl:Class ;
+    rdfs:label "PolicyEvent" ;
+    rdfs:comment "Immutable record of a change to policy state (created, adopted, accepted-open, withdrawn, rule row changed, rule set activated, etc.) with old value, new value, actor and a mandatory authority reference." ;
+    rdfs:subClassOf gx:Category_policy ;
+    gx:category "policy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+gx:Workflow a owl:Class .
+
+vc:vocab_deviation_classification a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.deviation_classification" ;
+    gx:describesClass gx:Deviation ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_policy_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.policy_status" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/20-application/state-model.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_region a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.region" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "contracts/decision-policies-archive.json",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:CAPA a owl:Class ;
+    rdfs:label "CAPA" ;
+    rdfs:comment "Corrective And Preventive Action raised to address a deviation, with an owner and a due date." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/domain-contracts.md" ;
+    gx:identityPattern "^CAPA[0-9]{8}$" ;
+    gx:legacyColumn "capa_actions.capa_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'capa_actions', 'rows_in_baseline': 21}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C2" ;
+    gx:statusVocabulary vc:vocab_capa_state .
+
+gx:Run a owl:Class ;
+    rdfs:label "Run" ;
+    rdfs:comment "One execution of a closed-catalogue job (intake, backfill, rebuild/verify projection, verify audit, metrics snapshot), recorded as append-only run events including inputs seen, outcomes, errors and remaining backlog." ;
+    rdfs:subClassOf gx:Category_operations ;
+    gx:category "operations" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f06-scheduled-runs.md",
+        "hub/runs/catalogue.py" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C1" .
+
+vc:vocab_actor_kind a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.actor_kind" ;
+    gx:describesClass gx:Principal ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_batch_qa_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.batch_qa_status" ;
+    gx:describesClass gx:Batch ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "batch_records.qa_status" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_capa_state a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.capa_state" ;
+    gx:describesClass gx:CAPA ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "capa_actions.state" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_clock_verdict a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.clock_verdict" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "hub/policy/clocks.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_data_classification a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.data_classification" ;
+    gx:describesClass gx:Principal ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/11-data-context/metadata-model.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "proposal" .
+
+vc:vocab_deviation_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.deviation_status" ;
+    gx:describesClass gx:Deviation ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "deviations.status" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_document_access_level a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.document_access_level" ;
+    gx:describesClass gx:Document ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/metadata-model.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "proposal" .
+
+vc:vocab_epistemic_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.epistemic_status" ;
+    gx:describesClass gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/00-preflight/operating-contract/evidence-contract.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_evidence_kind a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.evidence_kind" ;
+    gx:describesClass gx:EvidenceRecord ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_intake_class_to_outcome a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.intake_class_to_outcome" ;
+    gx:describesClass gx:IntakeOutcome ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/intake/reasons.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_integration_attempt_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.integration_attempt_status" ;
+    gx:describesClass gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "enterprise_legacy.sqlite3 integration_attempts.status" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_policy_name a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.policy_name" ;
+    gx:describesClass gx:PolicyException ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/partner-feed-operations.md",
+        "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_priority_outcome a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.priority_outcome" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/legacy_logic.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_product_part a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.product_part" ;
+    gx:describesClass gx:Material ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/source-systems-and-constraints.md",
+        "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:LabResult a owl:Class ;
+    rdfs:label "LabResult" ;
+    rdfs:comment "A laboratory test result for a batch; may be pending, valid, invalid or out of specification (OOS)." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/domain-contracts.md" ;
+    gx:identityPattern "^LAB[0-9]{8}$" ;
+    gx:legacyColumn "lab_results.result_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'lab_results', 'rows_in_baseline': 125}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C1" ;
+    gx:statusVocabulary vc:vocab_lab_test_status .
+
+vc:vocab_policy_exception_outcome a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.policy_exception_outcome" ;
+    gx:describesClass gx:PolicyException ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/11-data-context/knowledge-model.md" ;
+    gx:legacyColumn "policy_exceptions.outcome" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_severity a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.severity" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "app/legacy_logic.py",
+        "docs/04-baseline-kpis/kpi-dictionary.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:Principal a owl:Class ;
+    rdfs:label "Principal" ;
+    rdfs:comment "An authenticated actor: a human with one or more roles, a service account (token prefix svc_, role integration, never Zone H), or a system/rule actor. No identity directory exists in the estate." ;
+    rdfs:subClassOf gx:Category_identity_security ;
+    gx:category "identity_security" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/20-application/access-control-implementation.md",
+        "hub/security/authz.py",
+        "hub/security/route_registry.json" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C2" .
+
+vc:vocab_definition_tag a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.definition_tag" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "assumption" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/12-specs/business-rules.md",
+        "hub/metrics/registry.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "proposal" .
+
+vc:vocab_hub_queue_state a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.hub_queue_state" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/source-systems-and-constraints.md",
+        "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_intake_queue a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.intake_queue" ;
+    gx:describesClass gx:IntakeOutcome ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/intake/reasons.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_lab_test_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.lab_test_status" ;
+    gx:describesClass gx:LabResult ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/domain-contracts.md" ;
+    gx:legacyColumn "lab_results.test_status" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_metric_category a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.metric_category" ;
+    gx:describesClass gx:MetricDefinition ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/metrics/registry.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_policy_kind a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.policy_kind" ;
+    gx:describesClass gx:PolicyObject ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_schema_revision a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.schema_revision" ;
+    gx:describesClass gx:FeedItem ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence ".fde/orchestrator-decisions.md",
+        "docs/source-systems-and-constraints.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:Batch a owl:Class ;
+    rdfs:label "Batch" ;
+    rdfs:comment "A manufactured batch of a material whose quality is under review. Carries the QA status and the observed assay." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/data-dictionary.md",
+        "docs/domain-contracts.md" ;
+    gx:identityPattern "^BT[0-9]{8}$" ;
+    gx:legacyColumn "batch_records.batch_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'batch_records', 'rows_in_baseline': 125}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C1" ;
+    gx:statusVocabulary vc:vocab_batch_qa_status .
+
+gx:Capability a owl:Class ;
+    rdfs:label "Capability" ;
+    rdfs:comment "One of ten product capabilities CAP-01..CAP-10. Each is either in shadow (legacy remains authoritative) or authoritative (needs a recorded approval reference). All ship in shadow." ;
+    rdfs:subClassOf gx:Category_governance ;
+    gx:category "governance" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/final-prd/final-capability-map.md",
+        "hub/config.py" ;
+    gx:identityPattern "^CAP-(0[1-9]|10)$" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C1" .
+
+gx:MetricValue a owl:Class ;
+    rdfs:label "MetricValue" ;
+    rdfs:comment "One computed figure with its window, denominator, exclusions, definition tag, policy version, data origin and the label 'synthetic, unvalidated' while data are synthetic." ;
+    rdfs:subClassOf gx:Category_measurement ;
+    gx:category "measurement" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C1" .
+
+vc:vocab_case_segment a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.case_segment" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/data-dictionary.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_quality_fault a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.quality_fault" ;
+    gx:describesClass gx:Deviation ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "domain-profile.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:Deviation a owl:Class ;
+    rdfs:label "Deviation" ;
+    rdfs:comment "A recorded departure from the expected manufacturing/quality process for a batch, with a classification and an optional root cause." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/04-baseline-kpis/kpi-dictionary.md",
+        "docs/domain-contracts.md" ;
+    gx:identityPattern "^DEV[0-9]{8}$" ;
+    gx:legacyColumn "deviations.deviation_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'deviations', 'rows_in_baseline': 42}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C2" ;
+    gx:statusVocabulary vc:vocab_deviation_status .
+
+gx:Document a owl:Class ;
+    rdfs:label "Document" ;
+    rdfs:comment "An immutable (doc_id, version) extracted/archived document: SOP, certificate of analysis (COA) or batch record, with locale, source, effective date, access level and OCR confidence. Body text is UNTRUSTED." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/11-data-context/metadata-model.md" ;
+    gx:identityPattern "^DOC-[0-9]{8}$" ;
+    gx:legacySource "{'store': 'data/documents/source_documents.jsonl', 'rows_in_baseline': 1200}" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+gx:IntakeOutcome a owl:Class ;
+    rdfs:label "IntakeOutcome" ;
+    rdfs:comment "The deterministic classification of a FeedItem: outcome, primary reason (by fixed precedence), all reasons, queue, contract check and whether it counts toward totals. Separate from the raw record; a later outcome supersedes an earlier one by sequence." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/intake/reasons.py" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+vc:vocab_autonomy_level a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.autonomy_level" ;
+    gx:describesClass gx:Capability ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/08-ai-qualification/minimum-agency-assessment.md",
+        "docs/23-human-control/autonomy-matrix.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_enterprise_object_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.enterprise_object_status" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "legacy_batch/shift_reconciliation.py" ;
+    gx:legacyColumn "enterprise_legacy.sqlite3 operational_objects.status / workflow_tasks.status" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_intake_outcome a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.intake_outcome" ;
+    gx:describesClass gx:IntakeOutcome ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "hub/intake/reasons.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_role a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.role" ;
+    gx:describesClass gx:Principal ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/openapi.yaml",
+        "hub/security/route_registry.json" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_run_event_type a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.run_event_type" ;
+    gx:describesClass gx:Run ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:RuleSet a owl:Class ;
+    rdfs:label "RuleSet" ;
+    rdfs:comment "A named, versioned, table-driven set of approval/priority rules where thresholds, regions, effective dates, owner and default behaviour are DATA. Three as-found rule sets mirror the legacy implementations and ship loaded but INACTIVE and read-only." ;
+    rdfs:subClassOf gx:Category_policy ;
+    gx:category "policy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "docs/12-specs/features/f03-policy-definitions-rule-service.md",
+        "hub/policy/rulesets.py" ;
+    gx:mutability "versioned_immutable" ;
+    gx:sensitivity "C2" .
+
+vc:vocab_case_status a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.case_status" ;
+    gx:describesClass gx:Case ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "hub/decision/settings.py" ;
+    gx:legacyColumn "cases.status" ;
+    gx:meaningStatus "unknown" .
+
+vc:vocab_site a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.site" ;
+    gx:describesClass gx:Site ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/34-measure-after/after-intervention-kpi-sheet.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "unknown" .
+
+gx:PolicyObject a owl:Class ;
+    rdfs:label "PolicyObject" ;
+    rdfs:comment "A versioned, owned, effective-dated statement of business meaning: a definition of closed/resolved/approved, a clock (e.g. the '48 h' closure expectation), a closure policy, a consistency policy or a cut-off. The product ships with NONE adopted; adoption is a Zone H action." ;
+    rdfs:subClassOf gx:Category_policy ;
+    gx:category "policy" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/11-data-context/knowledge-model.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/12-specs/features/f03-policy-definitions-rule-service.md" ;
+    gx:mutability "versioned_immutable" ;
+    gx:sensitivity "C2" ;
+    gx:statusVocabulary vc:vocab_policy_status .
+
+vc:vocab_run_job a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.run_job" ;
+    gx:describesClass gx:Run ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "hub/runs/catalogue.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_zone_h_action a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.zone_h_action" ;
+    gx:describesClass gx:ZoneHAction ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f02-human-disposition-gate.md",
+        "hub/gate/actions.py",
+        "hub/gate/service.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:ZoneHAction a owl:Class ;
+    rdfs:label "ZoneHAction" ;
+    rdfs:comment "A Zone H action requires a named human holder, a recorded reason and evidence reference. Service actors are refused (FR-GATE-03). With zero holders every action is refused.",
+        "One of ten closed, human-only actions (ZH-01..ZH-10) that automation may never perform: batch disposition, QA release, e-signature record, close-exception, policy adopt, rule-set activate, exception-rule accept, disposition-mode change, schedule enable/disable, policy change." ;
+    rdfs:subClassOf gx:Category_governance ;
+    gx:category "governance" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f02-human-disposition-gate.md",
+        "docs/23-human-control/approval-gates.md",
+        "hub/gate/actions.py" ;
+    gx:identityPattern "^ZH-(0[1-9]|10)$" ;
+    gx:mutability "reference_data" ;
+    gx:sensitivity "C3" .
+
+vc:vocab_policy_event_type a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.policy_event_type" ;
+    gx:describesClass gx:PolicyEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:FeedItem a owl:Class ;
+    rdfs:label "FeedItem" ;
+    rdfs:comment "One message received from a source, kept exactly as received. Its identity is the natural key (partner, record_kind, ref_id, source_ts); business_key and feed_id are NOT identities." ;
+    rdfs:subClassOf gx:Category_integration ;
+    gx:category "integration" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "docs/11-data-context/knowledge-model.md",
+        "docs/12-specs/business-rules.md" ;
+    gx:legacyColumn "partner_feeds.feed_id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'partner_feeds', 'rows_in_baseline': 8567}" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+vc:vocab_decision_event_type a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.decision_event_type" ;
+    gx:describesClass gx:DecisionEvent ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/12-specs/features/f02-human-disposition-gate.md" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+vc:vocab_intake_reason a skos:ConceptScheme ;
+    dcterms:creator "unassigned" ;
+    skos:prefLabel "vocab.intake_reason" ;
+    gx:describesClass gx:IntakeOutcome ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "hub/intake/reasons.py" ;
+    gx:legacyColumn "" ;
+    gx:meaningStatus "defined" .
+
+gx:DecisionEvent a owl:Class ;
+    rdfs:label "DecisionEvent" ;
+    rdfs:comment "An immutable, hash-chained fact about a case: a state change, evidence attachment, human disposition, override or correction. The record of WHO decided WHAT, WHEN, ON WHAT BASIS and WITH WHICH EVIDENCE. Never updated or deleted; corrections are new events." ;
+    rdfs:subClassOf gx:Category_decision_record ;
+    gx:category "decision_record" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/business-rules.md",
+        "docs/12-specs/contracts/ddl/hub-schema-v0.1.sql",
+        "docs/12-specs/features/f01-decision-evidence-record.md" ;
+    gx:mutability "append_only" ;
+    gx:sensitivity "C2" .
+
+gx:Case a owl:Class ;
+    rdfs:label "Case" ;
+    rdfs:comment "A unit of quality-operations work: a batch-quality review / deviation-handling case that moves through a review lifecycle and may end in a human batch-disposition decision. In the legacy estate a case is a mutable row; in the target model a case is the sequence of immutable decision events recorded about it." ;
+    rdfs:subClassOf gx:Category_business_object ;
+    gx:category "business_object" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/06-root-cause/confirmed-root-causes.md",
+        "docs/11-data-context/knowledge-model.md",
+        "docs/business-context.md",
+        "docs/data-dictionary.md" ;
+    gx:identityPattern "^C[0-9]{8}$" ;
+    gx:legacyColumn "cases.id" ;
+    gx:legacySource "{'store': 'data/legacy.sqlite3', 'table': 'cases', 'rows_in_baseline': 125}" ;
+    gx:mutability "mutable_snapshot" ;
+    gx:sensitivity "C2" ;
+    gx:statusVocabulary vc:vocab_case_status .
+
+gx:BusinessRule a owl:Class .
+
+gx:MetricDefinition a owl:Class ;
+    rdfs:label "MetricDefinition" ;
+    rdfs:comment "A declared measure: category, window, denominator, exclusions, basis and — where closed/resolved/approved/cost/handling is involved — a mandatory definition tag. Versioned and immutable." ;
+    rdfs:subClassOf gx:Category_measurement ;
+    gx:category "measurement" ;
+    gx:epistemicStatus "verified_fact" ;
+    gx:evidence "docs/12-specs/features/f07-metrics-definition-tags.md",
+        "hub/metrics/registry.py" ;
+    gx:mutability "versioned_immutable" ;
+    gx:sensitivity "C1" .
+

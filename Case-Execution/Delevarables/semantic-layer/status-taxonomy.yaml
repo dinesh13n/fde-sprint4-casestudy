@@ -1,0 +1,601 @@
+# Semantic Layer — taxonomies, status vocabularies and controlled value sets
+#
+# CENTRAL SEMANTIC FINDING (do not "simplify" this away):
+#   The estate uses at least EIGHT incompatible status vocabularies. The word CLOSED appears in four of them
+#   (case, batch QA, deviation, enterprise object/task) with no evidence that it means the same thing. The meaning of
+#   "closed", "resolved" and "approved" is UNOWNED (decision gap RC-3 / OPD-01). Therefore:
+#     * a regenerated application MUST NOT map one vocabulary onto another automatically;
+#     * any mapping is a PolicyObject adopted by a human (Zone H);
+#     * figures that depend on "closed" MUST carry a definition tag (D-OPS, D-EVID, D-FIN) and are never combined across tags.
+#
+# kind values: status_vocabulary | event_type | outcome | reason_code | queue | role | classification | mode | identifier | dimension | autonomy | epistemic
+# meaning_status: defined | unknown | proposal   (unknown = the repo does not say what the value means in the real organisation)
+
+semantic_layer_version: "0.1.0"
+kind: taxonomy
+cross_vocabulary_mapping:
+  policy: forbidden_unless_adopted_policy
+  statement: "Vocabularies are never mapped to each other automatically. A mapping exists only as an adopted PolicyObject (Zone H, ZH-05)."
+  epistemic_status: verified_fact
+  evidence: [docs/11-data-context/knowledge-model.md, docs/12-specs/business-rules.md]
+role_tags:
+  - {tag: closing_label,  value: CLOSED,   vocabulary: vocab.case_status, note: "Spec convenience used only when no CLOSURE policy is active (assumption A-12-F01-2); it is not a definition of 'closed'."}
+  - {tag: reopened,       value: REOPENED, vocabulary: vocab.case_status}
+
+taxonomies:
+
+  # ============================================================ legacy status vocabularies (as found)
+  - id: vocab.case_status
+    kind: status_vocabulary
+    entity: Case
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: cases.status
+    values:
+      - {value: OPEN,         count_in_baseline: 42, role_tags: []}
+      - {value: UNDER_REVIEW, count_in_baseline: 30, role_tags: []}
+      - {value: CLOSED,       count_in_baseline: 36, role_tags: [closing_label], note: "D-OPS reading used by legacy code: status = 'CLOSED'."}
+      - {value: ESCALATED,    count_in_baseline: 9,  role_tags: []}
+      - {value: REOPENED,     count_in_baseline: 8,  role_tags: [reopened], note: "8 reopened cases have 0 reopen events: marked LEGACY_UNEVIDENCED_REOPEN on import."}
+    transition_table: {default: structural, alternative: strict, note: "structural = any change between two distinct states of this vocabulary except Zone H ones; strict table is a configurable alternative (open decision OD-S12-16)."}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, hub/decision/settings.py]
+
+  - id: vocab.batch_qa_status
+    kind: status_vocabulary
+    entity: Batch
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: batch_records.qa_status
+    values:
+      - {value: REVIEW,  count_in_baseline: 50}
+      - {value: QA_HOLD, count_in_baseline: 42}
+      - {value: CLOSED,  count_in_baseline: 33}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md]
+
+  - id: vocab.deviation_status
+    kind: status_vocabulary
+    entity: Deviation
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: deviations.status
+    values:
+      - {value: OPEN,          count_in_baseline: 14}
+      - {value: INVESTIGATION, count_in_baseline: 16}
+      - {value: CLOSED,        count_in_baseline: 12}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md]
+
+  - id: vocab.capa_state
+    kind: status_vocabulary
+    entity: CAPA
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: capa_actions.state
+    values:
+      - {value: OPEN,     count_in_baseline: 7}
+      - {value: OVERDUE,  count_in_baseline: 6}
+      - {value: VERIFIED, count_in_baseline: 8}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md]
+
+  - id: vocab.lab_test_status
+    kind: status_vocabulary
+    entity: LabResult
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: lab_results.test_status
+    values:
+      - {value: PENDING, count_in_baseline: 36}
+      - {value: OOS,     count_in_baseline: 35, meaning: "Out of specification."}
+      - {value: VALID,   count_in_baseline: 28}
+      - {value: INVALID, count_in_baseline: 26}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, docs/domain-contracts.md]
+
+  - id: vocab.policy_exception_outcome
+    kind: status_vocabulary
+    entity: PolicyException
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: policy_exceptions.outcome
+    values:
+      - {value: REVIEW,  count_in_baseline: 60}
+      - {value: OPEN,    count_in_baseline: 57}
+      - {value: WAIVED,  count_in_baseline: 56, note: "Meaning unowned (U-04-03)."}
+      - {value: BLOCKED, count_in_baseline: 51, note: "Meaning unowned (U-04-03)."}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, docs/04-baseline-kpis/kpi-dictionary.md]
+
+  - id: vocab.partner_processing_status
+    kind: status_vocabulary
+    entity: FeedItem
+    owner: unassigned
+    meaning_status: defined
+    legacy_column: partner_feeds.processing_status
+    values:
+      - {value: NEW,    count_in_baseline: 8000}
+      - {value: RETRY,  count_in_baseline: 500}
+      - {value: REPLAY, count_in_baseline: 67}
+    note: "Legacy overwrites this flag in place; the target model keeps an append-only outcome instead."
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, docs/06-root-cause/confirmed-root-causes.md]
+
+  - id: vocab.enterprise_object_status
+    kind: status_vocabulary
+    entity: Case
+    owner: unassigned
+    meaning_status: unknown
+    legacy_column: "enterprise_legacy.sqlite3 operational_objects.status / workflow_tasks.status"
+    values:
+      - {value: OPEN}
+      - {value: REVIEW, note: "Night-shift job arbitrarily treats REVIEW as open."}
+      - {value: HOLD}
+      - {value: CLOSED}
+      - {value: ESCALATED}
+      - {value: REOPENED}
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, legacy_batch/shift_reconciliation.py]
+
+  - id: vocab.integration_attempt_status
+    kind: status_vocabulary
+    entity: FeedItem
+    owner: unassigned
+    meaning_status: defined
+    legacy_column: "enterprise_legacy.sqlite3 integration_attempts.status"
+    values: [{value: FAILED}, {value: RETRY}, {value: SUCCESS}, {value: TIMEOUT}]
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md]
+
+  - id: vocab.hub_queue_state
+    kind: status_vocabulary
+    entity: Case
+    owner: unassigned
+    meaning_status: defined
+    note: "Domain-profile review queue states used by the workflow narrative; not a stored column in the baseline database."
+    values: [{value: OPEN}, {value: INVESTIGATING}, {value: QA_REVIEW}, {value: DISPOSITIONED}, {value: REOPENED}]
+    epistemic_status: verified_fact
+    evidence: [domain-profile.json, docs/source-systems-and-constraints.md]
+
+  # ============================================================ business classifications
+  - id: vocab.severity
+    kind: classification
+    entity: Case
+    meaning_status: defined
+    values: [{value: CRITICAL, count_in_baseline: 2}, {value: HIGH, count_in_baseline: 13}, {value: MEDIUM, count_in_baseline: 44}, {value: LOW, count_in_baseline: 66}]
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, app/legacy_logic.py]
+  - id: vocab.deviation_classification
+    kind: classification
+    entity: Deviation
+    meaning_status: defined
+    values: [{value: CRITICAL, count_in_baseline: 11}, {value: MAJOR, count_in_baseline: 15}, {value: MINOR, count_in_baseline: 16}]
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md]
+  - id: vocab.region
+    kind: dimension
+    entity: Case
+    meaning_status: defined
+    values: [{value: AMER, count_in_baseline: 46}, {value: APAC, count_in_baseline: 39}, {value: EMEA, count_in_baseline: 40}]
+    epistemic_status: verified_fact
+    evidence: [contracts/decision-policies-archive.json, docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: vocab.site
+    kind: dimension
+    entity: Site
+    meaning_status: unknown
+    note: "Site aliases are not mapped to a master site list (U-11-14)."
+    values: [{value: BR-SP}, {value: DE-BY}, {value: GB-ENG}, {value: IN-BLR}, {value: JP-KN}, {value: US-TX}]
+    epistemic_status: verified_fact
+    evidence: [docs/34-measure-after/after-intervention-kpi-sheet.md, docs/34-measure-after/after-intervention-kpi-sheet.md]
+  - id: vocab.case_segment
+    kind: dimension
+    entity: Case
+    meaning_status: defined
+    values:
+      - {value: enterprise, count_in_baseline: 22}
+      - {value: legacy-v1, count_in_baseline: 23, note: "Parallel workflow for older customers; must not be changed or retired by this product (FR-CO-02, BR-11); owner unknown."}
+      - {value: priority, count_in_baseline: 21}
+      - {value: regulated, count_in_baseline: 33}
+      - {value: standard, count_in_baseline: 26}
+    epistemic_status: verified_fact
+    evidence: [docs/data-dictionary.md, docs/04-baseline-kpis/kpi-dictionary.md]
+  - id: vocab.product_part
+    kind: dimension
+    entity: Material
+    meaning_status: defined
+    values: [{value: TABLET}, {value: STERILE_VIAL}, {value: API}, {value: BIOLOGIC}]
+    epistemic_status: verified_fact
+    evidence: [domain-profile.json, docs/source-systems-and-constraints.md]
+  - id: vocab.document_type
+    kind: dimension
+    entity: Document
+    meaning_status: defined
+    values: [{value: sop}, {value: coa, meaning: "Certificate of analysis."}, {value: batch-record}]
+    epistemic_status: verified_fact
+    evidence: [domain-profile.json]
+  - id: vocab.quality_fault
+    kind: dimension
+    entity: Deviation
+    meaning_status: defined
+    values: [{value: out of specification}, {value: unclosed deviation}, {value: missing signature}, {value: sample retest conflict}, {value: expired calibration}]
+    epistemic_status: verified_fact
+    evidence: [domain-profile.json]
+  - id: vocab.policy_name
+    kind: dimension
+    entity: PolicyException
+    meaning_status: unknown
+    note: "Effective versions and actual behaviour of these policies must be established from data and code; not stated in the repo."
+    values: [{value: qa_signature}, {value: oos_hold}, {value: sop_effective_date}, {value: electronic_record_retention}]
+    epistemic_status: verified_fact
+    evidence: [docs/partner-feed-operations.md, domain-profile.json]
+
+  # ============================================================ integration controlled sets
+  - id: vocab.partner_record_kind
+    kind: classification
+    entity: FeedItem
+    meaning_status: defined
+    values: [{value: OOS_RESULT}, {value: DEVIATION}, {value: CAPA_UPDATE}]
+    note: "Published by ElectronicBatchRecord; any other kind is UNKNOWN_RECORD_KIND."
+    epistemic_status: verified_fact
+    evidence: [docs/source-systems-and-constraints.md, domain-profile.json]
+  - id: vocab.schema_revision
+    kind: classification
+    entity: FeedItem
+    meaning_status: defined
+    values: [{value: "1.0", supported: true}, {value: "1.1", supported: true}, {value: "2.0", supported: true}, {value: "0.9", supported: false, note: "Accepted by OD-28 as a recorded oddity; allowed-versions list is an open item."}, {value: unsupported variants, supported: false}]
+    epistemic_status: verified_fact
+    evidence: [docs/source-systems-and-constraints.md, .fde/orchestrator-decisions.md]
+  - id: vocab.intake_outcome
+    kind: outcome
+    entity: IntakeOutcome
+    meaning_status: defined
+    values:
+      - {value: VALIDATED}
+      - {value: VALIDATED_WITH_FLAGS}
+      - {value: EXCEPTION}
+      - {value: QUARANTINED}
+      - {value: NOOP_DUPLICATE, note: "Excluded from every queue, total and metric by definition."}
+      - {value: CONFLICT_RESOLVED, note: "Requires resolution (accept_revision | keep_original | reject_both), a non-empty reason and a resolver."}
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, hub/intake/reasons.py]
+  - id: vocab.intake_reason
+    kind: reason_code
+    entity: IntakeOutcome
+    meaning_status: defined
+    ordered: true
+    note: "Fixed precedence, highest first. The first applicable code is primary_reason; all applicable codes are listed. Class-monotone: all QUARANTINE codes, then EXCEPTION, then FLAG."
+    values:
+      - {value: UNSUPPORTED_REVISION,   class: QUARANTINE, queue: quarantine_invalid}
+      - {value: INVALID_JSON,           class: QUARANTINE, queue: quarantine_invalid}
+      - {value: MISSING_ENVELOPE_FIELD, class: QUARANTINE, queue: quarantine_invalid}
+      - {value: UNKNOWN_RECORD_KIND,    class: QUARANTINE, queue: quarantine_invalid}
+      - {value: MISSING_PAYLOAD_FIELD,  class: QUARANTINE, queue: quarantine_invalid}
+      - {value: CONTRACT_VIOLATION,     class: QUARANTINE, queue: quarantine_invalid, note: "Only when the source contract is bound in enforce mode."}
+      - {value: REVISED_CONFLICT,       class: QUARANTINE, queue: revision_review}
+      - {value: UNPARSABLE_AMOUNT,      class: QUARANTINE, queue: quarantine_invalid}
+      - {value: NO_BUSINESS_KEY,        class: EXCEPTION,  queue: unmatched}
+      - {value: AMBIGUOUS_MATCH,        class: EXCEPTION,  queue: ambiguous_match}
+      - {value: UNMATCHED_REF,          class: EXCEPTION,  queue: unmatched}
+      - {value: NEGATIVE_VALUE,         class: FLAG,       queue: flagged_value}
+      - {value: UNKNOWN_UNIT,           class: FLAG,       queue: flagged_value}
+      - {value: UNKNOWN_CURRENCY,       class: FLAG,       queue: flagged_value}
+      - {value: IDENTIFIER_PATTERN,     class: FLAG,       queue: flagged_value}
+    epistemic_status: verified_fact
+    evidence: [hub/intake/reasons.py, docs/12-specs/business-rules.md]
+  - id: vocab.intake_queue
+    kind: queue
+    entity: IntakeOutcome
+    meaning_status: defined
+    values: [{value: quarantine_invalid}, {value: revision_review}, {value: unmatched}, {value: ambiguous_match}, {value: flagged_value}]
+    epistemic_status: verified_fact
+    evidence: [hub/intake/reasons.py]
+  - id: vocab.intake_class_to_outcome
+    kind: outcome
+    entity: IntakeOutcome
+    meaning_status: defined
+    note: "Outcome follows the class of the primary reason."
+    values: [{value: "QUARANTINE -> QUARANTINED"}, {value: "EXCEPTION -> EXCEPTION"}, {value: "FLAG -> VALIDATED_WITH_FLAGS"}, {value: "no reason -> VALIDATED"}]
+    epistemic_status: verified_fact
+    evidence: [hub/intake/reasons.py]
+
+  # ============================================================ decision record controlled sets
+  - id: vocab.decision_event_type
+    kind: event_type
+    entity: DecisionEvent
+    meaning_status: defined
+    values:
+      - {value: CASE_CREATED}
+      - {value: CASE_IMPORTED, note: "Legacy backfill; actor_kind system."}
+      - {value: STATUS_CHANGE}
+      - {value: REOPEN, note: "Increments cycle."}
+      - {value: EVIDENCE_ATTACHED}
+      - {value: FACT_RECEIVED,          note: "Fact (a): receipt of the case. Human-entered only (facts.derivation = human_only)."}
+      - {value: FACT_OPS_CLOSED,        note: "Fact (b): operations-closed."}
+      - {value: FACT_EVIDENCE_COMPLETE, note: "Fact (c): evidence-complete."}
+      - {value: CLOSE_EXCEPTION,        zone_h: true, zone_h_action: ZH-04}
+      - {value: DISPOSITION_RECORDED,   zone_h: true, zone_h_action: ZH-01}
+      - {value: DISPOSITION_REFERENCED, zone_h: true, zone_h_action: ZH-01}
+      - {value: QA_RELEASE_RECORDED,    zone_h: true, zone_h_action: ZH-02}
+      - {value: ESIGNATURE_RECORDED,    zone_h: true, zone_h_action: ZH-03, note: "Records that an authorised human acted; NOT a cryptographic or legal signature."}
+      - {value: OVERRIDE_RECORDED}
+      - {value: CORRECTION}
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/features/f02-human-disposition-gate.md]
+  - id: vocab.actor_kind
+    kind: classification
+    entity: Principal
+    meaning_status: defined
+    values: [{value: human}, {value: rule}, {value: system}, {value: service, note: "Audit log only."}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.evidence_kind
+    kind: classification
+    entity: EvidenceRecord
+    meaning_status: defined
+    values: [{value: document}, {value: intake_item}, {value: crosswalk_object}, {value: external_ref}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.closure_check
+    kind: outcome
+    entity: DecisionEvent
+    meaning_status: defined
+    values: [{value: passed}, {value: exception}, {value: not_configured}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.zone_h_action
+    kind: classification
+    entity: ZoneHAction
+    meaning_status: defined
+    closed_list: true
+    note: "The list is closed: adding an action is itself a spec change and a ZH-05-class decision."
+    values:
+      - {value: ZH-01, name: BATCH_DISPOSITION}
+      - {value: ZH-02, name: QA_RELEASE}
+      - {value: ZH-03, name: ESIGNATURE_RECORD}
+      - {value: ZH-04, name: CLOSE_EXCEPTION}
+      - {value: ZH-05, name: POLICY_ADOPT}
+      - {value: ZH-06, name: RULESET_ACTIVATE}
+      - {value: ZH-07, name: EXCEPTION_RULE_ACCEPT, note: "Record only; semantics undefined in the spec (RTD-67)."}
+      - {value: ZH-08, name: DISPOSITION_MODE_CHANGE}
+      - {value: ZH-09, name: SCHEDULE_ENABLE_DISABLE}
+      - {value: ZH-10, name: POLICY_CHANGE, note: "Includes rule-row edits and policy withdrawal (FAC-13)."}
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f02-human-disposition-gate.md, hub/gate/service.py, hub/gate/actions.py]
+  - id: vocab.disposition_mode
+    kind: mode
+    entity: ZoneHAction
+    meaning_status: defined
+    default: none
+    values:
+      - {value: none,         note: "Default. ZH-01..03 return E-GATE-MODE-NONE."}
+      - {value: event,        note: "Decision stored as DISPOSITION_RECORDED; needs disposition.values set."}
+      - {value: external_ref, note: "Only a reference to an external system-of-record decision is stored (verified: false)."}
+    open_decision: OD-S12-05
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f02-human-disposition-gate.md]
+
+  # ============================================================ policy controlled sets
+  - id: vocab.policy_kind
+    kind: classification
+    entity: PolicyObject
+    meaning_status: defined
+    values: [{value: DEFINITION}, {value: CLOCK}, {value: CLOSURE}, {value: CONSISTENCY}, {value: CUTOFF}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.policy_status
+    kind: status_vocabulary
+    entity: PolicyObject
+    meaning_status: defined
+    default: candidate
+    values:
+      - {value: candidate,     note: "No verdicts are produced from a candidate."}
+      - {value: adopted,       note: "Applies from effective_from to effective_to; a withdrawal event ends it the day before withdrawn_from."}
+      - {value: accepted-open, note: "A human recorded that the question is deliberately undecided; no verdicts."}
+    epistemic_status: verified_fact
+    evidence: [docs/20-application/state-model.md, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.policy_event_type
+    kind: event_type
+    entity: PolicyEvent
+    meaning_status: defined
+    values: [{value: POLICY_VERSION_CREATED}, {value: POLICY_ADOPTED}, {value: POLICY_ACCEPTED_OPEN}, {value: POLICY_WITHDRAWN}, {value: RULE_ROW_CHANGED}, {value: RULESET_ACTIVATED}, {value: RULESET_DEACTIVATED}, {value: EXCEPTION_RULE_ACCEPTED}, {value: CLOSURE_ACTIVATED}, {value: DISPOSITION_MODE_CHANGED}, {value: SCHEDULE_CHANGED}, {value: CONTRACT_BINDING_CHANGED}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.definition_tag
+    kind: classification
+    entity: PolicyObject
+    meaning_status: proposal
+    note: "CANDIDATE tags only; none is adopted (OPD-01/03 accepted open). A metric that involves closed/resolved/approved/cost/handling must carry exactly one."
+    values:
+      - {value: D-OPS,  meaning: "Operations-closed: cases.status = 'CLOSED' (the reading the legacy code uses)."}
+      - {value: D-EVID, meaning: "Closed AND evidence-complete AND authorised approver recorded."}
+      - {value: D-FIN,  meaning: "'Successfully resolved for cost' purposes. UNDEFINED."}
+      - {value: C-OPS,  meaning: "Clock tag for time-to-ops-closed (start/stop events)."}
+      - {value: C-EVID, meaning: "Clock tag for time-to-evidence-complete."}
+    epistemic_status: assumption
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/12-specs/business-rules.md, hub/metrics/registry.py]
+  - id: vocab.calendar_basis
+    kind: mode
+    entity: PolicyObject
+    meaning_status: defined
+    values: [{value: wall_clock}, {value: business_calendar, note: "Requires calendar_ref."}]
+    epistemic_status: verified_fact
+    evidence: [hub/policy/clocks.py]
+  - id: vocab.clock_verdict
+    kind: outcome
+    entity: PolicyObject
+    meaning_status: defined
+    values: [{value: within}, {value: not_within}, {value: not_available_no_adopted_policy}, {value: not_available_event_missing}]
+    note: "A verdict exists only for an adopted clock with a duration. Boundary rule: elapsed_hours <= duration_hours (inclusive)."
+    epistemic_status: verified_fact
+    evidence: [hub/policy/clocks.py, docs/12-specs/business-rules.md]
+  - id: vocab.ruleset_origin
+    kind: classification
+    entity: RuleSet
+    meaning_status: defined
+    values: [{value: as-found, note: "Read-only; mirrors a legacy implementation."}, {value: custom}]
+    epistemic_status: verified_fact
+    evidence: [hub/policy/rulesets.py]
+  - id: vocab.as_found_ruleset
+    kind: classification
+    entity: RuleSet
+    meaning_status: defined
+    values:
+      - {value: as-found-python, source: app/legacy_logic.py,                     note: "Urgent if severity CRITICAL or amount > 50,000; review if HIGH or ESCALATED; archive if CLOSED; else queue."}
+      - {value: as-found-js,     source: legacy_js/legacy_policy.js,              note: "Allowed if amount <= regional limit x 1.05; unknown region/year defaults to 999,999."}
+      - {value: as-found-batch,  source: legacy_batch/shift_reconciliation.py,    note: "Night-shift threshold 2,500-8,500; arbitrarily treats REVIEW and HOLD as open/flagged."}
+    epistemic_status: verified_fact
+    evidence: [docs/06-root-cause/confirmed-root-causes.md, hub/policy/as_found_pins.json]
+  - id: vocab.priority_outcome
+    kind: outcome
+    entity: Case
+    meaning_status: defined
+    values: [{value: archive}, {value: urgent}, {value: review}, {value: queue}]
+    epistemic_status: verified_fact
+    evidence: [app/legacy_logic.py]
+  - id: vocab.capability_authority
+    kind: mode
+    entity: Capability
+    meaning_status: defined
+    default: shadow
+    values: [{value: shadow, note: "Legacy remains authoritative."}, {value: authoritative, note: "Needs a recorded approval_ref; refused without it."}]
+    epistemic_status: verified_fact
+    evidence: [hub/config.py, docs/final-prd/final-capability-map.md]
+  - id: vocab.closure_unconfigured_behaviour
+    kind: mode
+    entity: PolicyObject
+    meaning_status: defined
+    default: treat_label_CLOSED_as_closing
+    values: [{value: treat_label_CLOSED_as_closing, note: "Fail-closed default."}, {value: none, note: "No check; events flagged closure_check = not_configured."}]
+    open_decision: OD-S12-03
+    epistemic_status: verified_fact
+    evidence: [hub/decision/settings.py]
+
+  # ============================================================ measurement and runs
+  - id: vocab.metric_category
+    kind: classification
+    entity: MetricDefinition
+    meaning_status: defined
+    values: [{value: time}, {value: count}, {value: money}, {value: rate}, {value: age}]
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: vocab.metric_basis
+    kind: classification
+    entity: MetricDefinition
+    meaning_status: defined
+    values: [{value: event_derived}, {value: modelled}]
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py]
+  - id: vocab.data_origin
+    kind: classification
+    entity: MetricValue
+    meaning_status: defined
+    default: synthetic
+    values: [{value: synthetic, note: "Only accepted value until real data is approved (HAR-15). Label must be 'synthetic, unvalidated'."}, {value: production}]
+    epistemic_status: verified_fact
+    evidence: [hub/config.py, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.run_job
+    kind: classification
+    entity: Run
+    meaning_status: defined
+    closed_list: true
+    values: [{value: intake_partner_feed}, {value: intake_gateway}, {value: intake_source_messages}, {value: intake_vendor_csv}, {value: backfill_legacy}, {value: rebuild_projection}, {value: verify_projection}, {value: verify_audit}, {value: metrics_snapshot}]
+    epistemic_status: verified_fact
+    evidence: [hub/runs/catalogue.py]
+  - id: vocab.run_event_type
+    kind: event_type
+    entity: Run
+    meaning_status: defined
+    values: [{value: RUN_STARTED}, {value: RUN_CHECKPOINT}, {value: RUN_FINISHED}, {value: RUN_FAILED}, {value: RUN_ABANDONED}, {value: RUN_REFUSED}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.run_trigger
+    kind: classification
+    entity: Run
+    meaning_status: defined
+    values: [{value: manual}, {value: scheduled, note: "Schedule ships OFF; enabling is ZH-09."}]
+    epistemic_status: verified_fact
+    evidence: [hub/runs/catalogue.py]
+
+  # ============================================================ access and governance
+  - id: vocab.role
+    kind: role
+    entity: Principal
+    meaning_status: defined
+    values:
+      - {value: reviewer,      meaning: "Reviews and prioritises work; may override/dismiss/refuse rule output with a reason."}
+      - {value: quality_lead,  meaning: "Quality operations lead; read/write on non-Zone H case work."}
+      - {value: compliance,    meaning: "Compliance / risk-and-security reviewer; reads evidence and audit."}
+      - {value: finance_read,  meaning: "Finance partner; read-only, masked."}
+      - {value: integration,   meaning: "Integration owner / service accounts; intake only; never Zone H."}
+      - {value: dispositioner, meaning: "Authorised batch-disposition reviewer; only role that can be a Zone H holder, and only if named in zone_h.holders (ships empty)."}
+    note: "Role holders are unknown: no identity directory exists."
+    epistemic_status: verified_fact
+    evidence: [hub/security/route_registry.json, docs/12-specs/contracts/openapi.yaml]
+  - id: vocab.data_classification
+    kind: classification
+    entity: Principal
+    meaning_status: proposal
+    note: "Would-be scheme (assumption A-11-02), applied as if Confidential so designs are production-valid. Missing classification = restricted."
+    values:
+      - {value: C0, name: Public,       examples: "none in the estate"}
+      - {value: C1, name: Internal,     examples: "materials, sop_versions, reference_versions"}
+      - {value: C2, name: Confidential, examples: "case account ids, actors, feeds, financial, most documents"}
+      - {value: C3, name: Restricted,   examples: "restricted documents (328 of 1,200), legal-hold records (123), audit trail"}
+    epistemic_status: assumption
+    evidence: [docs/11-data-context/metadata-model.md]
+  - id: vocab.document_access_level
+    kind: classification
+    entity: Document
+    meaning_status: proposal
+    default: restricted
+    values: [{value: restricted, count_in_baseline: 328}, {value: operations, count_in_baseline: 295}, {value: engineering, count_in_baseline: 305}, {value: quality, count_in_baseline: 272}]
+    note: "Role-to-access-level mapping is a proposal (A-11-09); no role model exists in the estate."
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/metadata-model.md]
+  - id: vocab.audit_outcome
+    kind: outcome
+    entity: AuditRecord
+    meaning_status: defined
+    values: [{value: success}, {value: denied}, {value: error}]
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+  - id: vocab.autonomy_level
+    kind: autonomy
+    entity: Capability
+    meaning_status: defined
+    values:
+      - {value: A0, meaning: "Passive: store, display, answer a query."}
+      - {value: A1, meaning: "Flag or recommend; a human acts."}
+      - {value: A2, meaning: "Draft for explicit human approval."}
+      - {value: A3, meaning: "Reversible action inside a fixed policy; human reviews after. Only the scheduled intake run (ships OFF)."}
+      - {value: A4, meaning: "Multi-step planning with tools. NOT BUILT; rejected at qualification."}
+      - {value: A5, meaning: "Autonomous in a regulated decision. PROHIBITED."}
+    epistemic_status: verified_fact
+    evidence: [docs/23-human-control/autonomy-matrix.md, docs/08-ai-qualification/minimum-agency-assessment.md]
+  - id: vocab.epistemic_status
+    kind: epistemic
+    entity: Capability
+    meaning_status: defined
+    values:
+      - {value: verified_fact, meaning: "Observed in code, data or a recorded decision."}
+      - {value: inference,     meaning: "Reasoned from evidence; not directly observed."}
+      - {value: assumption,    meaning: "Taken as true for design; owner must confirm."}
+      - {value: unknown,       meaning: "The repository does not say."}
+    epistemic_status: verified_fact
+    evidence: [docs/00-preflight/operating-contract/evidence-contract.md]
+  - id: vocab.approval_state
+    kind: status_vocabulary
+    entity: Capability
+    meaning_status: defined
+    values: [{value: OPEN, note: "Human-only; all 40 release approvals are OPEN."}, {value: APPROVED}]
+    epistemic_status: verified_fact
+    evidence: [docs/final-prd/final-acceptance-evidence-map.md, docs/30-release/release-approvals.md]
+  - id: vocab.release_gate_result
+    kind: outcome
+    entity: Capability
+    meaning_status: defined
+    values: [{value: GO}, {value: NO-GO}]
+    note: "Evaluator returns NO-GO on the shipped state (G1, T-09, T-10 fail; T-05 not run) and gates nothing."
+    epistemic_status: verified_fact
+    evidence: [hub/release/gonogo.py, docs/final-prd/final-as-built-prd.md]

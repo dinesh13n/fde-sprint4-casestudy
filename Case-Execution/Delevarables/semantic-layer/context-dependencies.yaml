@@ -1,0 +1,43 @@
+# Semantic Layer — context dependencies, open decisions and unknowns
+# Purpose: everything a regenerating model must know is UNDECIDED, so it does not invent an answer.
+# Rule: an open decision is never resolved by the generator. It is carried as "open" in the PRD and the app.
+# Status values: open | accepted_open (recorded that nobody decided) | answered | refuted
+semantic_layer_version: "0.1.0"
+kind: context-dependencies
+open_decisions:
+  - {id: OPD-01, topic: "Definition of closed / resolved / approved", status: accepted_open, effect: "Metrics are split D-OPS / D-EVID / D-FIN; no winner. D-FIN is undefined.", blocks: [K-04-FIN, K-09-FIN, release], source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-02, topic: "Meaning of the '48 h' clock", status: accepted_open, effect: "Clocks C-OPS and C-EVID kept apart; no policy adopted, so time metrics return not_available.", blocks: [MET-TTC-C-OPS, MET-TTC-C-EVID], source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-03, topic: "Who decides the speed-versus-evidence trade-off", status: open, effect: "No human decider exists.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-04, topic: "Owner of rule conflicts and the 999,999 default", status: open, effect: "Rule conflicts are surfaced, never auto-resolved (LEG-04).", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-05, topic: "Where disposition lives", status: open, effect: "Disposition mode defaults to 'none'.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-06, topic: "Who holds the dispositioner role", status: open, effect: "zone_h.holders is empty; every ZH action is refused.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-07, topic: "Evidence sufficiency criteria", status: open, effect: "No evidence-complete rule can be adopted.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-08, topic: "Month-end cut-off, denominator and cost data source", status: open, effect: "Month-end metric requires an explicit cut-off parameter with no default.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-09, topic: "Retention", status: open, effect: "No deletion implemented; audit and decision events immutable.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-10, topic: "Buy versus build", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-11, topic: "Whether a scheduler is an automated action", status: open, effect: "Scheduler treated as a non-human actor; may not perform ZH actions.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-12, topic: "Making RQ-1..RQ-3 operational", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-13, topic: "PRD approval", status: open, effect: "PRD is a draft; no approver.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-14, topic: "Performance targets", status: open, effect: "Latency is measure-only; no target invented.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-15, topic: "Owner of the parallel workflow", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OPD-16, topic: "Whether the product is for a real organisation", status: open, effect: "All data is labelled synthetic; nothing is claimed for production.", source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: OD-S12-03, topic: "Stage 12 spec decision (see spec-readiness table)", status: open, source_doc: docs/12-specs/spec-readiness.md}
+  - {id: OD-S12-05, topic: "Stage 12 spec decision (see spec-readiness table)", status: open, source_doc: docs/12-specs/spec-readiness.md}
+  - {id: OD-S12-11, topic: "Stage 12 spec decision (see spec-readiness table)", status: open, source_doc: docs/12-specs/spec-readiness.md}
+  - {id: OD-S12-13, topic: "Stage 12 spec decision (see spec-readiness table)", status: open, source_doc: docs/12-specs/spec-readiness.md}
+  - {id: OD-S12-17, topic: "Intake natural key (partner, record_kind, ref_id, source_ts)", status: answered, answered_by: "Dinesh Naik", source_doc: docs/12-specs/spec-readiness.md}
+  - {id: OD-41, topic: "Add an advisory AI assistant (A1) to the Command Centre", status: answered, answered_by: "Dinesh Naik", effect: "OpenAI / Azure OpenAI assistant, suggest only; core stays deterministic", source_doc: semantic-layer/ai-context-policy.yaml}
+  - {id: RQ-1, topic: "Trigger to reconsider No-AI (OD-08); now also the evaluation gate for the OD-41 assistant (labelled question set)", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: RQ-2, topic: "Reconsideration trigger 2", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: RQ-3, topic: "Reconsideration trigger 3", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+  - {id: RQ-4, topic: "Reconsideration trigger 4", status: open, source_doc: docs/09-initial-prd/open-product-decisions.md}
+note: "Remaining OD-S12-xx ids (01..19) are listed in docs/12-specs/spec-readiness.md; the generated extractor adds any not named above."
+repo_dependencies:
+  - {id: DEP-01, what: "Seeded SQLite database (125 cases, seed 4100)", why: "baseline figures", portable: false}
+  - {id: DEP-02, what: "hub/security/route_registry.json (48 routes)", why: "permission matrix", portable: false}
+  - {id: DEP-03, what: "docs/12-specs/business-rules.md (48 SBR rules)", why: "spec rules", portable: false}
+  - {id: DEP-04, what: "error-code-registry.json", why: "error catalogue", portable: false}
+unknowns:
+  - {id: UNK-01, what: "Real organisation, real volumes, real cost rates", effect: "ROI not computable"}
+  - {id: UNK-02, what: "Closure timestamp and evidence/approver timestamps in legacy data", effect: "K-04, K-09-EVID not computable"}
+  - {id: UNK-03, what: "Branding assets for the presentation", effect: "Guideline deliverable blocked"}

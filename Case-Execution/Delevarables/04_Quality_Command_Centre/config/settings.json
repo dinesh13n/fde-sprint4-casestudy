@@ -1,0 +1,54 @@
+{
+  "_readme": "Central configuration for the Quality Command Centre. Values here are defaults. Put secrets in config/settings.local.json (not shared) or in environment variables. Environment variables win over both files.",
+  "app": {
+    "host": "127.0.0.1",
+    "port": 8090,
+    "open_browser": true,
+    "runtime_dir": "runtime",
+    "data_label": "synthetic, unvalidated"
+  },
+  "paths": {
+    "hub_repo": "../../gxp-quality-hub-legacy",
+    "data_source": "../../_data-backup-2026-10-17/data/legacy.sqlite3",
+    "data_source_sha256": "c254649f57e2f05a0b54229923597a5a82a37633d455270b9ee40577071d70aa",
+    "semantic_layer_json": "../semantic-layer/generated/semantic-layer.json"
+  },
+  "ai": {
+    "_readme": "Advisory assistant (autonomy A1: suggest only). It never performs a Zone H action. With enabled=false, or no API key, the assistant answers from retrieval only and makes zero model calls.",
+    "enabled": true,
+    "provider": "azure_openai",
+    "openai": {
+      "api_key": "",
+      "api_key_env": "OPENAI_API_KEY",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-4.1-mini",
+      "organization": "",
+      "project": ""
+    },
+    "azure_openai": {
+      "api_key": "",
+      "api_key_env": "AZURE_OPENAI_API_KEY",
+      "endpoint": "https://foundry-123-dinesh.cognitiveservices.azure.com/",
+      "deployment": "gpt-4.1-mini",
+      "api_version": "2024-12-01-preview"
+    },
+    "generation": {
+      "temperature": 0.1,
+      "max_output_tokens": 700,
+      "token_param": "max_completion_tokens",
+      "timeout_seconds": 30,
+      "max_retries": 1
+    },
+    "retrieval": {
+      "top_k": 8,
+      "max_context_chars": 12000
+    },
+    "guardrails": {
+      "autonomy_level": "A1",
+      "block_action_requests": true,
+      "flag_instruction_like_text": true,
+      "redact_patterns": ["[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"],
+      "log_prompts": true
+    }
+  }
+}

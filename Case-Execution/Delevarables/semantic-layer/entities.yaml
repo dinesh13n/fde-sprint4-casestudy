@@ -1,0 +1,486 @@
+# Semantic Layer — canonical business entities
+# Domain: Life Sciences — Pharma Quality Intelligence (GMP batch deviation / CAPA review)
+# Source of truth for WHAT things are. Not an implementation: no table or class names are required to be reused.
+#
+# Item fields
+#   id                  unique, PascalCase, referenced by relationships / rules / metrics / access semantics
+#   category            business_object | decision_record | policy | integration | measurement | identity_security | operations | governance
+#   mutability          mutable_snapshot | append_only | versioned_immutable | derived_projection | external_read_only | reference_data
+#   sensitivity         C0 public | C1 internal | C2 confidential | C3 restricted (would-be scheme, see access-semantics.yaml)
+#   epistemic_status    verified_fact | inference | assumption | unknown   (the repo's own evidence classes)
+#   evidence            repo-relative paths in gxp-quality-hub-legacy/ that support the item
+#
+# Data is SYNTHETIC. Counts are for the shipped baseline (125 cases, seed 4100, sha256 c254649f...d70aa).
+
+semantic_layer_version: "0.1.0"
+kind: entities
+domain: "Life Sciences — Pharma Quality Intelligence"
+items:
+
+  # ------------------------------------------------------------------ business objects
+  - id: Case
+    category: business_object
+    description: >
+      A unit of quality-operations work: a batch-quality review / deviation-handling case that moves through a review lifecycle
+      and may end in a human batch-disposition decision. In the legacy estate a case is a mutable row; in the target model a case is the
+      sequence of immutable decision events recorded about it.
+    identity: {field: case_id, pattern: '^C[0-9]{8}$', legacy_column: cases.id}
+    attributes:
+      account_id: "Pseudonymous account reference (ACCT-nnnnnn); quasi-identifier (C2)."
+      segment: "Customer/workflow segment: enterprise, legacy-v1, priority, regulated, standard. 'legacy-v1' is the parallel workflow for older customers, which must not be changed (BR-11)."
+      site: "Operating site alias (BR-SP, DE-BY, GB-ENG, IN-BLR, JP-KN, US-TX). Aliases are not mapped to a master site list (unknown)."
+      region: "AMER | APAC | EMEA. Drives the regional approval limit in the rule sets."
+      created_at: "UTC ISO-8601 receipt timestamp."
+      status: "Current legacy status (vocab.case_status). A snapshot; history is not kept in the legacy system."
+      severity: "CRITICAL | HIGH | MEDIUM | LOW."
+      amount: "Monetary value used by the approval/priority rules and month-end totals. Currency is not stored on the row."
+      version: "Row version; equals 1 for all 125 baseline cases and is never incremented (evidence of mutable-snapshot design)."
+    vocabulary: vocab.case_status
+    legacy_source: {store: "data/legacy.sqlite3", table: cases, rows_in_baseline: 125}
+    mutability: mutable_snapshot
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, docs/06-root-cause/confirmed-root-causes.md, docs/data-dictionary.md, docs/business-context.md]
+
+  - id: Batch
+    category: business_object
+    description: "A manufactured batch of a material whose quality is under review. Carries the QA status and the observed assay."
+    identity: {field: batch_id, pattern: '^BT[0-9]{8}$', legacy_column: batch_records.batch_id}
+    attributes:
+      material_id: "Material produced (foreign key to Material)."
+      batch_site: "Site that produced the batch."
+      observed_assay: "Measured assay value."
+      assay_unit: "Unit of the assay; units differ across inherited practices."
+      qa_status: "REVIEW | QA_HOLD | CLOSED (vocab.batch_qa_status). Meaning of CLOSED is not defined."
+    vocabulary: vocab.batch_qa_status
+    legacy_source: {store: "data/legacy.sqlite3", table: batch_records, rows_in_baseline: 125}
+    mutability: mutable_snapshot
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/data-dictionary.md, docs/domain-contracts.md, docs/11-data-context/knowledge-model.md]
+
+  - id: Material
+    category: reference_data
+    description: "A pharmaceutical material/product type that batches are made from."
+    identity: {field: material_id, legacy_column: materials.material_id}
+    attributes:
+      material_name: "Name of the material."
+      source_site: "Originating site."
+      spec_version: "Specification version in force for the material."
+    legacy_source: {store: "data/legacy.sqlite3", table: materials, rows_in_baseline: 30}
+    mutability: reference_data
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/data-dictionary.md]
+
+  - id: LabResult
+    category: business_object
+    description: "A laboratory test result for a batch; may be pending, valid, invalid or out of specification (OOS)."
+    identity: {field: result_id, pattern: '^LAB[0-9]{8}$', legacy_column: lab_results.result_id}
+    attributes:
+      batch_id: "Batch tested."
+      analyte: "Substance/property measured."
+      result_value: "Numeric result; nullable (a pending result has no value)."
+      unit: "Unit of the result."
+      test_status: "PENDING | OOS | VALID | INVALID (vocab.lab_test_status)."
+      measured_at: "UTC timestamp of measurement."
+    vocabulary: vocab.lab_test_status
+    legacy_source: {store: "data/legacy.sqlite3", table: lab_results, rows_in_baseline: 125}
+    mutability: mutable_snapshot
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/domain-contracts.md, docs/11-data-context/knowledge-model.md]
+
+  - id: Deviation
+    category: business_object
+    description: "A recorded departure from the expected manufacturing/quality process for a batch, with a classification and an optional root cause."
+    identity: {field: deviation_id, pattern: '^DEV[0-9]{8}$', legacy_column: deviations.deviation_id}
+    attributes:
+      batch_id: "Batch affected."
+      opened_at: "UTC timestamp when the deviation was opened."
+      classification: "CRITICAL | MAJOR | MINOR (vocab.deviation_classification)."
+      root_cause: "Free text; nullable. 8 of 12 CLOSED baseline deviations have none (K-17 = 66.7 %)."
+      status: "OPEN | INVESTIGATION | CLOSED (vocab.deviation_status)."
+    vocabulary: vocab.deviation_status
+    legacy_source: {store: "data/legacy.sqlite3", table: deviations, rows_in_baseline: 42}
+    mutability: mutable_snapshot
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/domain-contracts.md, docs/04-baseline-kpis/kpi-dictionary.md]
+
+  - id: CAPA
+    category: business_object
+    description: "Corrective And Preventive Action raised to address a deviation, with an owner and a due date."
+    identity: {field: capa_id, pattern: '^CAPA[0-9]{8}$', legacy_column: capa_actions.capa_id}
+    attributes:
+      deviation_id: "Deviation the action addresses."
+      action_owner: "Pseudonymous owner/team string (C2); no identity directory exists."
+      due_at: "Due timestamp."
+      state: "OPEN | OVERDUE | VERIFIED (vocab.capa_state)."
+    vocabulary: vocab.capa_state
+    legacy_source: {store: "data/legacy.sqlite3", table: capa_actions, rows_in_baseline: 21}
+    mutability: mutable_snapshot
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/domain-contracts.md, docs/11-data-context/knowledge-model.md]
+
+  - id: SOP
+    category: reference_data
+    description: "A Standard Operating Procedure version with an effective window. Versions are effective-dated; supersession is a window, not an overwrite."
+    identity: {field: "(sop_id, version)", legacy_column: "sop_versions.(sop_id,version)"}
+    attributes:
+      effective_at: "Start of effectiveness."
+      retired_at: "End of effectiveness; nullable (still in force)."
+    legacy_source: {store: "data/legacy.sqlite3", table: sop_versions, rows_in_baseline: 45}
+    mutability: reference_data
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/domain-contracts.md]
+
+  - id: ReferenceVersion
+    category: reference_data
+    description: "Versioned master/reference value with an overlapping validity window; requires temporal interpretation (which version applied at time T)."
+    identity: {field: "(ref_key, version)", legacy_column: "reference_versions.(ref_key,version)"}
+    attributes:
+      valid_from: "Start of validity."
+      valid_to: "End of validity; windows overlap, so interpretation rules are needed."
+      data_json: "Payload of the reference value."
+    legacy_source: {store: "data/legacy.sqlite3", table: reference_versions, rows_in_baseline: 180}
+    mutability: reference_data
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/partner-feed-operations.md, docs/11-data-context/knowledge-model.md]
+
+  - id: Site
+    category: reference_data
+    description: "An operating site, referenced by cases and batches through local aliases. Backlog and exception measures are always reported per site."
+    identity: {field: site, legacy_column: cases.site}
+    attributes:
+      region: "AMER | APAC | EMEA."
+    epistemic_status: inference
+    evidence: [docs/11-data-context/knowledge-model.md, docs/04-baseline-kpis/kpi-dictionary.md]
+
+  # ------------------------------------------------------------------ decision record
+  - id: DecisionEvent
+    category: decision_record
+    description: >
+      An immutable, hash-chained fact about a case: a state change, evidence attachment, human disposition, override or correction.
+      The record of WHO decided WHAT, WHEN, ON WHAT BASIS and WITH WHICH EVIDENCE. Never updated or deleted; corrections are new events.
+    identity: {field: event_id, per_case_sequence: "seq (gapless from 1)"}
+    attributes:
+      case_id: "Case the event belongs to."
+      event_type: "See vocab.decision_event_type."
+      from_state: "State before (nullable for non-state events)."
+      to_state: "State after; required when the event affects state."
+      actor: "Principal that caused the event."
+      actor_kind: "human | rule | system (vocab.actor_kind). Zone H event types require human."
+      occurred_at: "When it happened (never earlier than the previous event of the case)."
+      recorded_at: "Server UTC time of recording; not client-settable."
+      basis: "Reason/basis text, at most 2000 characters."
+      evidence_refs: "References to EvidenceRecord ids relied on."
+      cycle: "Reopen cycle number; increments on REOPEN."
+      closure_check: "passed | exception | not_configured."
+      mode_at_write: "Disposition recording mode in force when written (event | external_ref)."
+      holder_check_ref: "Audit reference to the Zone H holder check; required for Zone H event types."
+      prev_hash_and_hash: "Hash chain linking events (tamper evidence)."
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md, docs/12-specs/features/f01-decision-evidence-record.md]
+
+  - id: CaseState
+    category: decision_record
+    description: "The current state of a case, derived by folding its DecisionEvents. A rebuildable projection, never an independent source of truth."
+    identity: {field: case_id}
+    attributes:
+      state: "Current state (vocab.case_status)."
+      cycle: "Current reopen cycle."
+      last_seq: "Sequence number of the last folded event."
+    mutability: derived_projection
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/20-application/state-model.md]
+
+  - id: EvidenceRecord
+    category: decision_record
+    description: "A reference to something relied on for a decision: a document, an intake item, a crosswalk object or an external reference. The product stores the reference and a hash; it never judges sufficiency."
+    identity: {field: ev_id}
+    attributes:
+      kind: "document | intake_item | crosswalk_object | external_ref."
+      source_ref_and_hash: "Where the evidence lives and its content hash."
+      access_level: "Defaults to restricted (deny by default)."
+    mutability: append_only
+    sensitivity: C3
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]
+
+  - id: ZoneHAction
+    category: governance
+    description: >
+      One of ten closed, human-only actions (ZH-01..ZH-10) that automation may never perform: batch disposition, QA release, e-signature record,
+      close-exception, policy adopt, rule-set activate, exception-rule accept, disposition-mode change, schedule enable/disable, policy change.
+    identity: {field: zone_h_id, pattern: '^ZH-(0[1-9]|10)$'}
+    attributes:
+      name: "See vocab.zone_h_action."
+      preconditions: "Interactive human session AND principal in zone_h.holders AND role dispositioner AND re-authentication within the window AND mode permits AND current pack hash (ZH-01..03)."
+    mutability: reference_data
+    sensitivity: C3
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f02-human-disposition-gate.md, hub/gate/actions.py, docs/23-human-control/approval-gates.md]
+
+  # ------------------------------------------------------------------ policy and rules
+  - id: PolicyObject
+    category: policy
+    description: >
+      A versioned, owned, effective-dated statement of business meaning: a definition of closed/resolved/approved, a clock (e.g. the '48 h' closure expectation),
+      a closure policy, a consistency policy or a cut-off. The product ships with NONE adopted; adoption is a Zone H action.
+    identity: {field: "(policy_id, version)"}
+    attributes:
+      kind: "DEFINITION | CLOSURE | CLOCK | CONSISTENCY | CUTOFF (vocab.policy_kind)."
+      definition_tag: "Label that figures must carry, e.g. D-OPS, D-EVID, D-FIN."
+      status: "candidate | adopted | accepted-open (vocab.policy_status). 'accepted-open' means a human recorded that the question is deliberately undecided."
+      owner: "Defaults to 'unassigned'."
+      effective_window: "effective_from / effective_to."
+    vocabulary: vocab.policy_status
+    mutability: versioned_immutable
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f03-policy-definitions-rule-service.md, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/11-data-context/knowledge-model.md]
+
+  - id: PolicyEvent
+    category: policy
+    description: "Immutable record of a change to policy state (created, adopted, accepted-open, withdrawn, rule row changed, rule set activated, etc.) with old value, new value, actor and a mandatory authority reference."
+    identity: {field: event_id}
+    attributes:
+      event_type: "See vocab.policy_event_type."
+      authority_ref: "Mandatory, non-empty reference to the human authority for the change. The product cannot verify it."
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]
+
+  - id: RuleSet
+    category: policy
+    description: >
+      A named, versioned, table-driven set of approval/priority rules where thresholds, regions, effective dates, owner and default behaviour are DATA.
+      Three as-found rule sets mirror the legacy implementations and ship loaded but INACTIVE and read-only.
+    identity: {field: "(ruleset_id, version)", reference_format: "<ruleset_id>@<version>"}
+    attributes:
+      origin: "as-found | custom (vocab.ruleset_origin). As-found sets are read-only."
+      functions: "Which decision functions the set answers (e.g. approval, priority, manual-review)."
+    mutability: versioned_immutable
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/features/f03-policy-definitions-rule-service.md, hub/policy/rulesets.py, docs/06-root-cause/confirmed-root-causes.md]
+
+  - id: RuleRow
+    category: policy
+    description: "One ordered row in a rule set: conditions (field/op/value), an outcome, an effective window, an owner and an is-default flag."
+    identity: {field: "(ruleset_id, version, row_id)"}
+    attributes:
+      conditions: "List of {field, op, value}."
+      outcome: "{kind, function, value}."
+      is_default: "Marks the fallback row; an outcome produced by it carries the defaulted marker."
+    mutability: versioned_immutable
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [hub/policy/rulesets.py, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+
+  - id: RuleTrace
+    category: decision_record
+    description: "Text explanation of one rule evaluation for a case: rule set, row and inputs. Produces reviewer-visible flags. A recommendation only; a human may override, dismiss or refuse it with a reason."
+    identity: {field: trace_id}
+    attributes:
+      flag_state: "Flags start open; human actions append flag_action rows."
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/20-application/state-model.md, docs/12-specs/features/f08-reviewer-support.md]
+
+  # ------------------------------------------------------------------ integration
+  - id: SourceSystem
+    category: integration
+    description: "An upstream system or partner feed: ElectronicBatchRecord (publishes OOS_RESULT, DEVIATION, CAPA_UPDATE), LIMS-QMS (competing facts and effective-dated master data), and the partner gateway. Their messages are data, never instructions."
+    identity: {field: partner_or_system_name}
+    attributes:
+      schema_revisions: "Supported 1.0, 1.1, 2.0; anything else is UNSUPPORTED_REVISION."
+    mutability: external_read_only
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/source-systems-and-constraints.md, docs/partner-feed-operations.md, docs/21-integration/integration-inventory.md]
+
+  - id: SourceContract
+    category: integration
+    description: "Declared shape of messages from a source (integration/source-contract-v1.json). Binding mode is per source: record_only (default) or enforce."
+    identity: {field: contract_file}
+    mutability: reference_data
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [integration/source-contract-v1.json, hub/intake/contracts/source-contract-v1.json, docs/21-integration/data-contracts.md]
+
+  - id: FeedItem
+    category: integration
+    description: "One message received from a source, kept exactly as received. Its identity is the natural key (partner, record_kind, ref_id, source_ts); business_key and feed_id are NOT identities."
+    identity: {field: identity_key, definition: "sha256(canonical([source, partner, record_kind, ref_id, source_ts]))", legacy_column: partner_feeds.feed_id}
+    attributes:
+      schema_rev: "Source schema revision."
+      record_kind: "OOS_RESULT | DEVIATION | CAPA_UPDATE (vocab.partner_record_kind)."
+      source_ts_vs_ingest_ts: "Distinct clocks: when the source says it happened vs when it was ingested. 26.1 % of baseline delays are negative."
+      raw_json: "Original payload. Treated as UNTRUSTED text."
+      processing_status: "Legacy: NEW | RETRY | REPLAY, overwritten in place (a defect)."
+    legacy_source: {store: "data/legacy.sqlite3", table: partner_feeds, rows_in_baseline: 8567}
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/business-rules.md, docs/06-root-cause/confirmed-root-causes.md, docs/11-data-context/knowledge-model.md]
+
+  - id: IntakeOutcome
+    category: integration
+    description: "The deterministic classification of a FeedItem: outcome, primary reason (by fixed precedence), all reasons, queue, contract check and whether it counts toward totals. Separate from the raw record; a later outcome supersedes an earlier one by sequence."
+    identity: {field: "(raw_id, outcome_seq)"}
+    attributes:
+      outcome: "See vocab.intake_outcome."
+      primary_reason: "First applicable reason in the fixed precedence (vocab.intake_reason)."
+      queue: "Exactly one queue (vocab.intake_queue)."
+      counts_toward_totals: "False for NOOP_DUPLICATE."
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [hub/intake/reasons.py, docs/12-specs/business-rules.md, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+
+  - id: Document
+    category: integration
+    description: "An immutable (doc_id, version) extracted/archived document: SOP, certificate of analysis (COA) or batch record, with locale, source, effective date, access level and OCR confidence. Body text is UNTRUSTED."
+    identity: {field: "(doc_id, version)", pattern: '^DOC-[0-9]{8}$'}
+    attributes:
+      doc_type: "sop | coa | batch-record."
+      access_level: "restricted | operations | engineering | quality (restricted = 328 of 1,200)."
+      ocr_confidence: "Nullable; NULL means unknown."
+      reference: "Case or object referenced; only 30 of 1,200 resolve today."
+    legacy_source: {store: "data/documents/source_documents.jsonl", rows_in_baseline: 1200}
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/11-data-context/knowledge-model.md, docs/11-data-context/metadata-model.md]
+
+  - id: CrosswalkLink
+    category: integration
+    description: "An explicit, exact-key link between two objects of different identifier spaces (case, batch, deviation, CAPA, lab result, feed item, document). Created by a rule from a registered exact key, or by a human with a reason. Orphans stay orphans: no similarity matching."
+    identity: {field: link_id}
+    attributes:
+      key_used: "The registered key that justified the link."
+      creator_kind: "rule | human. A human link requires a non-empty reason."
+    mutability: append_only
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [hub/crosswalk/registry.json, docs/12-specs/features/f05-identity-crosswalk.md, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql]
+
+  - id: PolicyException
+    category: business_object
+    description: "A legacy record that a policy was waived, blocked or put under review for a referenced object. Meaning of WAIVED and BLOCKED is not owned."
+    identity: {field: exception_id, legacy_column: policy_exceptions.exception_id}
+    attributes:
+      policy_code: "One of qa_signature, oos_hold, sop_effective_date, electronic_record_retention."
+      outcome: "REVIEW | OPEN | WAIVED | BLOCKED (vocab.policy_exception_outcome)."
+    vocabulary: vocab.policy_exception_outcome
+    legacy_source: {store: "data/legacy.sqlite3", table: policy_exceptions, rows_in_baseline: 224}
+    mutability: mutable_snapshot
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [docs/partner-feed-operations.md, docs/11-data-context/knowledge-model.md]
+
+  - id: UpstreamOutage
+    category: operations
+    description: "A recorded outage or partial rerun of an upstream system, with began/resolved times; some are unresolved."
+    identity: {field: incident_id, legacy_column: upstream_outages.incident_id}
+    legacy_source: {store: "data/legacy.sqlite3", table: upstream_outages, rows_in_baseline: 72}
+    mutability: mutable_snapshot
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/04-baseline-kpis/kpi-dictionary.md, docs/partner-feed-operations.md]
+
+  # ------------------------------------------------------------------ measurement
+  - id: MetricDefinition
+    category: measurement
+    description: "A declared measure: category, window, denominator, exclusions, basis and — where closed/resolved/approved/cost/handling is involved — a mandatory definition tag. Versioned and immutable."
+    identity: {field: "(metric_id, version)"}
+    attributes:
+      category: "time | count | money | rate | age."
+      basis: "event_derived | modelled."
+    mutability: versioned_immutable
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [hub/metrics/registry.py, docs/12-specs/features/f07-metrics-definition-tags.md]
+
+  - id: MetricValue
+    category: measurement
+    description: "One computed figure with its window, denominator, exclusions, definition tag, policy version, data origin and the label 'synthetic, unvalidated' while data are synthetic."
+    identity: {field: value_id}
+    mutability: append_only
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/12-specs/business-rules.md]
+
+  - id: OperatingCost
+    category: measurement
+    description: "Monthly modelled operating-cost estimate (labour hours, cases, infrastructure USD). total_cases is NOT 'cases created' (random; OD-07). Any metric using it is basis = modelled."
+    identity: {field: period, legacy_column: operating_costs.period}
+    legacy_source: {store: "data/legacy.sqlite3", table: operating_costs, rows_in_baseline: 36}
+    mutability: mutable_snapshot
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [.fde/orchestrator-decisions.md, docs/04-baseline-kpis/kpi-dictionary.md]
+
+  # ------------------------------------------------------------------ operations / identity / governance
+  - id: Run
+    category: operations
+    description: "One execution of a closed-catalogue job (intake, backfill, rebuild/verify projection, verify audit, metrics snapshot), recorded as append-only run events including inputs seen, outcomes, errors and remaining backlog."
+    identity: {field: run_id}
+    attributes:
+      job: "See vocab.run_job."
+      trigger: "manual | scheduled."
+    mutability: append_only
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [hub/runs/catalogue.py, docs/12-specs/features/f06-scheduled-runs.md]
+
+  - id: Principal
+    category: identity_security
+    description: "An authenticated actor: a human with one or more roles, a service account (token prefix svc_, role integration, never Zone H), or a system/rule actor. No identity directory exists in the estate."
+    identity: {field: principal_id}
+    attributes:
+      roles: "reviewer, quality_lead, compliance, finance_read, integration, dispositioner (vocab.role)."
+      actor_kind: "human | service | rule | system."
+    mutability: reference_data
+    sensitivity: C2
+    epistemic_status: verified_fact
+    evidence: [hub/security/authz.py, hub/security/route_registry.json, docs/20-application/access-control-implementation.md]
+
+  - id: AuditRecord
+    category: governance
+    description: "Hash-chained access/audit entry written in the same transaction as the change it audits. Records who/what/outcome/reason/correlation id. Anchor seal is opt-in; deletion after the last anchor is not detectable (stated limitation)."
+    identity: {field: audit_seq}
+    mutability: append_only
+    sensitivity: C3
+    epistemic_status: verified_fact
+    evidence: [hub/security/audit.py, docs/12-specs/contracts/ddl/hub-schema-v0.1.sql, docs/42-executive-defence/demo-day-script.md]
+
+  - id: DeviationRegisterEntry
+    category: governance
+    description: "A recorded difference between legacy behaviour (golden baseline) and hub behaviour (DV-01..DV-11) with a preserve-or-fix decision. Acceptable only if approved with an approval reference (none approved yet)."
+    identity: {field: dv_id, pattern: '^DV-[0-9]{2}$'}
+    mutability: append_only
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/16-repo-validation/behavior-difference-report.md, docs/12-specs/business-rules.md]
+
+  - id: Capability
+    category: governance
+    description: "One of ten product capabilities CAP-01..CAP-10. Each is either in shadow (legacy remains authoritative) or authoritative (needs a recorded approval reference). All ship in shadow."
+    identity: {field: cap_id, pattern: '^CAP-(0[1-9]|10)$'}
+    attributes:
+      authority_state: "shadow | authoritative (vocab.capability_authority)."
+    mutability: reference_data
+    sensitivity: C1
+    epistemic_status: verified_fact
+    evidence: [docs/final-prd/final-capability-map.md, hub/config.py]

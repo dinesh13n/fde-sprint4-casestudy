@@ -1,0 +1,41 @@
+# Semantic Layer — workflow semantics
+semantic_layer_version: "0.1.0"
+kind: workflow-semantics
+workflows:
+  - id: WF-LEGACY
+    name: "Legacy case workflow"
+    states_ref: [vocab.case_status]
+    notes: "Eight or more incompatible status vocabularies; CLOSED appears in four. No transition log exists."
+    evidence: [app/legacy_logic.py]
+  - id: WF-INTAKE
+    name: "Intake pipeline"
+    steps: [receive, compute_natural_key, dedupe, classify_by_reason_precedence, route_to_queue, record_outcome]
+    natural_key: [partner, record_kind, ref_id, source_ts]
+    reason_codes: {count: 15, ordering: fixed_precedence, ref: vocab.intake_reason}
+    queues: {count: 5, ref: vocab.intake_queue}
+    idempotency: "A re-delivered item yields NOOP_DUPLICATE and changes no queue or total."
+    evidence: [docs/12-specs/business-rules.md]
+  - id: WF-DECISION
+    name: "Decision lifecycle"
+    rule: "Decisions are appended as immutable, hash-chained DecisionEvents; corrections are new events."
+    evidence: [docs/12-specs/business-rules.md]
+  - id: WF-ZONE-H
+    name: "Zone H human-only actions"
+    rule: "Each of ZH-01..ZH-10 needs a named human holder; none exist, so all are refused."
+    open_decision: OPD-06
+    evidence: [docs/12-specs/business-rules.md]
+  - id: WF-POLICY
+    name: "Policy object lifecycle"
+    states: [candidate, adopted, accepted-open]
+    rule: "Only an adopted policy changes behaviour; accepted-open records that nobody decided."
+    evidence: [docs/12-specs/business-rules.md]
+  - id: WF-RUNS
+    name: "Run jobs"
+    rule: "Jobs run in shadow beside the legacy code; they never write to legacy tables."
+    evidence: [docs/12-specs/business-rules.md]
+  - id: WF-RELEASE
+    name: "Release and cutover"
+    state: BLOCKED
+    reason: "Definitions of closed/resolved undecided; no named approver; value not computable."
+    open_decision: OPD-13
+    evidence: [docs/final-prd/final-as-built-prd.md]
